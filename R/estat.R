@@ -5,8 +5,8 @@
 #' @return No output.
 #'
 #' @export
-estat_set_appId <- function(appId) {
-  japanstat_global$appId <- appId
+estat_set_key <- function(appId) {
+  japanstat_global$estat_key <- appId
   invisible()
 }
 
@@ -19,26 +19,25 @@ estat_set_appId <- function(appId) {
 #'
 #' @export
 estat <- function(statsDataId,
-                  appId = NULL) {
-  appId <- appId %||% japanstat_global$appId
+                  appId = NULL,
+                  lang = c("J", "E"),
+                  query = NULL) {
+  appId <- appId %||% japanstat_global$estat_key
   stopifnot(!is.null(appId))
 
-  query <- list(statsDataId = statsDataId,
-                appId = appId)
+  lang <- rlang::arg_match(lang, c("J", "E"))
 
-  meta_info <- httr::GET(japanstat_global$url_estat,
-                         # config = httr::add_headers(`Accept-Encoding` = "gzip"),
-                         path = c(japanstat_global$path_estat, "getMetaInfo"),
+  query <- c(list(statsDataId = statsDataId,
+                  appId = appId,
+                  lang = lang),
+             query)
+  query <- compact_query(query)
+
+  meta_info <- estat_get(path = "getMetaInfo",
                          query = query)
-
-  httr::stop_for_status(meta_info)
-
-  meta_info <- httr::content(meta_info)
   meta_info <- meta_info$GET_META_INFO
 
-  if (meta_info$RESULT$STATUS != 0) {
-    stop(meta_info$RESULT$ERROR_MSG)
-  }
+  estat_check_status(meta_info)
 
   meta_info <- meta_info$METADATA_INF
 
@@ -54,23 +53,35 @@ estat <- function(statsDataId,
   meta_info <- tibble::tibble(meta_info = meta_info)
   meta_info <- tidyr::unnest_wider(meta_info, "meta_info")
   names(meta_info) <- stringr::str_remove(names(meta_info), "^@")
-  names(meta_info)[names(meta_info) == "CLASS"] <- "data"
-  meta_info$data <- purrr::modify(meta_info$data,
-                                  function(data) {
-                                    data <- dplyr::bind_rows(data)
-                                    names(data) <- stringr::str_remove(names(data), "^@")
-                                    data
+  vctrs::vec_slice(names(meta_info), names(meta_info) == "CLASS") <- "items"
+  meta_info$items <- purrr::modify(meta_info$items,
+                                   function(items) {
+                                     items <- dplyr::bind_rows(items)
+                                     names(items) <- stringr::str_remove(names(items), "^@")
+                                     items
+                                   })
+  meta_info$size_items_total <- purrr::map_dbl(meta_info$items,
+                                               function(items) {
+                                                 vctrs::vec_size(items)
+                                               })
+  meta_info$vars <- purrr::modify(meta_info$items,
+                                  function(items) {
+                                    names(items)
                                   })
-  meta_info$col <- purrr::modify(meta_info$data,
-                                 function(data) {
-                                   names(data)
-                                 })
   meta_info$new_name <- meta_info$id
 
   out <- structure(meta_info,
                    class = "estat")
+  attr(out, "query") <- query
   attr(out, "table_info") <- table_info
   out
+}
+
+#'
+#'
+#' @export
+estat_query <- function(x) {
+  attr(x, "query")
 }
 
 #'
@@ -93,13 +104,13 @@ print.estat <- function(x, ...) {
   if (active_id == "") {
     cat_subtle("# No active key\n")
   } else {
-    data <- x$data[x$id == active_id][[1L]]
-    col <- x$col[x$id == active_id][[1L]]
-    data <- select(data, dplyr::all_of(col))
-    data <- vctrs::new_data_frame(data,
-                                  class = c("tbl_estat", "tbl"))
-    attr(data, "id") <- active_id
-    print(data)
+    items <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
+    vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
+    items <- select(items, dplyr::all_of(vars))
+    items <- vctrs::new_data_frame(items,
+                                   class = c("tbl_estat", "tbl"))
+    attr(items, "id") <- active_id
+    print(items)
   }
 }
 
@@ -111,26 +122,26 @@ print_keys <- function(x, active_id) {
   name <- str_pad_common(x$name)
   new_name <- str_pad_common(x$new_name)
 
-  size <- purrr::map_dbl(x$data,
-                         function(data) {
-                           vctrs::vec_size(data)
+  size <- purrr::map_dbl(x$items,
+                         function(items) {
+                           vctrs::vec_size(items)
                          })
   size <- stringr::str_glue("[{size}]")
   size <- str_pad_common(size)
 
-  col <- purrr::map_chr(x$col,
-                        function(col) {
-                          stringr::str_c(col,
-                                         collapse = ", ")
-                        })
+  vars <- purrr::map_chr(x$vars,
+                         function(vars) {
+                           stringr::str_c(vars,
+                                          collapse = ", ")
+                         })
 
-  writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({col})")))
+  writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
 }
 
 #' @export
 tbl_sum.tbl_estat <- function(x, ...) {
   id <- attr(x, "id")
   header <- NextMethod()
-  names(header) <- stringr::str_glue("A {id} data")
+  names(header) <- stringr::str_glue("The {id} items")
   header
 }

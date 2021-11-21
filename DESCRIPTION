@@ -20,4 +20,7 @@ Imports:
     httr,
     rlang,
     vctrs,
-    dplyr
+    dplyr,
+    progress,
+    tibble,
+    tidyr
