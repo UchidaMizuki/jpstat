@@ -43,11 +43,3 @@ activate_cat <- function(x, n,
 
   activate_key(x, cat_n, new_name)
 }
-
-#' @rdname activate_key
-#'
-#' @export
-inactivate <- function(x) {
-  attr(x, "active_id") <- NULL
-  x
-}
