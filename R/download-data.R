@@ -16,7 +16,7 @@ download_data.estat <- function(x,
 
   total_number <- estat_total_number(query)
 
-  limit_downloads <- as.integer(query$limit) %||% japanstat_global$estat_limit_downloads
+  limit_downloads <- as.integer(query$limit %||% japanstat_global$estat_limit_downloads)
   start_position <- seq(1, total_number, limit_downloads)
   pb <- progress::progress_bar$new(total = vctrs::vec_size(start_position))
   data <- purrr::map_dfr(start_position,
@@ -57,7 +57,7 @@ download_data.estat <- function(x,
                             data <- data[vars]
                             if (rlang::is_scalar_character(vars)) {
                               names(data) <- new_name
-                            } else {
+                            } else if (!vctrs::vec_is_empty(vars)) {
                               names(data) <- stringr::str_c(new_name, names(data),
                                                             sep = "_")
                             }
