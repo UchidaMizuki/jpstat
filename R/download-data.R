@@ -88,7 +88,7 @@ estat_create_query <- function(x, query) {
                              })
   names(query_codes) <- id
 
-  query <- c(estat_query(x),
+  query <- c(attr(x, "query"),
              query_codes,
              list(metaGetFlg = "N"),
              query)

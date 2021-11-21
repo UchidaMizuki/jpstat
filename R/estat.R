@@ -80,13 +80,6 @@ estat <- function(statsDataId,
 #'
 #'
 #' @export
-estat_query <- function(x) {
-  attr(x, "query")
-}
-
-#'
-#'
-#' @export
 estat_table_info <- function(x) {
   attr(x, "table_info")
 }
