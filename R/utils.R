@@ -26,7 +26,7 @@ compact_query <- function(x) {
 # e-Stat
 estat_get <- function(path, query) {
   out <- httr::GET(japanstat_global$estat_url,
-                   # config = httr::add_headers(`Accept-Encoding` = "gzip"),
+                   config = httr::add_headers(`Accept-Encoding` = "gzip"),
                    path = c(japanstat_global$estat_path, path),
                    query = query)
   httr::stop_for_status(out)

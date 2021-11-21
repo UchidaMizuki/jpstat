@@ -9,7 +9,6 @@ activate_key <- function(x, id, new_name) {
 }
 
 #' @rdname activate_key
-#'
 #' @export
 activate_tab <- function(x,
                          new_name = NULL) {
@@ -17,7 +16,6 @@ activate_tab <- function(x,
 }
 
 #' @rdname activate_key
-#'
 #' @export
 activate_time <- function(x,
                           new_name = NULL) {
@@ -25,7 +23,6 @@ activate_time <- function(x,
 }
 
 #' @rdname activate_key
-#'
 #' @export
 activate_area <- function(x,
                           new_name = NULL) {
@@ -33,7 +30,6 @@ activate_area <- function(x,
 }
 
 #' @rdname activate_key
-#'
 #' @export
 activate_cat <- function(x, n,
                          new_name = NULL) {
@@ -42,4 +38,14 @@ activate_cat <- function(x, n,
   cat_n <- stringr::str_c("cat", n)
 
   activate_key(x, cat_n, new_name)
+}
+
+#' @rdname activate_key
+#' @export
+activate_auto <- function(x, pattern,
+                          new_name = NULL) {
+  id <- vctrs::vec_slice(x$id, stringr::str_detect(x$name, pattern))
+  stopifnot(rlang::is_scalar_character(id))
+
+  activate_key(x, id, new_name)
 }
