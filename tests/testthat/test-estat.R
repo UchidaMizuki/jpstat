@@ -2,6 +2,7 @@ test_that("estat-0003183561", {
   estat_set_key(keyring::key_get("estat-api"))
 
   worker_city_2015 <- estat("0003183561")
+  expect_s3_class(worker_city_2015, "estat")
 
   worker_city_2015 <- worker_city_2015 %>%
 
@@ -10,49 +11,27 @@ test_that("estat-0003183561", {
     select() %>%
 
     activate_cat(1, "industry") %>%
-    filter(stringr::str_detect(name, "^[A-Z]")) %>%
+    filter(stringr::str_detect(name, "^[AB]")) %>%
     select(name) %>%
 
     activate_cat(2) %>%
     filter(name == "総数（年齢）") %>%
     select() %>%
 
-    activate_cat(3) %>%
-    filter(name == "総数（男女別）") %>%
-    select() %>%
+    activate_cat(3, "sex") %>%
+    filter(name != "総数（男女別）") %>%
+    select(name) %>%
 
-    activate_area("city") %>%
-    select(code, name, level) %>%
+    activate_area() %>%
+    filter(name == "北海道") %>%
+    select() %>%
 
     activate_time() %>%
     select() %>%
 
     japanstat::download_data(value_name = "worker")
+
+  expect_s3_class(worker_city_2015, "tbl_df")
+  expect_setequal(names(worker_city_2015), c("industry", "sex", "worker"))
+  expect_equal(vctrs::vec_size(worker_city_2015), 4)
 })
-
-estat_set_key(keyring::key_get("estat-api"))
-statsDataId <- "0003411172"
-census <- estat(statsDataId = statsDataId)
-
-estat_table_info(census)
-
-census <- census %>%
-
-  activate_tab() %>%
-  filter(name == "人口") %>%
-  select() %>%
-
-  activate_cat(1, "region") %>%
-  select(name) %>%
-  filter(name != "全国") %>%
-
-  activate_time("year") %>%
-  select(name) %>%
-  filter(name == "2015年")
-#
-# data <- download_data(census)
-
-
-
-
-
