@@ -10,7 +10,7 @@ test_that("estat-0003183561", {
     select() %>%
 
     activate_cat(1, "industry") %>%
-    filter(str_detect(name, "^[A-Z]")) %>%
+    filter(stringr::str_detect(name, "^[A-Z]")) %>%
     select(name) %>%
 
     activate_cat(2) %>%
@@ -28,8 +28,6 @@ test_that("estat-0003183561", {
     select() %>%
 
     japanstat::download_data(value_name = "worker")
-
-
 })
 
 estat_set_key(keyring::key_get("estat-api"))
