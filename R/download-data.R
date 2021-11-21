@@ -16,11 +16,12 @@ download_data.estat <- function(x,
 
   total_number <- estat_total_number(query)
 
-  startPosition <- seq(1, total_number, japanstat_global$estat_limit_downloads)
-  pb <- progress::progress_bar$new(total = vctrs::vec_size(startPosition))
-  data <- purrr::map_dfr(startPosition,
-                         function(startPosition) {
-                           data <- estat_download_data(query, startPosition)
+  limit_downloads <- as.integer(query$limit) %||% japanstat_global$estat_limit_downloads
+  start_position <- seq(1, total_number, limit_downloads)
+  pb <- progress::progress_bar$new(total = vctrs::vec_size(start_position))
+  data <- purrr::map_dfr(start_position,
+                         function(start_position) {
+                           data <- estat_download_data(query, start_position, limit_downloads)
                            pb$tick()
                            data
                          })
@@ -107,11 +108,13 @@ estat_total_number <- function(query) {
   total_number
 }
 
-estat_download_data <- function(query, startPosition) {
+estat_download_data <- function(query, start_position, limit_downloads) {
   stats_data <- estat_get(path = "getStatsData",
                           query = c(query,
-                                    list(startPosition = startPosition,
-                                         limit_downloads = japanstat_global$estat_limit_downloads)))
+                                    list(startPosition = format(start_position,
+                                                                scientific = FALSE),
+                                         limit = format(limit_downloads,
+                                                        scientific = FALSE))))
   stats_data <- stats_data$GET_STATS_DATA
 
   estat_check_status(stats_data)
