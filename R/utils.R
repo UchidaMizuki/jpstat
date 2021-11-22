@@ -7,10 +7,6 @@ japanstat_global$estat_path <- "rest/3.0/app/json/"
 japanstat_global$estat_limit_downloads <- 1e5
 japanstat_global$estat_limit_items <- 1e2
 
-# global variables for RESAS
-japanstat_global$resas_url <- "https://opendata.resas-portal.go.jp/"
-japanstat_global$resas_path <- "api/v1/"
-
 cat_subtle <- function(...) {
   cat(pillar::style_subtle(stringr::str_c(...)))
 }

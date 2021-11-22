@@ -1,12 +1,11 @@
 Package: japanstat
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Tools for Easy Use of e-Stat API
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Mizuki", "Uchida", email = "uchidamizuki@vivaldi.net", role = c("aut", "cre"))
+Description: Provides tools for using the API of e-Stat, a portal site for Japanese government statistics.
+    Includes functions for automatic query generation, data collection and formatting.
+License: MIT + file LICENSE
 URL: https://github.com/UchidaMizuki/japanstat
 BugReports: https://github.com/UchidaMizuki/japanstat/issues
 Encoding: UTF-8
@@ -16,11 +15,11 @@ Suggests:
 Config/testthat/edition: 3
 RoxygenNote: 7.1.2
 Imports: 
-    pillar,
-    httr,
-    rlang,
-    vctrs,
-    dplyr,
-    progress,
-    tibble,
-    tidyr
+    pillar (>= 1.6.4),
+    httr (>= 1.4.2),
+    rlang (>= 0.4.12),
+    vctrs (>= 0.3.8),
+    dplyr (>= 1.0.7),
+    progress (>= 1.2.2),
+    tibble (>= 3.1.6),
+    tidyr (>= 1.1.4)

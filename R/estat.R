@@ -1,13 +1,20 @@
-#' Set appId of e-Stat API
-#'
-#' @param appId An appId of e-Stat API.
-#'
-#' @return No output.
-#'
-#' @export
-estat_set_apikey <- function(appId) {
-  japanstat_global$estat_apikey <- appId
-  invisible()
+estat_stats_data_id <- function(statsDataId) {
+  if (stringr::str_detect(statsDataId, "^\\d+$")) {
+    statsDataId
+  } else {
+    # when statsDataId is url
+    statsDataId <- stringr::str_extract(statsDataId, "(?<=\\?)[^\\?]+")
+    statsDataId <- stringr::str_split(statsDataId, "&")
+    statsDataId <- statsDataId[[1L]]
+    statsDataId <- stringr::str_match(statsDataId, "(.+)=(.+)")
+
+    nms <- statsDataId[, 2]
+    statsDataId <- statsDataId[, 3]
+    names(statsDataId) <- nms
+
+    statsDataId <- vctrs::vec_slice(statsDataId, names(statsDataId) %in% c("statdisp_id", "sid"))
+    statsDataId[[1L]]
+  }
 }
 
 estat_get <- function(path, query) {
@@ -31,6 +38,8 @@ estat <- function(statsDataId,
                   appId = NULL,
                   lang = c("J", "E"),
                   query = NULL) {
+  statsDataId <- estat_stats_data_id(statsDataId)
+
   appId <- appId %||% japanstat_global$estat_apikey
   stopifnot(!is.null(appId))
 
@@ -110,7 +119,7 @@ print.estat <- function(x, ...) {
   cat_subtle("#\n")
 
   if (active_id == "") {
-    cat_subtle("# No key is selected.\n")
+    cat_subtle("# No active key\n")
   } else {
     items <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
     vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
@@ -146,6 +155,11 @@ print_keys <- function(x, active_id) {
   writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
 }
 
+#' @importFrom pillar tbl_sum
+#' @export
+pillar::tbl_sum
+
+#' @export
 tbl_sum.tbl_estat <- function(x, ...) {
   id <- attr(x, "id")
   header <- NextMethod()
