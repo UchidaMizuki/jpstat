@@ -9,7 +9,7 @@
 README is currently only available in Japanese.
 
 japanstatは日本政府統計のポータルサイトであるe-StatのAPIを利用するためのツールを提供します．
-クエリの自動生成、データの収集、フォーマットなどの機能を備えています．
+クエリの自動生成，データの収集，フォーマットなどの機能を備えています．
 
 e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行)
 が必要です
@@ -20,7 +20,7 @@ e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの
 
 ## インストール方法
 
-japanstatの開発版が，[GitHub](https://github.com/)から以下の方法でインストールできます。
+japanstatの開発版が，[GitHub](https://github.com/)から以下の方法でインストールできます．
 
 ``` r
 # install.packages("devtools")
@@ -107,6 +107,13 @@ census_2015 <- census_2015 %>%
   filter(name == "人口") %>% 
   # アイテム数が1行のみのため列を全て削除しても問題なし
   select()
+census_2015
+#> # Keys
+#> # [x] tab  : 表章項目                     > tab   [1]  ()
+#> # [ ] cat01: 全国，市部，郡部2015         > cat01 [3]  (code, name, level, parentCode)
+#> # [ ] time : 時間軸（調査年組替表記有り） > time  [26] (code, name, level, parentCode)
+#> #
+#> # The tab items: 1 x 0
 ```
 
 次に，`cat01`の「全国，市部，郡部2015」を選択します．`cat01`では，属性が分かりづらいため，`estat_activate()`関数の第2引数
@@ -118,6 +125,18 @@ census_2015 <- census_2015 %>%
   estat_activate("全国", "region") %>% 
   # estat_activate_cat(1, "region") %>% 
   select(name)
+census_2015
+#> # Keys
+#> # [ ] tab  : 表章項目                     > tab    [1]  ()
+#> # [x] cat01: 全国，市部，郡部2015         > region [3]  (name)
+#> # [ ] time : 時間軸（調査年組替表記有り） > time   [26] (code, name, level, parentCode)
+#> #
+#> # The cat01 items: 3 x 1
+#>   name 
+#>   <chr>
+#> 1 全国 
+#> 2 市部 
+#> 3 郡部
 ```
 
 上と同様に，`time`の「時間軸（調査年組替表記有り）」の名称変更・属性絞り込みを行います．
@@ -127,6 +146,18 @@ census_2015 <- census_2015 %>%
   estat_activate("時間軸", "year") %>% 
   filter(name %in% c("2005年", "2010年", "2015年")) %>% 
   select(name)
+census_2015
+#> # Keys
+#> # [ ] tab  : 表章項目                     > tab    [1] ()
+#> # [ ] cat01: 全国，市部，郡部2015         > region [3] (name)
+#> # [x] time : 時間軸（調査年組替表記有り） > year   [3] (name)
+#> #
+#> # The time items: 3 x 1
+#>   name  
+#>   <chr> 
+#> 1 2005年
+#> 2 2010年
+#> 3 2015年
 ```
 
 最後に，`estat_download()`関数を用いてデータをダウンロードします．
