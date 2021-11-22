@@ -23,4 +23,5 @@ Imports:
     dplyr,
     progress,
     tibble,
-    tidyr
+    tidyr,
+    rvest

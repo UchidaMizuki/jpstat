@@ -5,9 +5,18 @@
 #' @return No output.
 #'
 #' @export
-estat_set_key <- function(appId) {
-  japanstat_global$estat_key <- appId
+estat_set_apikey <- function(appId) {
+  japanstat_global$estat_apikey <- appId
   invisible()
+}
+
+estat_get <- function(path, query) {
+  out <- httr::GET(japanstat_global$estat_url,
+                   config = httr::add_headers(`Accept-Encoding` = "gzip"),
+                   path = c(japanstat_global$estat_path, path),
+                   query = query)
+  httr::stop_for_status(out)
+  httr::content(out)
 }
 
 #'
@@ -22,7 +31,7 @@ estat <- function(statsDataId,
                   appId = NULL,
                   lang = c("J", "E"),
                   query = NULL) {
-  appId <- appId %||% japanstat_global$estat_key
+  appId <- appId %||% japanstat_global$estat_apikey
   stopifnot(!is.null(appId))
 
   lang <- rlang::arg_match(lang, c("J", "E"))
@@ -77,6 +86,12 @@ estat <- function(statsDataId,
   out
 }
 
+estat_check_status <- function(x) {
+  if (x$RESULT$STATUS != 0) {
+    stop(x$RESULT$ERROR_MSG)
+  }
+}
+
 #'
 #'
 #' @export
@@ -84,8 +99,8 @@ estat_table_info <- function(x) {
   attr(x, "table_info")
 }
 
-#'
-#'
+# printing ----------------------------------------------------------------
+
 #' @export
 print.estat <- function(x, ...) {
   active_id <- attr(x, "active_id") %||% ""
@@ -95,7 +110,7 @@ print.estat <- function(x, ...) {
   cat_subtle("#\n")
 
   if (active_id == "") {
-    cat_subtle("# No active key\n")
+    cat_subtle("# No key is selected.\n")
   } else {
     items <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
     vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
@@ -131,7 +146,6 @@ print_keys <- function(x, active_id) {
   writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
 }
 
-#' @export
 tbl_sum.tbl_estat <- function(x, ...) {
   id <- attr(x, "id")
   header <- NextMethod()
