@@ -1,4 +1,6 @@
 test_that("estat_0003183561", {
+  skip_if_not("estat-api" %in% keyring::key_list())
+
   estat_set_apikey(keyring::key_get("estat-api"))
 
   worker_city_2015 <- estat("0003183561")
@@ -37,6 +39,8 @@ test_that("estat_0003183561", {
 })
 
 test_that("estat_0003411172", {
+  skip_if_not("estat-api" %in% keyring::key_list())
+
   estat_set_apikey(keyring::key_get("estat-api"))
   estat_set("limit_downloads", 1e1)
 
