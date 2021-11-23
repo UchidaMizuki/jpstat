@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-README is currently only available in Japanese.
+**README is currently only available in Japanese.**
 
 japanstatは日本政府統計のポータルサイトであるe-StatのAPIを利用するためのツールを提供します．
 クエリの自動生成，データの収集，フォーマットなどの機能を備えています．
@@ -38,6 +38,8 @@ devtools::install_github("UchidaMizuki/japanstat")
 ```
 
 ## 使用方法
+
+### データ取得・整形の流れ
 
 ```{r,message=FALSE}
 library(japanstat)
@@ -68,23 +70,32 @@ census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
 census_2015
 ```
 
-当該データには，`tab`，`cat01`，`time`の3種類の列 (以下，キーと呼びます) が存在することがわかります．
-それぞれのキーの`>`の右側には以下の情報が記載されています (括弧内は1行目の該当箇所)．
+`estat_table_info()`関数で統計表情報を表示します．
 
-1. デフォルトでの列名 (`tab`)
-2. アイテム数 (`[2]`)
-3. コード・名称などの属性 (`(code, name, level, unit)`)
+```{r}
+knitr::kable(estat_table_info(census_2015))
+```
+
+当該データには，`tab`，`cat01`，`time`の3種類の列 (以下，キーと呼びます) が存在します．
+それぞれのキーの (`>`の) 右側には以下の情報が記載されています．
+
+1. デフォルトでの列名 (`tab`など)
+2. アイテム数 (`[2]`など)
+3. コード・名称などの属性 (`(code, name, level, unit)`など)
 
 ここからは，それぞれのキーごとに列名・アイテム数・属性を変更する方法を説明します．
 それぞれのキーの情報を変更するためには，`estat_activate()`関数を用いてキーを選択します．
+`estat_activate()`では，正規表現パターンでキーを選択します (複数マッチする場合にはエラー)．
+また，`estat_activate_tab()`関数など`id`でのキー選択も可能です．
 
 例えば，以下のように`tab`キーをアクティブにします．
 
 ```{r}
-# estat_activate(): 正規表現のパターンでキーを選択
+census_2015
+
 census_2015 %>% 
   estat_activate("表章項目")
-# estat_activate_tab() でも選択可能
+  # estat_activate_tab()
 ```
 
 キーをアクティブにすると当該キーのアイテム情報が表示されます．
@@ -95,29 +106,34 @@ census_2015 %>%
 census_2015 <- census_2015 %>% 
   estat_activate("表章項目") %>% 
   filter(name == "人口") %>% 
-  # アイテム数が1行のみのため列を全て削除しても問題なし
+  # アイテム数が1つのみであるため列を全て削除
   select()
-census_2015
 ```
 
-次に，`cat01`の「全国，市部，郡部2015」を選択します．`cat01`では，属性が分かりづらいため，`estat_activate()`関数の第2引数 (ここでは，`"region"`) で名称の変更を行います．
+次に，`cat01`の「全国，市部，郡部2015」を選択します．`cat01`では，属性が分かりづらいため，`estat_activate()`関数 (ここでは，`"region"`) で名称の変更を行います．
 また，上と同様に属性の絞り込みを行います．
+ここでは，`code`と`name`列を選択します．この場合，ダウンロードデータの列名は，それぞれ，`region_code`，`region_name`になります．
 
 ```{r}
 census_2015 <- census_2015 %>% 
   estat_activate("全国", "region") %>% 
   # estat_activate_cat(1, "region") %>% 
-  select(name)
-census_2015
+  select(code, name)
 ```
 
 上と同様に，`time`の「時間軸（調査年組替表記有り）」の名称変更・属性絞り込みを行います．
+ここでは，2000～2015年データを選択します．
 
 ```{r}
 census_2015 <- census_2015 %>% 
   estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2005年", "2010年", "2015年")) %>% 
+  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
   select(name)
+```
+
+以上の操作により，以下のように列名・アイテム数・属性が変更できました．
+
+```{r}
 census_2015
 ```
 
@@ -127,16 +143,18 @@ census_2015
 census_2015 <- census_2015 %>%
   # 値の名称を"pop"とする
   estat_download("pop")
-census_2015
+knitr::kable(census_2015)
 ```
 
-## まとめ
+### データ取得・整形のまとめ
 
 以上の操作をまとめて実行すると以下のようになります．
 
 ```{r}
+# メタ情報の取得
 census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
 
+# 列名・アイテム数・属性変更
 census_2015 <- census_2015 %>%
   
   estat_activate("表章項目") %>% 
@@ -144,13 +162,14 @@ census_2015 <- census_2015 %>%
   select() %>% 
   
   estat_activate("全国", "region") %>% 
-  select(name) %>% 
+  select(code, name) %>% 
   
   estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2005年", "2010年", "2015年")) %>% 
+  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
   select(name)
 
+# データのダウンロード
 census_2015 <- estat_download(census_2015, "pop")
 
-census_2015
+knitr::kable(census_2015)
 ```

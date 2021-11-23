@@ -155,10 +155,6 @@ print_keys <- function(x, active_id) {
   writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
 }
 
-#' @importFrom pillar tbl_sum
-#' @export
-pillar::tbl_sum
-
 #' @export
 tbl_sum.tbl_estat <- function(x, ...) {
   id <- attr(x, "id")
