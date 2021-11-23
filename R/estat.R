@@ -38,6 +38,7 @@ estat_get <- function(path, query) {
 #'
 #' @return A \code{estat} object.
 #'
+#' @importFrom rlang %||%
 #' @export
 estat <- function(statsDataId,
                   appId = NULL,
@@ -120,6 +121,7 @@ estat_table_info <- function(x) {
 
 # printing ----------------------------------------------------------------
 
+#' @importFrom rlang %||%
 #' @export
 print.estat <- function(x, ...) {
   active_id <- attr(x, "active_id") %||% ""
@@ -165,8 +167,16 @@ print_keys <- function(x, active_id) {
   writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
 }
 
+#' @importFrom pillar tbl_sum
 #' @export
-tbl_sum.tbl_estat <- function(x, ...) {
+pillar::tbl_sum
+
+#' Provide a succinct summary of \code{tbl_estat}
+#'
+#' @param x Object to summarise.
+#'
+#' @export
+tbl_sum.tbl_estat <- function(x) {
   id <- attr(x, "id")
   header <- NextMethod()
   names(header) <- stringr::str_glue("The {id} items")

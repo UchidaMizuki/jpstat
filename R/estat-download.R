@@ -6,11 +6,11 @@
 #'
 #' @return A \code{tbl} of the downloaded data.
 #'
+#' @importFrom rlang %||%
 #' @export
 estat_download <- function(x,
                            value_name = "value",
-                           query = NULL,
-                           ...) {
+                           query = NULL) {
   query <- estat_create_query(x, query)
 
   total_number <- estat_total_number(query)

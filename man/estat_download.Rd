@@ -4,7 +4,7 @@
 \alias{estat_download}
 \title{Download e-Stat data}
 \usage{
-estat_download(x, value_name = "value", query = NULL, ...)
+estat_download(x, value_name = "value", query = NULL)
 }
 \arguments{
 \item{x}{A \code{estat} object.}

@@ -1,6 +1,4 @@
-#' @importFrom rlang %||%
-NULL
-
-#' @importFrom pillar tbl_sum
-#' @export
-pillar::tbl_sum
+#' Tools for easy use of e-Stat API
+#'
+#' @name japanstat
+"_PACKAGE"

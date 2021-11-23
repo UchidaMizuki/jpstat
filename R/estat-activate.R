@@ -47,6 +47,9 @@ estat_activate_area <- function(x,
 }
 
 #' @rdname estat_activate
+#'
+#' @param n A category number.
+#'
 #' @export
 estat_activate_cat <- function(x, n,
                                new_name = NULL) {

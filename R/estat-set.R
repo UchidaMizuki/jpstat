@@ -1,24 +1,13 @@
+#' Set attributes of e-Stat API
+#'
+#' @param i An attribute name.
+#' @param value An attribute value
+#'
+#' @return No output..
+#'
 #' @export
-estat_set_url <- function(url) {
-  japanstat_global$estat_url <- url
-  invisible()
-}
-
-#' @export
-estat_set_path <- function(path) {
-  japanstat_global$estat_path <- path
-  invisible()
-}
-
-#' @export
-estat_set_limit_downloads <- function(limit_downloads) {
-  japanstat_global$estat_limit_downloads <- limit_downloads
-  invisible()
-}
-
-#' @export
-estat_set_limit_items <- function(limit_items) {
-  japanstat_global$estat_limit_items <- limit_items
+estat_set <- function(i, value) {
+  japanstat_global[[i]] <- value
   invisible()
 }
 

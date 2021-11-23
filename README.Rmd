@@ -30,7 +30,11 @@ e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの
 
 ## インストール方法
 
-japanstatの開発版が，[GitHub](https://github.com/)から以下の方法でインストールできます．
+``` r
+install.packages("japanstat")
+```
+
+japanstatの開発版は，[GitHub](https://github.com/)から以下の方法でインストールできます．
 
 ``` r
 # install.packages("devtools")

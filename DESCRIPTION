@@ -11,15 +11,20 @@ BugReports: https://github.com/UchidaMizuki/japanstat/issues
 Encoding: UTF-8
 LazyData: true
 Suggests: 
+    keyring (>= 1.2.0),
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 RoxygenNote: 7.1.2
 Imports: 
-    pillar (>= 1.6.4),
-    httr (>= 1.4.2),
-    rlang (>= 0.4.12),
-    vctrs (>= 0.3.8),
+    cli(>= 3.1.0),
     dplyr (>= 1.0.7),
+    httr (>= 1.4.2),
+    pillar (>= 1.6.4),
     progress (>= 1.2.2),
+    purrr (>= 0.3.4),
+    rlang (>= 0.4.12),
+    stringi (>= 1.7.5),
+    stringr (>= 1.4.0),
     tibble (>= 3.1.6),
-    tidyr (>= 1.1.4)
+    tidyr (>= 1.1.4),
+    vctrs (>= 0.3.8)

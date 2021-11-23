@@ -24,6 +24,8 @@ estat_activate_cat(x, n, new_name = NULL)
 \item{pattern}{Pattern to look for.}
 
 \item{new_name}{New column name.}
+
+\item{n}{A category number.}
 }
 \value{
 The \code{estat} object which the selected key is active.

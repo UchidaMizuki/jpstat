@@ -12,11 +12,9 @@ cat_subtle <- function(...) {
   cat(pillar::style_subtle(stringr::str_c(...)))
 }
 
-str_pad_common <- function(x, side = c("right", "left")) {
-  side <- rlang::arg_match(side, c("right", "left"))
+str_pad_common <- function(x) {
   stringr::str_pad(x,
-                   width = max(stringi::stri_width(x)),
-                   side = side)
+                   width = max(stringi::stri_width(x)))
 }
 
 compact_query <- function(x) {
