@@ -8,7 +8,13 @@ estat_activate_impl <- function(x, id, new_name) {
   x
 }
 
+#' Determine which \code{estat} object key to edit.
 #'
+#' @param x A \code{estat} object.
+#' @param pattern Pattern to look for.
+#' @param new_name New column name.
+#'
+#' @return The \code{estat} object which the selected key is active.
 #'
 #' @export
 estat_activate <- function(x, pattern,

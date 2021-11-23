@@ -6,6 +6,7 @@ japanstat_global$estat_url <- "http://api.e-stat.go.jp/"
 japanstat_global$estat_path <- "rest/3.0/app/json/"
 japanstat_global$estat_limit_downloads <- 1e5
 japanstat_global$estat_limit_items <- 1e2
+japanstat_global$estat_lang <- "J"
 
 cat_subtle <- function(...) {
   cat(pillar::style_subtle(stringr::str_c(...)))

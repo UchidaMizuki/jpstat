@@ -50,8 +50,7 @@ estat_set_apikey(keyring::key_get("estat-api"))
 
 ### データ取得・整形の概要
 
-データ取得・整形の一連の流れは以下のようになります．
-詳細な使用方法を次の項目で説明します．
+データ取得・整形の一連の流れは以下のようになります．詳細な使用方法は次の項目で説明します．
 
 ```r
 # APIキーの設定
@@ -127,8 +126,8 @@ knitr::kable(estat_table_info(census_2015))
 census_2015
 
 census_2015 %>% 
-  estat_activate("表章項目")
   # estat_activate_tab()
+  estat_activate("表章項目")
 ```
 
 キーをアクティブにすると当該キーのアイテム情報が表示されます．
@@ -149,8 +148,8 @@ census_2015 <- census_2015 %>%
 
 ```{r}
 census_2015 <- census_2015 %>% 
-  estat_activate("全国", "region") %>% 
   # estat_activate_cat(1, "region") %>% 
+  estat_activate("全国", "region") %>% 
   select(code, name)
 ```
 

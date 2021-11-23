@@ -36,8 +36,7 @@ library(magrittr)
 
 ### データ取得・整形の概要
 
-データ取得・整形の一連の流れは以下のようになります．
-詳細な使用方法を次の項目で説明します．
+データ取得・整形の一連の流れは以下のようになります．詳細な使用方法は次の項目で説明します．
 
 ``` r
 # APIキーの設定
@@ -170,6 +169,7 @@ census_2015
 #> # No active key
 
 census_2015 %>% 
+  # estat_activate_tab()
   estat_activate("表章項目")
 #> # Keys
 #> # [x] tab  : 表章項目                     > tab   [2]  (code, name, level, unit)
@@ -181,7 +181,6 @@ census_2015 %>%
 #>   <chr> <chr>            <chr> <chr>
 #> 1 020   人口             ""    人   
 #> 2 1420  市部，郡部別割合 ""    ％
-  # estat_activate_tab()
 ```
 
 キーをアクティブにすると当該キーのアイテム情報が表示されます．
@@ -203,8 +202,8 @@ census_2015 <- census_2015 %>%
 
 ``` r
 census_2015 <- census_2015 %>% 
-  estat_activate("全国", "region") %>% 
   # estat_activate_cat(1, "region") %>% 
+  estat_activate("全国", "region") %>% 
   select(code, name)
 ```
 

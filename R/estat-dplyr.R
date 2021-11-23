@@ -1,5 +1,3 @@
-#'
-#'
 #' @export
 filter.estat <- function(.data, ..., .preserve = FALSE) {
   active_id <- attr(.data, "active_id")
@@ -12,8 +10,6 @@ filter.estat <- function(.data, ..., .preserve = FALSE) {
   .data
 }
 
-#'
-#'
 #' @export
 select.estat <- function(.data, ...) {
   active_id <- attr(.data, "active_id")
@@ -25,8 +21,6 @@ select.estat <- function(.data, ...) {
   .data
 }
 
-#'
-#'
 #' @export
 slice.estat <- function(.data, ..., .preserve = FALSE) {
   active_id <- attr(.data, "active_id")

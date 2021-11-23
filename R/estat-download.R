@@ -1,4 +1,10 @@
+#' Download e-Stat data
 #'
+#' @param x A \code{estat} object.
+#' @param value_name A column name of the value.
+#' @param query A list of additional queries.
+#'
+#' @return A \code{tbl} of the downloaded data.
 #'
 #' @export
 estat_download <- function(x,

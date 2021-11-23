@@ -8,8 +8,8 @@ estat_stats_data_id <- function(statsDataId) {
     statsDataId <- statsDataId[[1L]]
     statsDataId <- stringr::str_match(statsDataId, "(.+)=(.+)")
 
-    nms <- statsDataId[, 2]
-    statsDataId <- statsDataId[, 3]
+    nms <- statsDataId[, 2L]
+    statsDataId <- statsDataId[, 3L]
     names(statsDataId) <- nms
 
     statsDataId <- vctrs::vec_slice(statsDataId, names(statsDataId) %in% c("statdisp_id", "sid"))
@@ -26,23 +26,29 @@ estat_get <- function(path, query) {
   httr::content(out)
 }
 
+#' Get meta-information of e-Stat data
 #'
+#' The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the e-Stat API,
+#' and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
 #'
 #' @param statsDataId A statistical data ID on e-Stat.
 #' @param appId An appId of e-Stat API.
+#' @param lang A language, Japanese (\code{"J"}) or English (\code{"E"}).
+#' @param query A list of additional queries.
 #'
-#'
+#' @return A \code{estat} object.
 #'
 #' @export
 estat <- function(statsDataId,
                   appId = NULL,
-                  lang = c("J", "E"),
+                  lang = NULL,
                   query = NULL) {
   statsDataId <- estat_stats_data_id(statsDataId)
 
   appId <- appId %||% japanstat_global$estat_apikey
   stopifnot(!is.null(appId))
 
+  lang <- lang %||% japanstat_global$estat_lang
   lang <- rlang::arg_match(lang, c("J", "E"))
 
   query <- c(list(statsDataId = statsDataId,
@@ -101,7 +107,11 @@ estat_check_status <- function(x) {
   }
 }
 
+#' Get table information for e-Stat data
 #'
+#' @param x A \code{estat} object.
+#'
+#' @return A \code{tbl} of the table information.
 #'
 #' @export
 estat_table_info <- function(x) {
