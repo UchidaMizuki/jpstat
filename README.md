@@ -29,12 +29,62 @@ devtools::install_github("UchidaMizuki/japanstat")
 
 ## 使用方法
 
-### データ取得・整形の流れ
-
 ``` r
 library(japanstat)
 library(magrittr)
 ```
+
+### データ取得・整形の概要
+
+データ取得・整形の一連の流れは以下のようになります．
+詳細な使用方法を次の項目で説明します．
+
+``` r
+# APIキーの設定
+estat_set_apikey("Your e-Stat appId")
+```
+
+``` r
+# メタ情報の取得
+census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
+
+# 列名・アイテム数・属性変更
+census_2015 <- census_2015 %>%
+  
+  estat_activate("表章項目") %>% 
+  filter(name == "人口") %>% 
+  select() %>% 
+  
+  estat_activate("全国", "region") %>% 
+  select(code, name) %>% 
+  
+  estat_activate("時間軸", "year") %>% 
+  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
+  select(name)
+
+# データのダウンロード
+census_2015 <- estat_download(census_2015, "pop")
+#> The total number of data is 12.
+
+knitr::kable(census_2015)
+```
+
+| region_code | region_name | year   | pop       |
+|:------------|:------------|:-------|:----------|
+| 100         | 全国        | 2000年 | 126925843 |
+| 100         | 全国        | 2005年 | 127767994 |
+| 100         | 全国        | 2010年 | 128057352 |
+| 100         | 全国        | 2015年 | 127094745 |
+| 110         | 市部        | 2000年 | 99865289  |
+| 110         | 市部        | 2005年 | 110264324 |
+| 110         | 市部        | 2010年 | 116156631 |
+| 110         | 市部        | 2015年 | 116137232 |
+| 120         | 郡部        | 2000年 | 27060554  |
+| 120         | 郡部        | 2005年 | 17503670  |
+| 120         | 郡部        | 2010年 | 11900721  |
+| 120         | 郡部        | 2015年 | 10957513  |
+
+### データ取得・整形の流れ
 
 japanstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得
 (getStatsData) を用いて，統計表をダウンロードが可能です．
@@ -193,50 +243,6 @@ census_2015 <- census_2015 %>%
   # 値の名称を"pop"とする
   estat_download("pop")
 #> The total number of data is 12.
-knitr::kable(census_2015)
-```
-
-| region_code | region_name | year   | pop       |
-|:------------|:------------|:-------|:----------|
-| 100         | 全国        | 2000年 | 126925843 |
-| 100         | 全国        | 2005年 | 127767994 |
-| 100         | 全国        | 2010年 | 128057352 |
-| 100         | 全国        | 2015年 | 127094745 |
-| 110         | 市部        | 2000年 | 99865289  |
-| 110         | 市部        | 2005年 | 110264324 |
-| 110         | 市部        | 2010年 | 116156631 |
-| 110         | 市部        | 2015年 | 116137232 |
-| 120         | 郡部        | 2000年 | 27060554  |
-| 120         | 郡部        | 2005年 | 17503670  |
-| 120         | 郡部        | 2010年 | 11900721  |
-| 120         | 郡部        | 2015年 | 10957513  |
-
-### データ取得・整形のまとめ
-
-以上の操作をまとめて実行すると以下のようになります．
-
-``` r
-# メタ情報の取得
-census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
-
-# 列名・アイテム数・属性変更
-census_2015 <- census_2015 %>%
-  
-  estat_activate("表章項目") %>% 
-  filter(name == "人口") %>% 
-  select() %>% 
-  
-  estat_activate("全国", "region") %>% 
-  select(code, name) %>% 
-  
-  estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
-  select(name)
-
-# データのダウンロード
-census_2015 <- estat_download(census_2015, "pop")
-#> The total number of data is 12.
-
 knitr::kable(census_2015)
 ```
 

@@ -39,22 +39,55 @@ devtools::install_github("UchidaMizuki/japanstat")
 
 ## 使用方法
 
-### データ取得・整形の流れ
-
 ```{r,message=FALSE}
 library(japanstat)
 library(magrittr)
 ```
+
+```{r,echo=FALSE}
+estat_set_apikey(keyring::key_get("estat-api"))
+```
+
+### データ取得・整形の概要
+
+データ取得・整形の一連の流れは以下のようになります．
+詳細な使用方法を次の項目で説明します．
+
+```r
+# APIキーの設定
+estat_set_apikey("Your e-Stat appId")
+```
+```{r}
+# メタ情報の取得
+census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
+
+# 列名・アイテム数・属性変更
+census_2015 <- census_2015 %>%
+  
+  estat_activate("表章項目") %>% 
+  filter(name == "人口") %>% 
+  select() %>% 
+  
+  estat_activate("全国", "region") %>% 
+  select(code, name) %>% 
+  
+  estat_activate("時間軸", "year") %>% 
+  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
+  select(name)
+
+# データのダウンロード
+census_2015 <- estat_download(census_2015, "pop")
+
+knitr::kable(census_2015)
+```
+
+### データ取得・整形の流れ
 
 japanstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得 (getStatsData) を用いて，統計表をダウンロードが可能です．
 以下のように，APIキー (appId) をあらかじめ設定してください．
 
 ``` r
 estat_set_apikey("Your e-Stat appId")
-```
-
-```{r,echo=FALSE}
-estat_set_apikey(keyring::key_get("estat-api"))
 ```
 
 e-Statでは，統計表ごとに統計表ID (statsDataId) が付与されています．統計表IDは，
@@ -143,33 +176,5 @@ census_2015
 census_2015 <- census_2015 %>%
   # 値の名称を"pop"とする
   estat_download("pop")
-knitr::kable(census_2015)
-```
-
-### データ取得・整形のまとめ
-
-以上の操作をまとめて実行すると以下のようになります．
-
-```{r}
-# メタ情報の取得
-census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
-
-# 列名・アイテム数・属性変更
-census_2015 <- census_2015 %>%
-  
-  estat_activate("表章項目") %>% 
-  filter(name == "人口") %>% 
-  select() %>% 
-  
-  estat_activate("全国", "region") %>% 
-  select(code, name) %>% 
-  
-  estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
-  select(name)
-
-# データのダウンロード
-census_2015 <- estat_download(census_2015, "pop")
-
 knitr::kable(census_2015)
 ```
