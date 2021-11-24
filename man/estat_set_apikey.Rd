@@ -2,16 +2,16 @@
 % Please edit documentation in R/estat-set.R
 \name{estat_set_apikey}
 \alias{estat_set_apikey}
-\title{Set appId of e-Stat API}
+\title{Set 'appId' of 'e-Stat' API}
 \usage{
 estat_set_apikey(appId)
 }
 \arguments{
-\item{appId}{An appId of e-Stat API.}
+\item{appId}{An 'appId' of 'e-Stat' API.}
 }
 \value{
 No output.
 }
 \description{
-Set appId of e-Stat API
+Set 'appId' of 'e-Stat' API
 }

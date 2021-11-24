@@ -2,14 +2,14 @@
 % Please edit documentation in R/estat.R
 \name{estat}
 \alias{estat}
-\title{Get meta-information of e-Stat data}
+\title{Get meta-information of 'e-Stat' data}
 \usage{
 estat(statsDataId, appId = NULL, lang = NULL, query = NULL)
 }
 \arguments{
-\item{statsDataId}{A statistical data ID on e-Stat.}
+\item{statsDataId}{A statistical data ID on 'e-Stat'.}
 
-\item{appId}{An appId of e-Stat API.}
+\item{appId}{An 'appId' of 'e-Stat' API.}
 
 \item{lang}{A language, Japanese (\code{"J"}) or English (\code{"E"}).}
 
@@ -19,6 +19,6 @@ estat(statsDataId, appId = NULL, lang = NULL, query = NULL)
 A \code{estat} object.
 }
 \description{
-The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the e-Stat API,
+The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
 and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
 }

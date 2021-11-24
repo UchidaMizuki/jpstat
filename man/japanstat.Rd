@@ -4,9 +4,9 @@
 \name{japanstat}
 \alias{japanstat}
 \alias{japanstat-package}
-\title{Tools for easy use of e-Stat API}
+\title{Tools for easy use of 'e-Stat' API}
 \description{
-Provides tools for using the API of e-Stat, a portal site for Japanese government statistics. Includes functions for automatic query generation, data collection and formatting.
+Provides tools for using the API of 'e-Stat' (<https://www.e-stat.go.jp/>), a portal site for Japanese government statistics. Includes functions for automatic query generation, data collection and formatting.
 }
 \seealso{
 Useful links:

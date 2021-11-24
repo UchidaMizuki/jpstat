@@ -28,3 +28,5 @@ Imports:
     tibble (>= 3.1.6),
     tidyr (>= 1.1.4),
     vctrs (>= 0.3.8)
+Depends: 
+    R (>= 2.10)

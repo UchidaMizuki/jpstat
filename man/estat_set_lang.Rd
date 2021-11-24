@@ -2,16 +2,16 @@
 % Please edit documentation in R/estat-set.R
 \name{estat_set_lang}
 \alias{estat_set_lang}
-\title{Set language of e-Stat API}
+\title{Set language of 'e-Stat' API}
 \usage{
 estat_set_lang(lang)
 }
 \arguments{
-\item{lang}{A language of e-Stat API, Japanese (\code{"J"}) or English (\code{"E"}).}
+\item{lang}{A language of 'e-Stat' API, Japanese (\code{"J"}) or English (\code{"E"}).}
 }
 \value{
 No output.
 }
 \description{
-Set language of e-Stat API
+Set language of 'e-Stat' API
 }

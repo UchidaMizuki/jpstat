@@ -2,7 +2,7 @@
 % Please edit documentation in R/estat.R
 \name{estat_table_info}
 \alias{estat_table_info}
-\title{Get table information for e-Stat data}
+\title{Get table information for 'e-Stat' data}
 \usage{
 estat_table_info(x)
 }
@@ -13,5 +13,5 @@ estat_table_info(x)
 A \code{tbl} of the table information.
 }
 \description{
-Get table information for e-Stat data
+Get table information for 'e-Stat' data
 }

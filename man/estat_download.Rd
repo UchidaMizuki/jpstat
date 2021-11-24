@@ -2,7 +2,7 @@
 % Please edit documentation in R/estat-download.R
 \name{estat_download}
 \alias{estat_download}
-\title{Download e-Stat data}
+\title{Download 'e-Stat' data}
 \usage{
 estat_download(x, value_name = "value", query = NULL)
 }
@@ -17,5 +17,5 @@ estat_download(x, value_name = "value", query = NULL)
 A \code{tbl} of the downloaded data.
 }
 \description{
-Download e-Stat data
+Download 'e-Stat' data
 }

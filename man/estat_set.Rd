@@ -2,7 +2,7 @@
 % Please edit documentation in R/estat-set.R
 \name{estat_set}
 \alias{estat_set}
-\title{Set attributes of e-Stat API}
+\title{Set attributes of 'e-Stat' API}
 \usage{
 estat_set(i, value)
 }
@@ -15,5 +15,5 @@ estat_set(i, value)
 No output..
 }
 \description{
-Set attributes of e-Stat API
+Set attributes of 'e-Stat' API
 }
