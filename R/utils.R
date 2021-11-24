@@ -14,7 +14,8 @@ cat_subtle <- function(...) {
 
 str_pad_common <- function(x) {
   stringr::str_pad(x,
-                   width = max(stringi::stri_width(x)))
+                   width = max(stringi::stri_width(x)),
+                   side = "right")
 }
 
 compact_query <- function(x) {

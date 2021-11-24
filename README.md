@@ -114,9 +114,9 @@ e-Statでは，統計表ごとに統計表ID (statsDataId)
 census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
 census_2015
 #> # Keys
-#> # [ ]   tab:                     表章項目 >   tab  [2] (code, name, level, unit)
-#> # [ ] cat01:         全国，市部，郡部2015 > cat01  [3] (code, name, level, parentCode)
-#> # [ ]  time: 時間軸（調査年組替表記有り） >  time [26] (code, name, level, parentCode)
+#> # [ ] tab  : 表章項目                     > tab   [2]  (code, name, level, unit)
+#> # [ ] cat01: 全国，市部，郡部2015         > cat01 [3]  (code, name, level, parentCode)
+#> # [ ] time : 時間軸（調査年組替表記有り） > time  [26] (code, name, level, parentCode)
 #> #
 #> # No active key
 ```
@@ -166,9 +166,9 @@ knitr::kable(estat_table_info(census_2015))
 ``` r
 census_2015
 #> # Keys
-#> # [ ]   tab:                     表章項目 >   tab  [2] (code, name, level, unit)
-#> # [ ] cat01:         全国，市部，郡部2015 > cat01  [3] (code, name, level, parentCode)
-#> # [ ]  time: 時間軸（調査年組替表記有り） >  time [26] (code, name, level, parentCode)
+#> # [ ] tab  : 表章項目                     > tab   [2]  (code, name, level, unit)
+#> # [ ] cat01: 全国，市部，郡部2015         > cat01 [3]  (code, name, level, parentCode)
+#> # [ ] time : 時間軸（調査年組替表記有り） > time  [26] (code, name, level, parentCode)
 #> #
 #> # No active key
 
@@ -176,11 +176,11 @@ census_2015 %>%
   # estat_activate_tab()
   estat_activate("表章項目")
 #> # Keys
-#> # [x]   tab:                     表章項目 >   tab  [2] (code, name, level, unit)
-#> # [ ] cat01:         全国，市部，郡部2015 > cat01  [3] (code, name, level, parentCode)
-#> # [ ]  time: 時間軸（調査年組替表記有り） >  time [26] (code, name, level, parentCode)
+#> # [x] tab  : 表章項目                     > tab   [2]  (code, name, level, unit)
+#> # [ ] cat01: 全国，市部，郡部2015         > cat01 [3]  (code, name, level, parentCode)
+#> # [ ] time : 時間軸（調査年組替表記有り） > time  [26] (code, name, level, parentCode)
 #> #
-#> # A data frame: 2 x 4
+#> # A tibble: 2 x 4
 #>   code  name             level unit 
 #>   <chr> <chr>            <chr> <chr>
 #> 1 020   人口             ""    人   
@@ -226,11 +226,11 @@ census_2015 <- census_2015 %>%
 ``` r
 census_2015
 #> # Keys
-#> # [ ]   tab:                     表章項目 >    tab [1] ()
-#> # [ ] cat01:         全国，市部，郡部2015 > region [3] (code, name)
-#> # [x]  time: 時間軸（調査年組替表記有り） >   year [4] (name)
+#> # [ ] tab  : 表章項目                     > tab    [1] ()
+#> # [ ] cat01: 全国，市部，郡部2015         > region [3] (code, name)
+#> # [x] time : 時間軸（調査年組替表記有り） > year   [4] (name)
 #> #
-#> # A data frame: 4 x 1
+#> # A tibble: 4 x 1
 #>   name  
 #>   <chr> 
 #> 1 2000年
