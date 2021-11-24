@@ -9,7 +9,10 @@ filter.estat <- function(.data, ..., .preserve = FALSE) {
 
   items <- vctrs::vec_slice(.data$items, .data$id == active_id)[[1L]]
   items <- filter(items, ...,
-                         .preserve = .preserve)
+                  .preserve = .preserve)
+
+  stopifnot(!vctrs::vec_is_empty(items))
+
   vctrs::vec_slice(.data$items, .data$id == active_id) <- list(items)
   .data
 }
@@ -41,6 +44,9 @@ slice.estat <- function(.data, ..., .preserve = FALSE) {
   items <- vctrs::vec_slice(.data$items, .data$id == active_id)[[1L]]
   items <- dplyr::slice(items, ...,
                         .preserve = .preserve)
+
+  stopifnot(!vctrs::vec_is_empty(items))
+
   vctrs::vec_slice(.data$items, .data$id == active_id) <- list(items)
   .data
 }
