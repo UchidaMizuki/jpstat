@@ -26,13 +26,13 @@ estat_get <- function(path, query) {
   httr::content(out)
 }
 
-#' Get meta-information of e-Stat data
+#' Get meta-information of 'e-Stat' data
 #'
-#' The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the e-Stat API,
+#' The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
 #' and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
 #'
-#' @param statsDataId A statistical data ID on e-Stat.
-#' @param appId An appId of e-Stat API.
+#' @param statsDataId A statistical data ID on 'e-Stat'.
+#' @param appId An 'appId' of 'e-Stat' API.
 #' @param lang A language, Japanese (\code{"J"}) or English (\code{"E"}).
 #' @param query A list of additional queries.
 #'
@@ -108,7 +108,7 @@ estat_check_status <- function(x) {
   }
 }
 
-#' Get table information for e-Stat data
+#' Get table information for 'e-Stat' data
 #'
 #' @param x A \code{estat} object.
 #'
@@ -135,9 +135,7 @@ print.estat <- function(x, ...) {
   } else {
     items <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
     vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
-    items <- select(items, dplyr::all_of(vars))
-    items <- vctrs::new_data_frame(items,
-                                   class = c("tbl_estat", "tbl"))
+    items <- items[vars]
     attr(items, "id") <- active_id
     print(items)
   }
@@ -165,20 +163,4 @@ print_keys <- function(x, active_id) {
                          })
 
   writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
-}
-
-#' @importFrom pillar tbl_sum
-#' @export
-pillar::tbl_sum
-
-#' Provide a succinct summary of \code{tbl_estat}
-#'
-#' @param x Object to summarise.
-#'
-#' @export
-tbl_sum.tbl_estat <- function(x) {
-  id <- attr(x, "id")
-  header <- NextMethod()
-  names(header) <- stringr::str_glue("The {id} items")
-  header
 }

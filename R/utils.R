@@ -1,7 +1,7 @@
 # global variables
 japanstat_global <- new.env(parent = emptyenv())
 
-# global variables for e-Stat
+# global variables for 'e-Stat'
 japanstat_global$estat_url <- "http://api.e-stat.go.jp/"
 japanstat_global$estat_path <- "rest/3.0/app/json/"
 japanstat_global$estat_limit_downloads <- 1e5

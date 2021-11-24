@@ -1,4 +1,4 @@
-#' Set attributes of e-Stat API
+#' Set attributes of 'e-Stat' API
 #'
 #' @param i An attribute name.
 #' @param value An attribute value
@@ -11,9 +11,9 @@ estat_set <- function(i, value) {
   invisible()
 }
 
-#' Set language of e-Stat API
+#' Set language of 'e-Stat' API
 #'
-#' @param lang A language of e-Stat API, Japanese (\code{"J"}) or English (\code{"E"}).
+#' @param lang A language of 'e-Stat' API, Japanese (\code{"J"}) or English (\code{"E"}).
 #'
 #' @return No output.
 #'
@@ -24,9 +24,9 @@ estat_set_lang <- function(lang) {
   invisible()
 }
 
-#' Set appId of e-Stat API
+#' Set 'appId' of 'e-Stat' API
 #'
-#' @param appId An appId of e-Stat API.
+#' @param appId An 'appId' of 'e-Stat' API.
 #'
 #' @return No output.
 #'
