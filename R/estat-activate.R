@@ -21,7 +21,6 @@ estat_activate_impl <- function(x, id, new_name) {
 #' estat_activate_cat(estat_census_2020, 1)
 #' estat_activate_area(estat_census_2020)
 #' estat_activate_time(estat_census_2020)
-#'
 #' @export
 estat_activate <- function(x, pattern,
                            new_name = NULL) {

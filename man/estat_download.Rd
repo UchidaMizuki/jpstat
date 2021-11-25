@@ -19,3 +19,8 @@ A \code{tbl} of the downloaded data.
 \description{
 Download 'e-Stat' data
 }
+\examples{
+\dontrun{
+estat_download(estat_census_2020)
+}
+}

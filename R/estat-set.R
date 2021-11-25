@@ -5,6 +5,9 @@
 #'
 #' @return No output..
 #'
+#' @examples
+#' estat_set("estat_limit_downloads", 1e5)
+#' estat_set("estat_limit_items", 1e2)
 #' @export
 estat_set <- function(i, value) {
   japanstat_global[[i]] <- value
@@ -17,6 +20,8 @@ estat_set <- function(i, value) {
 #'
 #' @return No output.
 #'
+#' @examples
+#' estat_set_lang("J")
 #' @export
 estat_set_lang <- function(lang) {
   lang <- rlang::arg_match(lang, c("J", "E"))
@@ -30,6 +35,8 @@ estat_set_lang <- function(lang) {
 #'
 #' @return No output.
 #'
+#' @examples
+#' estat_set_apikey("Your e-Stat appId")
 #' @export
 estat_set_apikey <- function(appId) {
   japanstat_global$estat_apikey <- appId

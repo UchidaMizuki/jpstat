@@ -6,6 +6,10 @@
 #'
 #' @return A \code{tbl} of the downloaded data.
 #'
+#' @examples
+#' \dontrun{
+#' estat_download(estat_census_2020)
+#' }
 #' @importFrom rlang %||%
 #' @export
 estat_download <- function(x,

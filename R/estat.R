@@ -38,6 +38,10 @@ estat_get <- function(path, query) {
 #'
 #' @return A \code{estat} object.
 #'
+#' @examples
+#' \dontrun{
+#' estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
+#' }
 #' @importFrom rlang %||%
 #' @export
 estat <- function(statsDataId,

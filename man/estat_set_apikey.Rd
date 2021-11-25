@@ -15,3 +15,6 @@ No output.
 \description{
 Set 'appId' of 'e-Stat' API
 }
+\examples{
+estat_set_apikey("Your e-Stat appId")
+}

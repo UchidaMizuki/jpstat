@@ -17,3 +17,7 @@ No output..
 \description{
 Set attributes of 'e-Stat' API
 }
+\examples{
+estat_set("estat_limit_downloads", 1e5)
+estat_set("estat_limit_items", 1e2)
+}

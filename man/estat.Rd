@@ -22,3 +22,8 @@ A \code{estat} object.
 The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
 and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
 }
+\examples{
+\dontrun{
+estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
+}
+}

@@ -33,3 +33,9 @@ The \code{estat} object which the selected key is active.
 \description{
 Determine which \code{estat} object key to edit.
 }
+\examples{
+estat_activate_tab(estat_census_2020)
+estat_activate_cat(estat_census_2020, 1)
+estat_activate_area(estat_census_2020)
+estat_activate_time(estat_census_2020)
+}

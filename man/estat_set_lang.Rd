@@ -15,3 +15,6 @@ No output.
 \description{
 Set language of 'e-Stat' API
 }
+\examples{
+estat_set_lang("J")
+}
