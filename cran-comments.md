@@ -5,8 +5,6 @@
 
 ## R CMD check results
 
-Duration: 1m 13.4s
+Duration: 1m 52.4s
 
-0 errors v | 0 warnings v | 0 notes v
-
-R CMD check succeeded
+0 errors √ | 0 warnings √ | 0 notes √
