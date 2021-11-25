@@ -1,3 +1,30 @@
+test_that("estat_0003411172", {
+  skip_on_cran()
+
+  estat_set_apikey(keyring::key_get("estat-api"))
+  estat_set("limit_downloads", 1e1)
+
+  census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
+  expect_s3_class(census_2015, "estat")
+
+  census_2015 <- census_2015 %>%
+    estat_activate("\u8868\u7ae0\u9805\u76ee") %>%
+    filter(name == "\u4eba\u53e3") %>%
+    select() %>%
+
+    estat_activate("\u5168\u56fd", "region") %>%
+    select(code, name) %>%
+
+    estat_activate("\u6642\u9593\u8ef8", "year") %>%
+    select(name)
+
+  census_2015 <- estat_download(census_2015, "pop")
+
+  expect_s3_class(census_2015, "tbl_df")
+  expect_setequal(names(census_2015), c("region_code", "region_name", "year", "pop"))
+  expect_equal(vctrs::vec_size(census_2015), 78L)
+})
+
 test_that("estat_0003183561", {
   skip_on_cran()
 
@@ -36,31 +63,4 @@ test_that("estat_0003183561", {
   expect_s3_class(worker_city_2015, "tbl_df")
   expect_setequal(names(worker_city_2015), c("industry", "sex", "worker"))
   expect_equal(vctrs::vec_size(worker_city_2015), 4L)
-})
-
-test_that("estat_0003411172", {
-  skip_on_cran()
-
-  estat_set_apikey(keyring::key_get("estat-api"))
-  estat_set("limit_downloads", 1e1)
-
-  census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
-  expect_s3_class(census_2015, "estat")
-
-  census_2015 <- census_2015 %>%
-    estat_activate("\u8868\u7ae0\u9805\u76ee") %>%
-    filter(name == "\u4eba\u53e3") %>%
-    select() %>%
-
-    estat_activate("\u5168\u56fd", "region") %>%
-    select(code, name) %>%
-
-    estat_activate("\u6642\u9593\u8ef8", "year") %>%
-    select(name)
-
-  census_2015 <- estat_download(census_2015, "pop")
-
-  expect_s3_class(census_2015, "tbl_df")
-  expect_setequal(names(census_2015), c("region_code", "region_name", "year", "pop"))
-  expect_equal(vctrs::vec_size(census_2015), 78L)
 })
