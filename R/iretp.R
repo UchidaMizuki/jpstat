@@ -28,7 +28,9 @@ iretp_trade <- function(from, to, pref_code, city_code,
                      query = list(from = from$period,
                                   to = to$period,
                                   area = pref_code,
-                                  city = city_code)) %>%
+                                  city = city_code))
+  httr::stop_for_status(trade)
+  trade <- trade %>%
     httr::content() %>%
     purrr::chuck("data") %>%
     dplyr::bind_rows()
@@ -61,7 +63,9 @@ iretp_city <- function(pref_code,
 
   city <- httr::GET(japanstat_global$iretp_url,
                     path = path,
-                    query = list(area = pref_code)) %>%
+                    query = list(area = pref_code))
+  httr::stop_for_status(city)
+  city <- city %>%
     httr::content() %>%
     purrr::chuck("data") %>%
     dplyr::bind_rows()
