@@ -138,7 +138,7 @@ print.estat <- function(x, ...) {
   active_id <- attr(x, "active_id") %||% ""
 
   cat_subtle("# Keys\n")
-  print_keys(x, active_id)
+  estat_print_keys(x, active_id)
   cat_subtle("#\n")
 
   if (active_id == "") {
@@ -152,7 +152,7 @@ print.estat <- function(x, ...) {
   }
 }
 
-print_keys <- function(x, active_id) {
+estat_print_keys <- function(x, active_id) {
   checkbox <- dplyr::if_else(x$id == active_id,
                              cli::symbol$checkbox_on,
                              cli::symbol$checkbox_off)
