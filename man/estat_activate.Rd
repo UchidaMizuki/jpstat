@@ -8,22 +8,22 @@
 \alias{estat_activate_cat}
 \title{Determine which \code{estat} object key to edit.}
 \usage{
-estat_activate(x, pattern, new_name = NULL)
+estat_activate(x, pattern, name_to = NULL)
 
-estat_activate_tab(x, new_name = NULL)
+estat_activate_tab(x, name_to = NULL)
 
-estat_activate_time(x, new_name = NULL)
+estat_activate_time(x, name_to = NULL)
 
-estat_activate_area(x, new_name = NULL)
+estat_activate_area(x, name_to = NULL)
 
-estat_activate_cat(x, n, new_name = NULL)
+estat_activate_cat(x, n, name_to = NULL)
 }
 \arguments{
 \item{x}{A \code{estat} object.}
 
 \item{pattern}{Pattern to look for.}
 
-\item{new_name}{New column name.}
+\item{name_to}{New column name.}
 
 \item{n}{A category number.}
 }

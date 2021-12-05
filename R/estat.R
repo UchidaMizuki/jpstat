@@ -104,7 +104,7 @@ estat <- function(statsDataId,
                                   function(items) {
                                     names(items)
                                   })
-  meta_info$new_name <- meta_info$id
+  meta_info$name_to <- meta_info$id
 
   out <- structure(meta_info,
                    class = "estat")
@@ -175,7 +175,7 @@ estat_print_keys <- function(x, active_id) {
                              cli::symbol$checkbox_off)
   id <- str_pad_common(x$id)
   name <- str_pad_common(x$name)
-  new_name <- str_pad_common(x$new_name)
+  name_to <- str_pad_common(x$name_to)
 
   size <- purrr::map_dbl(x$items,
                          function(items) {
@@ -190,5 +190,5 @@ estat_print_keys <- function(x, active_id) {
                                           collapse = ", ")
                          })
 
-  writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {new_name} {size} ({vars})")))
+  writeLines(pillar::style_subtle(stringr::str_glue("# {checkbox} {id}: {name} > {name_to} {size} ({vars})")))
 }

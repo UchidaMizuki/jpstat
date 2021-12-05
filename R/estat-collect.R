@@ -36,7 +36,7 @@ estat_collect <- function(x,
   items <- tidyr::unnest(items, "items")
 
   vars <- tibble::as_tibble(x[c("id", "vars")])
-  new_name <- tibble::as_tibble(x[c("id", "new_name")])
+  name_to <- tibble::as_tibble(x[c("id", "name_to")])
 
   data <- data[names(data) != "value"]
   data <- tibble::rowid_to_column(data,
@@ -48,16 +48,16 @@ estat_collect <- function(x,
                            by = c("id", "code"))
   data <- dplyr::group_nest(data, dplyr::across("id"),
                             .key = "data")
-  data <- dplyr::left_join(tibble::as_tibble(x[c("id", "vars", "new_name")]), data,
+  data <- dplyr::left_join(tibble::as_tibble(x[c("id", "vars", "name_to")]), data,
                            by = "id")
-  data <- purrr::pmap_dfc(list(data$data, data$vars, data$new_name),
-                          function(data, vars, new_name) {
+  data <- purrr::pmap_dfc(list(data$data, data$vars, data$name_to),
+                          function(data, vars, name_to) {
                             data <- dplyr::arrange(data, "rowid")
                             data <- data[vars]
                             if (rlang::is_scalar_character(vars)) {
-                              names(data) <- new_name
+                              names(data) <- name_to
                             } else if (!vctrs::vec_is_empty(vars)) {
-                              names(data) <- stringr::str_c(new_name, names(data),
+                              names(data) <- stringr::str_c(name_to, names(data),
                                                             sep = "_")
                             }
                             data
