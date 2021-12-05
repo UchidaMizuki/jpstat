@@ -26,10 +26,10 @@ test_that("estat-select", {
                  select(xxxxx))
 
   area_name <- area %>%
-    select(name)
+    select(code, name)
   vars <- vctrs::vec_slice(area_name$vars, area_name$id == "area")[[1L]]
 
-  expect_equal(vars, "name")
+  expect_equal(vars, c("code", "name"))
 })
 
 test_that("estat-select", {

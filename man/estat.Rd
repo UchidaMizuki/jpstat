@@ -4,14 +4,14 @@
 \alias{estat}
 \title{Get meta-information of 'e-Stat' data}
 \usage{
-estat(statsDataId, appId = NULL, lang = NULL, query = NULL)
+estat(statsDataId, appId = NULL, lang = c("ja", "en"), query = NULL)
 }
 \arguments{
 \item{statsDataId}{A statistical data ID on 'e-Stat'.}
 
 \item{appId}{An 'appId' of 'e-Stat' API.}
 
-\item{lang}{A language, Japanese (\code{"J"}) or English (\code{"E"}).}
+\item{lang}{A language, Japanese (\code{"ja"}) or English (\code{"en"}).}
 
 \item{query}{A list of additional queries.}
 }
@@ -26,4 +26,10 @@ and returns an \code{estat} object that allows editing of meta-information by \c
 \dontrun{
 estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 }
+
+}
+\seealso{
+<https://www.e-stat.go.jp>
+
+<https://www.e-stat.go.jp/en>
 }

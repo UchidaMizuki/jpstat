@@ -2,7 +2,7 @@ test_that("estat_0003411172", {
   skip_on_cran()
 
   estat_set_apikey(keyring::key_get("estat-api"))
-  estat_set("limit_downloads", 1e1)
+  japanstat_set("estat_limit_collection", 1e1)
 
   census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
   expect_s3_class(census_2015, "estat")
@@ -18,7 +18,7 @@ test_that("estat_0003411172", {
     estat_activate("\u6642\u9593\u8ef8", "year") %>%
     select(name)
 
-  census_2015 <- estat_download(census_2015, "pop")
+  census_2015 <- estat_collect(census_2015, "pop")
 
   expect_s3_class(census_2015, "tbl_df")
   expect_setequal(names(census_2015), c("region_code", "region_name", "year", "pop"))
@@ -58,7 +58,7 @@ test_that("estat_0003183561", {
     estat_activate("\u5e74\u6b21") %>%
     select() %>%
 
-    estat_download("worker")
+    estat_collect("worker")
 
   expect_s3_class(worker_city_2015, "tbl_df")
   expect_setequal(names(worker_city_2015), c("industry", "sex", "worker"))

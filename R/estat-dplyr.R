@@ -28,6 +28,9 @@ select.estat <- function(.data, ...) {
 
   items <- vctrs::vec_slice(.data$items, .data$id == active_id)[[1L]]
   items <- dplyr::select(items, ...)
+
+  stopifnot(!vctrs::vec_duplicate_any(items))
+
   vctrs::vec_slice(.data$vars, .data$id == active_id) <- list(names(items))
   .data
 }

@@ -1,4 +1,4 @@
-#' Download 'e-Stat' data
+#' Get 'e-Stat' data
 #'
 #' @param x A \code{estat} object.
 #' @param value_name A column name of the value.
@@ -8,23 +8,24 @@
 #'
 #' @examples
 #' \dontrun{
-#' estat_download(estat_census_2020)
+#' estat_collect(estat_census_2020)
 #' }
+#'
 #' @importFrom rlang %||%
 #' @export
-estat_download <- function(x,
-                           value_name = "value",
-                           query = NULL) {
+estat_collect <- function(x,
+                          value_name = "value",
+                          query = NULL) {
   query <- estat_create_query(x, query)
 
   total_number <- estat_total_number(query)
 
-  limit_downloads <- as.integer(query$limit %||% japanstat_global$estat_limit_downloads)
-  start_position <- seq(1, total_number, limit_downloads)
+  limit_collection <- as.integer(query$limit %||% japanstat_global$estat_limit_collection)
+  start_position <- seq(1, total_number, limit_collection)
   pb <- progress::progress_bar$new(total = vctrs::vec_size(start_position))
   data <- purrr::map_dfr(start_position,
                          function(start_position) {
-                           data <- estat_download_impl(query, start_position, limit_downloads)
+                           data <- estat_collect_impl(query, start_position, limit_collection)
                            pb$tick()
                            data
                          })
@@ -105,12 +106,12 @@ estat_total_number <- function(query) {
   total_number
 }
 
-estat_download_impl <- function(query, start_position, limit_downloads) {
+estat_collect_impl <- function(query, start_position, limit_collection) {
   stats_data <- estat_get(path = "getStatsData",
                           query = c(query,
                                     list(startPosition = format(start_position,
                                                                 scientific = FALSE),
-                                         limit = format(limit_downloads,
+                                         limit = format(limit_collection,
                                                         scientific = FALSE))))
   stats_data <- stats_data$GET_STATS_DATA
   estat_check_status(stats_data)

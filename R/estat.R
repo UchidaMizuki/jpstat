@@ -33,7 +33,7 @@ estat_get <- function(path, query) {
 #'
 #' @param statsDataId A statistical data ID on 'e-Stat'.
 #' @param appId An 'appId' of 'e-Stat' API.
-#' @param lang A language, Japanese (\code{"J"}) or English (\code{"E"}).
+#' @param lang A language, Japanese (\code{"ja"}) or English (\code{"en"}).
 #' @param query A list of additional queries.
 #'
 #' @return A \code{estat} object.
@@ -42,19 +42,26 @@ estat_get <- function(path, query) {
 #' \dontrun{
 #' estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 #' }
-#' @importFrom rlang %||%
+#'
+#' @seealso <https://www.e-stat.go.jp>
+#' @seealso <https://www.e-stat.go.jp/en>
+#'
 #' @export
 estat <- function(statsDataId,
                   appId = NULL,
-                  lang = NULL,
+                  lang = c("ja", "en"),
                   query = NULL) {
   statsDataId <- estat_stats_data_id(statsDataId)
 
   appId <- appId %||% japanstat_global$estat_apikey
   stopifnot(!is.null(appId))
 
-  lang <- lang %||% japanstat_global$estat_lang
-  lang <- rlang::arg_match(lang, c("J", "E"))
+  lang <- rlang::arg_match(lang, c("ja", "en"))
+  if (lang == "ja") {
+    lang <- "J"
+  } else if (lang == "en") {
+    lang <- "E"
+  }
 
   query <- c(list(statsDataId = statsDataId,
                   appId = appId,
