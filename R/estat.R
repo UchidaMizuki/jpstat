@@ -132,27 +132,44 @@ estat_table_info <- function(x) {
 
 # printing ----------------------------------------------------------------
 
-#' @importFrom rlang %||%
 #' @export
 print.estat <- function(x, ...) {
-  active_id <- attr(x, "active_id") %||% ""
+  active_id <- attr(x, "active_id")
 
   cat_subtle("# Keys\n")
   estat_print_keys(x, active_id)
   cat_subtle("#\n")
 
-  if (active_id == "") {
+  if (is.null(active_id)) {
     cat_subtle("# No active key\n")
   } else {
-    items <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
-    vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
-    items <- items[vars]
-    attr(items, "id") <- active_id
-    print(items)
+    print(as_tibble(x))
   }
 }
 
+#' @importFrom tibble as_tibble
+#' @export
+tibble::as_tibble
+
+#' @export
+as_tibble.estat <- function(x, ...) {
+  active_id <- attr(x, "active_id")
+
+  if (is.null(active_id)) {
+    out <- tibble::tibble()
+  } else {
+    out <- vctrs::vec_slice(x$items, x$id == active_id)[[1L]]
+    vars <- vctrs::vec_slice(x$vars, x$id == active_id)[[1L]]
+    out <- out[vars]
+  }
+
+  out
+}
+
+#' @importFrom rlang %||%
 estat_print_keys <- function(x, active_id) {
+  active_id <- active_id %||% ""
+
   checkbox <- dplyr::if_else(x$id == active_id,
                              cli::symbol$checkbox_on,
                              cli::symbol$checkbox_off)
