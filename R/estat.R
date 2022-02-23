@@ -154,20 +154,26 @@ collect.estat <- function(x,
   setup$query <- estat_query(x, query)
 
   total <- estat_total(setup)
-
-  start <- seq(1, total, limit)
-  pb <- progress::progress_bar$new(total = vctrs::vec_size(start))
-  data <- purrr::map_dfr(start,
-                         function(start) {
-                           out <- estat_collect(setup = setup,
-                                                start = start,
-                                                limit = limit,
-                                                n = n)
-                           pb$tick()
-                           out
-                         })
-
   query_name <- attr(x, "query_name")
+
+  if (total == 0) {
+    data <- vec_recycle(list(character()),
+                        vec_size(query_name) + 1L)
+    names(data) <- c(query_name, n)
+    data <- tibble::new_tibble(data)
+  } else {
+    start <- seq(1, total, limit)
+    pb <- progress::progress_bar$new(total = vctrs::vec_size(start))
+    data <- purrr::map_dfr(start,
+                           function(start) {
+                             out <- estat_collect(setup = setup,
+                                                  start = start,
+                                                  limit = limit,
+                                                  n = n)
+                             pb$tick()
+                             out
+                           })
+  }
 
   cols <- list(x$key, x$value, query_name, attr(x, "codes")) %>%
     purrr::pmap(function(key, value, query_name, codes) {
@@ -190,7 +196,6 @@ collect.estat <- function(x,
 
   data %>%
     dplyr::relocate(!dplyr::all_of(n))
-
 }
 
 #' @export
