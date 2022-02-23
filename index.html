@@ -79,7 +79,7 @@
 <p>jpstatの開発版は，<a href="https://github.com/" class="external-link">GitHub</a>から以下の方法でインストールできます．</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"UchidaMizuki/jpstat"</span><span class="op">)</span></code></pre></div>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"UchidaMizuki/jpstat"</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="使用方法">使用方法<a class="anchor" aria-label="anchor" href="#%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"></a>
@@ -91,35 +91,36 @@
 <h3 id="データ取得整形の概要">データ取得・整形の概要<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%83%BC%E3%82%BF%E5%8F%96%E5%BE%97%E6%95%B4%E5%BD%A2%E3%81%AE%E6%A6%82%E8%A6%81"></a>
 </h3>
 <p>データ取得・整形の一連の流れは以下のようになります． ここでは，<a href="https://www.e-stat.go.jp/dbview?sid=0003413949" class="external-link">国勢調査データ</a>を対象として， 2010・2015年の東京都・大阪府における男女別人口を取得します． 詳細な使用方法は次の項目で説明します．</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># メタ情報の取得</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> <span class="fu">estat</span>(<span class="at">appId =</span> <span class="st">"Your e-Stat appId"</span>, </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/dbview?sid=0003410379"</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2010・2015年の東京都・大阪府における男女別人口を取得</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> census <span class="sc">%&gt;%</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(tab) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">==</span> <span class="st">"人口"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(cat01) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rekey</span>(<span class="st">"sex"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"男"</span>, <span class="st">"女"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(area) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rekey</span>(<span class="st">"pref"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"東京都"</span>, <span class="st">"大阪府"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(code, name) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(time) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rekey</span>(<span class="st">"year"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"2010年"</span>, <span class="st">"2015年"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>(<span class="at">n =</span> <span class="st">"pop"</span>)</span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; The total number of data is 8.</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(census)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="co"># メタ情報の取得</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>census &lt;-<span class="st"> </span><span class="kw">estat</span>(<span class="dt">appId =</span> <span class="st">"Your e-Stat appId"</span>, </span>
+<span id="cb4-3"><a href="#cb4-3"></a>                <span class="dt">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/dbview?sid=0003410379"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># 2010・2015年の東京都・大阪府における男女別人口を取得</span>
+<span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"人口"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">cat01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"sex"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"男"</span>, <span class="st">"女"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"pref"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"東京都"</span>, <span class="st">"大阪府"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2010年"</span>, <span class="st">"2015年"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span>n <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span>
+<span class="co">#&gt; The total number of data is 8.</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">census</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">sex_name</th>
@@ -195,17 +196,17 @@
 <p>e-Statでは，統計表ごとに統計表ID (statsDataId) が付与されています．統計表IDは， データセット情報ページ (<a href="https://www.e-stat.go.jp/stat-search/database?page=1&amp;layout=datalist&amp;toukei=00200521&amp;tstat=000001011777&amp;cycle=0&amp;tclass1=000001011778&amp;statdisp_id=0003410379&amp;tclass2val=0" class="external-link">例1</a>) や 統計表・グラフ表示ページ (<a href="https://www.e-stat.go.jp/dbview?sid=0003413949" class="external-link">例2</a>) のURLからも取得することが可能です．</p>
 <p>ここでは，<a href="https://www.e-stat.go.jp/dbview?sid=0003413949" class="external-link">例2</a>に挙げた国勢調査データを対象として， 2010・2015年の東京都・大阪府における男女別人口を取得します．</p>
 <p>まず，<code><a href="reference/estat.html">estat()</a></code>関数に，appIdとデータセット情報ページなどのURLまたは統計表ID (statsDataId) を入力してメタ情報 (統計データの属性情報) を取得します．</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 国勢調査 データセット情報ページ URL</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> <span class="fu">estat</span>(<span class="at">appId =</span> <span class="st">"Your e-Stat appId"</span>, </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/dbview?sid=0003413949"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>census</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # [ ] tab:   表章項目           [2] &lt;code, name, level, unit&gt;</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # [ ] cat01: 男，女及び総数2015 [3] &lt;code, name, level&gt;</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # [ ] area:  地域2015           [48] &lt;code, name, level, parentCode&gt;</span></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # [ ] time:  時間軸（調査年）   [21] &lt;code, name, level&gt;</span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # Please `activate()` an item.</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="co"># 国勢調査 データセット情報ページ URL</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>census &lt;-<span class="st"> </span><span class="kw">estat</span>(<span class="dt">appId =</span> <span class="st">"Your e-Stat appId"</span>, </span>
+<span id="cb6-3"><a href="#cb6-3"></a>                <span class="dt">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/dbview?sid=0003413949"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>census</span>
+<span id="cb6-5"><a href="#cb6-5"></a></span>
+<span id="cb6-6"><a href="#cb6-6"></a><span class="co">#&gt; # [ ] tab:   表章項目           [2] &lt;code, name, level, unit&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7"></a><span class="co">#&gt; # [ ] cat01: 男，女及び総数2015 [3] &lt;code, name, level&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="co">#&gt; # [ ] area:  地域2015           [48] &lt;code, name, level, parentCode&gt;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="co">#&gt; # [ ] time:  時間軸（調査年）   [21] &lt;code, name, level&gt;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="co">#&gt; # </span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="co">#&gt; # Please `activate()` an item.</span></span></code></pre></div>
 <p><code><a href="reference/estat_table_info.html">estat_table_info()</a></code>関数で統計表情報を表示します．</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="reference/estat_table_info.html">estat_table_info</a></span><span class="op">(</span><span class="va">census</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -300,48 +301,69 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span>
-<span class="co">#&gt; # [x] tab:   陦ｨ遶愼㸰鬆㠼㸵逶ｮ           [2] &lt;code, name, level, unit&gt;</span>NA<span class="co">#&gt; # [ ] cat01: 逕ｷ攼㹦ｼ悟･ｳ蜿翫㠼㸱ｳ邱乗焚2015 [3] &lt;code, name, level&gt;</span>NA<span class="co">#&gt; # [ ] area:  蝨ｰ蝓㤼㹦2015           [48] &lt;code, name, level, parentCode&gt;</span>NA<span class="co">#&gt; # [ ] time:  譎る俣霆ｸ攼㹦ｼ郁ｪｿ譟ｻ蟷ｴ攼㹦ｼ㠼㸹   [21] &lt;code, name, level&gt;</span>NA<span class="co">#&gt; # </span>
+<span class="co">#&gt; # [x] tab:   表章項目           [2] &lt;code, name, level, unit&gt;</span>
+<span class="co">#&gt; # [ ] cat01: 男，女及び総数2015 [3] &lt;code, name, level&gt;</span>
+<span class="co">#&gt; # [ ] area:  地域2015           [48] &lt;code, name, level, parentCode&gt;</span>
+<span class="co">#&gt; # [ ] time:  時間軸（調査年）   [21] &lt;code, name, level&gt;</span>
+<span class="co">#&gt; # </span>
 <span class="co">#&gt; # A data frame: 2 x 4</span>
 <span class="co">#&gt;   code  name     level unit           </span>
 <span class="co">#&gt; * &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;          </span>
-<span class="co">#&gt; 1 020   莠ｺ蜿｣     ""    莠ｺ             </span>NA<span class="co">#&gt; 2 1120  莠ｺ蜿｣諤ｧ豈㤼㸴 ""    螂ｳ100莠ｺ縺ｫ縺､縺咲塙</span>NA<span class="co"># Or</span>
+<span class="co">#&gt; 1 020   人口     ""    人             </span>
+<span class="co">#&gt; 2 1120  人口性比 ""    女100人につき男</span>
+
+<span class="co"># Or</span>
 <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>
-<span class="co">#&gt; # [x] tab:   陦ｨ遶愼㸰鬆㠼㸵逶ｮ           [2] &lt;code, name, level, unit&gt;</span>NA<span class="co">#&gt; # [ ] cat01: 逕ｷ攼㹦ｼ悟･ｳ蜿翫㠼㸱ｳ邱乗焚2015 [3] &lt;code, name, level&gt;</span>NA<span class="co">#&gt; # [ ] area:  蝨ｰ蝓㤼㹦2015           [48] &lt;code, name, level, parentCode&gt;</span>NA<span class="co">#&gt; # [ ] time:  譎る俣霆ｸ攼㹦ｼ郁ｪｿ譟ｻ蟷ｴ攼㹦ｼ㠼㸹   [21] &lt;code, name, level&gt;</span>NA<span class="co">#&gt; # </span>
+<span class="co">#&gt; # [x] tab:   表章項目           [2] &lt;code, name, level, unit&gt;</span>
+<span class="co">#&gt; # [ ] cat01: 男，女及び総数2015 [3] &lt;code, name, level&gt;</span>
+<span class="co">#&gt; # [ ] area:  地域2015           [48] &lt;code, name, level, parentCode&gt;</span>
+<span class="co">#&gt; # [ ] time:  時間軸（調査年）   [21] &lt;code, name, level&gt;</span>
+<span class="co">#&gt; # </span>
 <span class="co">#&gt; # A data frame: 2 x 4</span>
 <span class="co">#&gt;   code  name     level unit           </span>
 <span class="co">#&gt; * &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt; &lt;chr&gt;          </span>
-<span class="co">#&gt; 1 020   莠ｺ蜿｣     ""    莠ｺ             </span>NA<span class="co">#&gt; 2 1120  莠ｺ蜿｣諤ｧ豈㤼㸴 ""    螂ｳ100莠ｺ縺ｫ縺､縺咲塙</span>NA</code></pre></div>
+<span class="co">#&gt; 1 020   人口     ""    人             </span>
+<span class="co">#&gt; 2 1120  人口性比 ""    女100人につき男</span></code></pre></div>
 <p>キーをアクティブにすると当該キーのアイテム情報が表示されます． さらに，<code><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter()</a></code>関数や<code><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select()</a></code>関数を用いてアイテム情報の絞り込みなどが可能です． ここでは，「人口」のみを選択します．</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"莠ｺ蜿｣"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>NA<span class="co"># 繧｢繧､繝&lt;86&gt;繝<a0>謨ｰ縺&lt;8c&gt;1縺､縺ｮ縺ｿ縺ｧ縺ゅｋ縺溘ａ蛻励ｒ蜈ｨ縺ｦ蜑企勁</a0></span>NA<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"人口"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="co"># アイテム数が1つのみであるため列を全て削除</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>次に，<code>cat01</code>の「男，女及び総数2015」を選択します．<code><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey()</a></code>関数によってキーの名称<code>cat01</code>を変更することが可能です（ここでは<code>sex</code>）． キーの名称を変更することでデータダウンロード時の列名を指定ことができます． また，上と同様に属性の絞り込みを行います． ここでは，<code>name</code>列を選択します．</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
   <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">cat01</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
   <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"sex"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"逕ｷ"</span>"女<span class="st">"螂ｳ"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>NA<span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span></code></pre></div>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"男"</span>, <span class="st">"女"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span></code></pre></div>
 <p>上と同様に，<code>area</code>（「地域2015」）と<code>time</code>（「時間軸（調査年）」）の名称変更・属性絞り込みを行います．</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>census <span class="ot">&lt;-</span> census <span class="sc">%&gt;%</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(area) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rekey</span>(<span class="st">"pref"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"東京都"</span>, <span class="st">"大阪府"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(code, name) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(time) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rekey</span>(<span class="st">"year"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"2010年"</span>, <span class="st">"2015年"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name) </span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"pref"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"東京都"</span>, <span class="st">"大阪府"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">name</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2010年"</span>, <span class="st">"2015年"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> </code></pre></div>
 <p>以上の操作により，以下のように列名・アイテム数・属性が変更できました．</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">census</span>
-<span class="co">#&gt; # [ ] tab:  陦ｨ遶愼㸰鬆㠼㸵逶ｮ           [1] &lt;&gt;</span>NA<span class="co">#&gt; # [ ] sex:  逕ｷ攼㹦ｼ悟･ｳ蜿翫㠼㸱ｳ邱乗焚2015 [2] &lt;name&gt;</span>NA<span class="co">#&gt; # [ ] pref: 蝨ｰ蝓㤼㹦2015           [2] &lt;code, name&gt;</span>NA<span class="co">#&gt; # [x] year: 譎る俣霆ｸ攼㹦ｼ郁ｪｿ譟ｻ蟷ｴ攼㹦ｼ㠼㸹   [2] &lt;name&gt;</span>NA<span class="co">#&gt; # </span>
+<span class="co">#&gt; # [ ] tab:  表章項目           [1] &lt;&gt;</span>
+<span class="co">#&gt; # [ ] sex:  男，女及び総数2015 [2] &lt;name&gt;</span>
+<span class="co">#&gt; # [ ] pref: 地域2015           [2] &lt;code, name&gt;</span>
+<span class="co">#&gt; # [x] year: 時間軸（調査年）   [2] &lt;name&gt;</span>
+<span class="co">#&gt; # </span>
 <span class="co">#&gt; # A data frame: 2 x 1</span>
 <span class="co">#&gt;   name  </span>
 <span class="co">#&gt; * &lt;chr&gt; </span>
-<span class="co">#&gt; 1 2010蟷ｴ</span>NA<span class="co">#&gt; 2 2015蟷ｴ</span>NA</code></pre></div>
+<span class="co">#&gt; 1 2010年</span>
+<span class="co">#&gt; 2 2015年</span></code></pre></div>
 <p>最後に，<code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code>関数を用いてデータをダウンロードします． <code><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect()</a></code>関数の<code>n</code>で値の名称を指定します．</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span>
