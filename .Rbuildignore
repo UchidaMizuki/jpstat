@@ -4,3 +4,6 @@
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^data-raw$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
