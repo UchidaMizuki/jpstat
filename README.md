@@ -1,14 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# japanstat
+# jpstat
 
 <!-- badges: start -->
 <!-- badges: end -->
 
 **README is currently only available in Japanese.**
 
-japanstatは日本政府統計のポータルサイトであるe-StatのAPIを利用するためのツールを提供します．
+jpstatは日本政府統計のポータルサイトであるe-StatのAPIを利用するためのツールを提供します．
 クエリの自動生成，データの収集，フォーマットなどの機能を備えています．
 
 e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行)
@@ -21,20 +21,20 @@ e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの
 ## インストール方法
 
 ``` r
-install.packages("japanstat")
+install.packages("jpstat")
 ```
 
-japanstatの開発版は，[GitHub](https://github.com/)から以下の方法でインストールできます．
+jpstatの開発版は，[GitHub](https://github.com/)から以下の方法でインストールできます．
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("UchidaMizuki/japanstat")
+devtools::install_github("UchidaMizuki/jpstat")
 ```
 
 ## 使用方法
 
 ``` r
-library(japanstat)
+library(jpstat)
 library(dplyr)
 ```
 
@@ -91,7 +91,7 @@ knitr::kable(census)
 
 ### データ取得・整形の流れ
 
-japanstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得
+jpstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得
 (getStatsData) を用いて，統計表をダウンロードが可能です．
 
 e-Statでは，統計表ごとに統計表ID (statsDataId)

@@ -1,4 +1,4 @@
 library(testthat)
-library(japanstat)
+library(jpstat)
 
-test_check("japanstat")
+test_check("jpstat")

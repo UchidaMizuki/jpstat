@@ -1,4 +1,4 @@
-Package: japanstat
+Package: jpstat
 Type: Package
 Title: Tools for Easy Use of 'e-Stat' API
 Version: 0.1.0
@@ -6,8 +6,8 @@ Authors@R: person("Mizuki", "Uchida", email = "uchidamizuki@vivaldi.net", role =
 Description: Provides tools for using the API of 'e-Stat' (<https://www.e-stat.go.jp/>), a portal site for Japanese government statistics.
     Includes functions for automatic query generation, data collection and formatting.
 License: MIT + file LICENSE
-URL: https://github.com/UchidaMizuki/japanstat
-BugReports: https://github.com/UchidaMizuki/japanstat/issues
+URL: https://github.com/UchidaMizuki/jpstat
+BugReports: https://github.com/UchidaMizuki/jpstat/issues
 Encoding: UTF-8
 LazyData: true
 Suggests: 

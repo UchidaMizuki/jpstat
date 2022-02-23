@@ -4,5 +4,5 @@
 #' @import vctrs
 #' @importFrom dplyr %>%
 #'
-#' @name japanstat
+#' @name jpstat
 "_PACKAGE"
