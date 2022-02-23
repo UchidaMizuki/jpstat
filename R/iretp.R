@@ -1,5 +1,12 @@
 #' Information on real estate transaction prices API
 #'
+#' @param from A start time.
+#' @param to An end time.
+#' @param pref_code A prefecture code.
+#' @param city_code A city code.
+#' @param lang Language.
+#' @param .rename Change the names?
+#'
 #' @seealso <https://www.land.mlit.go.jp/webland_english/servlet/MainServlet>
 #' @seealso <https://www.land.mlit.go.jp/webland/api.html>
 #'
@@ -23,7 +30,7 @@ iretp_trade <- function(from, to, pref_code, city_code,
     path <- "webland_english/api/TradeListSearch"
   }
 
-  trade <- httr::GET(japanstat_global$iretp_url,
+  trade <- httr::GET("https://www.land.mlit.go.jp/",
                      path = path,
                      query = list(from = from$period,
                                   to = to$period,
@@ -37,12 +44,11 @@ iretp_trade <- function(from, to, pref_code, city_code,
 
   if (.rename) {
     trade <- trade %>%
-      dplyr::rename_with(str_to_snakecase)
-    vctrs::vec_slice(names(trade), names(trade) == "municipality_code") <- "city_code"
-    vctrs::vec_slice(names(trade), names(trade) == "prefecture") <- "pref_name"
-    vctrs::vec_slice(names(trade), names(trade) == "municipality") <- "city_name"
+      dplyr::rename_with(str_to_snakecase) %>%
+      dplyr::rename(city_code = "municipality_code",
+                    pref_name = "prefecture",
+                    city_name = "municipality")
   }
-
   trade
 }
 
@@ -61,7 +67,7 @@ iretp_city <- function(pref_code,
     path <- "webland_english/api/CitySearch"
   }
 
-  city <- httr::GET(japanstat_global$iretp_url,
+  city <- httr::GET("https://www.land.mlit.go.jp/",
                     path = path,
                     query = list(area = pref_code))
   httr::stop_for_status(city)
@@ -73,7 +79,6 @@ iretp_city <- function(pref_code,
   if (.rename) {
     names(city) <- c("city_code", "city_name")
   }
-
   city
 }
 

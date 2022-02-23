@@ -45,93 +45,106 @@ devtools::install_github("UchidaMizuki/japanstat")
 
 ```{r,message=FALSE}
 library(japanstat)
-library(magrittr)
-```
-
-```{r,echo=FALSE}
-estat_set_apikey(keyring::key_get("estat-api"))
+library(dplyr)
 ```
 
 ### データ取得・整形の概要
 
-データ取得・整形の一連の流れは以下のようになります．詳細な使用方法は次の項目で説明します．
+データ取得・整形の一連の流れは以下のようになります．
+ここでは，[国勢調査データ](https://www.e-stat.go.jp/dbview?sid=0003413949)を対象として，
+2010・2015年の東京都・大阪府における男女別人口を取得します．
+詳細な使用方法は次の項目で説明します．
 
-```r
-# APIキーの設定
-estat_set_apikey("Your e-Stat appId")
 ```
-```{r}
 # メタ情報の取得
-census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
+census <- estat(appId = "Your e-Stat appId", 
+                statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+```
+```{r,echo=FALSE}
+census <- estat(appId = keyring::key_get("estat-api"), 
+                statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+```
 
-# 列名・アイテム数・属性変更
-census_2015 <- census_2015 %>%
+```{r}
+# 2010・2015年の東京都・大阪府における男女別人口を取得
+census <- census %>% 
   
-  estat_activate("表章項目") %>% 
+  activate(tab) %>% 
   filter(name == "人口") %>% 
   select() %>% 
   
-  estat_activate("全国", "region") %>% 
+  activate(cat01) %>% 
+  rekey("sex") %>% 
+  filter(name %in% c("男", "女")) %>% 
+  select(name) %>% 
+  
+  activate(area) %>% 
+  rekey("pref") %>% 
+  filter(name %in% c("東京都", "大阪府")) %>% 
   select(code, name) %>% 
   
-  estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
-  select(name)
+  activate(time) %>% 
+  rekey("year") %>% 
+  filter(name %in% c("2010年", "2015年")) %>% 
+  select(name) %>% 
+  
+  collect(n = "pop")
 
-# データのダウンロード
-census_2015 <- estat_download(census_2015, "pop")
-
-knitr::kable(census_2015)
+knitr::kable(census)
 ```
 
 ### データ取得・整形の流れ
 
 japanstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得 (getStatsData) を用いて，統計表をダウンロードが可能です．
-以下のように，APIキー (appId) をあらかじめ設定してください．
-
-``` r
-estat_set_apikey("Your e-Stat appId")
-```
 
 e-Statでは，統計表ごとに統計表ID (statsDataId) が付与されています．統計表IDは，
-データセット情報ページ ([例1](https://www.e-stat.go.jp/stat-search/database?page=1&layout=datalist&toukei=00200521&tstat=000001080615&cycle=0&tclass1=000001124175&statdisp_id=0003411172&tclass2val=0)) や
-統計表・グラフ表示ページ ([例2](https://www.e-stat.go.jp/dbview?sid=0003411172)) のURLからも取得することが可能です．
+データセット情報ページ ([例1](https://www.e-stat.go.jp/stat-search/database?page=1&layout=datalist&toukei=00200521&tstat=000001011777&cycle=0&tclass1=000001011778&statdisp_id=0003410379&tclass2val=0)) や
+統計表・グラフ表示ページ ([例2](https://www.e-stat.go.jp/dbview?sid=0003413949)) のURLからも取得することが可能です．
 
-ここでは，[例2](https://www.e-stat.go.jp/dbview?sid=0003411172)に挙げた2015年国勢調査データを対象とします．
-まず，データセット情報ページなどのURLまたは統計表ID (statsDataId) を，`estat()`関数に入力してメタ情報 (統計データの属性情報) を取得します．
+ここでは，[例2](https://www.e-stat.go.jp/dbview?sid=0003413949)に挙げた国勢調査データを対象として，
+2010・2015年の東京都・大阪府における男女別人口を取得します．
 
-```{r}
-# 2015年国勢調査 データセット情報ページ URL
-census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
-census_2015
+まず，`estat()`関数に，appIdとデータセット情報ページなどのURLまたは統計表ID (statsDataId) を入力してメタ情報 (統計データの属性情報) を取得します．
+
+```
+# 国勢調査 データセット情報ページ URL
+census <- estat(appId = "Your e-Stat appId", 
+                statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003413949")
+census
+```
+
+```{r,echo=FALSE}
+# 国勢調査 データセット情報ページ URL
+census <- estat(appId = keyring::key_get("estat-api"), 
+                statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003413949")
+census
 ```
 
 `estat_table_info()`関数で統計表情報を表示します．
 
 ```{r}
-knitr::kable(estat_table_info(census_2015))
+knitr::kable(estat_table_info(census))
 ```
 
-当該データには，`tab`，`cat01`，`time`の3種類の列 (以下，キーと呼びます) が存在します．
-それぞれのキーの (`>`の) 右側には以下の情報が記載されています．
+当該データには，`tab`，`cat01`，`area`, `time`の4種類の列 (以下，キーと呼びます) が存在します．
+それぞれのキーには以下の情報が記載されています．
 
 1. デフォルトでの列名 (`tab`など)
 2. アイテム数 (`[2]`など)
-3. コード・名称などの属性 (`(code, name, level, unit)`など)
+3. コード・名称などの属性 (`<code, name, level, unit>`など)
 
 ここからは，それぞれのキーごとに列名・アイテム数・属性を変更する方法を説明します．
-それぞれのキーの情報を変更するためには，`estat_activate()`関数を用いてキーを選択します．
-`estat_activate()`では，正規表現パターンでキーを選択します (複数マッチする場合にはエラー)．
-また，`estat_activate_tab()`関数など`id`でのキー選択も可能です．
+それぞれのキーの情報を変更するためには，`activate()`関数を用いてキーを選択します．
 
 例えば，以下のように`tab`キーをアクティブにします．
 
 ```{r}
-census_2015
+census %>% 
+  activate(tab)
 
-census_2015 %>% 
-  # estat_activate_tab()
-  estat_activate("表章項目")
+# Or
+census %>% 
+  activate(1)
 ```
 
 キーをアクティブにすると当該キーのアイテム情報が表示されます．
@@ -139,45 +152,52 @@ census_2015 %>%
 ここでは，「人口」のみを選択します．
 
 ```{r}
-census_2015 <- census_2015 %>% 
-  estat_activate("表章項目") %>% 
+census <- census %>% 
+  activate(tab) %>% 
   filter(name == "人口") %>% 
   # アイテム数が1つのみであるため列を全て削除
   select()
 ```
 
-次に，`cat01`の「全国，市部，郡部2015」を選択します．`cat01`では，属性が分かりづらいため，`estat_activate()`関数 (ここでは，`"region"`) で名称の変更を行います．
+次に，`cat01`の「男，女及び総数2015」を選択します．`rekey()`関数によってキーの名称`cat01`を変更することが可能です（ここでは`sex`）．
+キーの名称を変更することでデータダウンロード時の列名を指定ことができます．
 また，上と同様に属性の絞り込みを行います．
-ここでは，`code`と`name`列を選択します．この場合，ダウンロードデータの列名は，それぞれ，`region_code`，`region_name`になります．
+ここでは，`name`列を選択します．
 
 ```{r}
-census_2015 <- census_2015 %>% 
-  # estat_activate_cat(1, "region") %>% 
-  estat_activate("全国", "region") %>% 
-  select(code, name)
+census <- census %>% 
+  activate(cat01) %>%
+  rekey("sex") %>% 
+  filter(name %in% c("男", "女")) %>% 
+  select(name)
 ```
 
-上と同様に，`time`の「時間軸（調査年組替表記有り）」の名称変更・属性絞り込みを行います．
-ここでは，2000～2015年データを選択します．
+上と同様に，`area`（「地域2015」）と`time`（「時間軸（調査年）」）の名称変更・属性絞り込みを行います．
 
 ```{r}
-census_2015 <- census_2015 %>% 
-  estat_activate("時間軸", "year") %>% 
-  filter(name %in% c("2000年", "2005年", "2010年", "2015年")) %>% 
-  select(name)
+census <- census %>% 
+  activate(area) %>% 
+  rekey("pref") %>% 
+  filter(name %in% c("東京都", "大阪府")) %>% 
+  select(code, name) %>% 
+  
+  activate(time) %>% 
+  rekey("year") %>% 
+  filter(name %in% c("2010年", "2015年")) %>% 
+  select(name) 
 ```
 
 以上の操作により，以下のように列名・アイテム数・属性が変更できました．
 
 ```{r}
-census_2015
+census
 ```
 
-最後に，`estat_download()`関数を用いてデータをダウンロードします．
+最後に，`collect()`関数を用いてデータをダウンロードします．
+`collect()`関数の`n`で値の名称を指定します．
 
 ```{r}
-census_2015 <- census_2015 %>%
-  # 値の名称を"pop"とする
-  estat_download("pop")
-knitr::kable(census_2015)
+census <- census %>%
+  collect(n = "pop")
+knitr::kable(census)
 ```

@@ -4,16 +4,24 @@
 \alias{estat}
 \title{Get meta-information of 'e-Stat' data}
 \usage{
-estat(statsDataId, appId = NULL, lang = c("ja", "en"), query = NULL)
+estat(
+  appId,
+  statsDataId,
+  lang = c("J", "E"),
+  query = list(),
+  path = "rest/3.0/app/json/"
+)
 }
 \arguments{
-\item{statsDataId}{A statistical data ID on 'e-Stat'.}
-
 \item{appId}{An 'appId' of 'e-Stat' API.}
 
-\item{lang}{A language, Japanese (\code{"ja"}) or English (\code{"en"}).}
+\item{statsDataId}{A statistical data ID on 'e-Stat'.}
+
+\item{lang}{A language, Japanese (\code{"J"}) or English (\code{"E"}).}
 
 \item{query}{A list of additional queries.}
+
+\item{path}{An e-Stat API path.}
 }
 \value{
 A \code{estat} object.
