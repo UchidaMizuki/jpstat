@@ -1,66 +1,34 @@
-test_that("estat_0003411172", {
+test_that("estat_census", {
   skip_on_cran()
 
-  estat_set_apikey(keyring::key_get("estat-api"))
-  japanstat_set("estat_limit_collection", 1e1)
+  library(dplyr)
 
-  census_2015 <- estat("https://www.e-stat.go.jp/dbview?sid=0003411172")
-  expect_s3_class(census_2015, "estat")
+  estat_census <- estat(appId = keyring::key_get("estat-api"),
+                        statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+  expect_s3_class(estat_census, "estat")
 
-  census_2015 <- census_2015 %>%
-    estat_activate("\u8868\u7ae0\u9805\u76ee") %>%
-    filter(name == "\u4eba\u53e3") %>%
+  estat_census <- estat_census %>%
+
+    activate(tab) %>%
+    filter(code == "020") %>%
     select() %>%
 
-    estat_activate("\u5168\u56fd", "region") %>%
+    activate(cat01) %>%
+    rekey("sex") %>%
+    filter(code %in% c("110", "120")) %>%
+    select(name) %>%
+
+    activate(area) %>%
+    filter(code %in% c("00100", "00200")) %>%
     select(code, name) %>%
 
-    estat_activate("\u6642\u9593\u8ef8", "year") %>%
-    select(name)
-
-  census_2015 <- estat_collect(census_2015, "pop")
-
-  expect_s3_class(census_2015, "tbl_df")
-  expect_setequal(names(census_2015), c("region_code", "region_name", "year", "pop"))
-  expect_equal(vctrs::vec_size(census_2015), 78L)
-})
-
-test_that("estat_0003183561", {
-  skip_on_cran()
-
-  estat_set_apikey(keyring::key_get("estat-api"))
-
-  worker_city_2015 <- estat("0003183561")
-  expect_s3_class(worker_city_2015, "estat")
-
-  worker_city_2015 <- worker_city_2015 %>%
-
-    estat_activate("\u8868\u7ae0\u9805\u76ee") %>%
-    filter(name == "15\u6b73\u4ee5\u4e0a\u5c31\u696d\u8005\u6570") %>%
-    select() %>%
-
-    estat_activate("\u7523\u696d\u5206\u985e", "industry") %>%
-    filter(stringr::str_detect(name, "^[AB]")) %>%
+    activate(time) %>%
+    rekey("year") %>%
+    filter(code %in% c("2010000000", "2015000000")) %>%
     select(name) %>%
 
-    estat_activate("\u5e74\u9f62") %>%
-    filter(name == "\u7dcf\u6570\uff08\u5e74\u9f62\uff09") %>%
-    select() %>%
+    collect()
 
-    estat_activate("\u7537\u5973|\u6027\u5225", "sex") %>%
-    filter(name != "\u7dcf\u6570\uff08\u7537\u5973\u5225\uff09") %>%
-    select(name) %>%
-
-    estat_activate("\u5f93\u696d\u5730") %>%
-    filter(name == "\u5317\u6d77\u9053") %>%
-    select() %>%
-
-    estat_activate("\u5e74\u6b21") %>%
-    select() %>%
-
-    estat_collect("worker")
-
-  expect_s3_class(worker_city_2015, "tbl_df")
-  expect_setequal(names(worker_city_2015), c("industry", "sex", "worker"))
-  expect_equal(vctrs::vec_size(worker_city_2015), 4L)
+  expect_s3_class(estat_census, "tbl_df")
+  expect_true(vec_size(estat_census) == 8)
 })

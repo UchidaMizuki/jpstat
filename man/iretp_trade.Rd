@@ -16,6 +16,19 @@ iretp_trade(
 
 iretp_city(pref_code, lang = c("ja", "en"), .rename = TRUE)
 }
+\arguments{
+\item{from}{A start time.}
+
+\item{to}{An end time.}
+
+\item{pref_code}{A prefecture code.}
+
+\item{city_code}{A city code.}
+
+\item{lang}{Language.}
+
+\item{.rename}{Change the names?}
+}
 \description{
 Information on real estate transaction prices API
 }
