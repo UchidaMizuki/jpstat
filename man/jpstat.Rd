@@ -12,6 +12,7 @@ Provides tools for using the API of 'e-Stat' (<https://www.e-stat.go.jp/>), a po
 Useful links:
 \itemize{
   \item \url{https://github.com/UchidaMizuki/jpstat}
+  \item \url{https://uchidamizuki.github.io/jpstat/}
   \item Report bugs at \url{https://github.com/UchidaMizuki/jpstat/issues}
 }
 
