@@ -259,7 +259,7 @@ estat_collect <- function(setup, start, limit, n) {
     dplyr::rename_with(~ .x %>%
                          stringr::str_remove("^@")) %>%
     dplyr::rename(!!n := "$") %>%
-    dplyr::select(!"unit")
+    dplyr::select(!dplyr::any_of("unit"))
 }
 
 # printing ----------------------------------------------------------------
