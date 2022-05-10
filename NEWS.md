@@ -1,3 +1,7 @@
+# version 0.2.1
+
+- Bug fix for column selection.
+
 # version 0.2.0
 
 - Change the package name from japanstat to jpstat.

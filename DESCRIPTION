@@ -1,7 +1,7 @@
 Package: jpstat
 Type: Package
 Title: Tools for Easy Use of 'e-Stat' API
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: person("Mizuki", "Uchida", email = "uchidamizuki@vivaldi.net", role = c("aut", "cre"))
 Description: Provides tools for using the API of 'e-Stat' (<https://www.e-stat.go.jp/>), a portal site for Japanese government statistics.
     Includes functions for automatic query generation, data collection and formatting.
