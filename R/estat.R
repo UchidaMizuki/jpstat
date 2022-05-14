@@ -127,13 +127,13 @@ estat_check_status <- function(x) {
 }
 
 #' @export
-summary.estat <- function(x) {
-  attr(x, "table_info")
+summary.estat <- function(object, ...) {
+  attr(object, "table_info")
 }
 
 #' @export
-summary.tbl_estat <- function(x) {
-  x %>%
+summary.tbl_estat <- function(object, ...) {
+  object %>%
     deactivate() %>%
     summary()
 }
