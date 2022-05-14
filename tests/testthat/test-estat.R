@@ -1,37 +1,34 @@
-test_that("estat_worker_city_2015", {
-  estat_set_apikey(keyring::key_get("estat-api"))
+test_that("estat_census", {
+  skip_on_cran()
 
-  worker_city_2015 <- estat("0003183561")
-  expect_s3_class(worker_city_2015, "estat")
+  library(dplyr)
 
-  worker_city_2015 <- worker_city_2015 %>%
+  estat_census <- estat(appId = keyring::key_get("estat-api"),
+                        statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+  expect_s3_class(estat_census, "estat")
 
-    estat_activate("表章項目") %>%
-    filter(name == "15歳以上就業者数") %>%
+  estat_census <- estat_census %>%
+
+    activate(tab) %>%
+    filter(code == "020") %>%
     select() %>%
 
-    estat_activate("産業分類", "industry") %>%
-    filter(stringr::str_detect(name, "^[AB]")) %>%
+    activate(cat01) %>%
+    rekey("sex") %>%
+    filter(code %in% c("110", "120")) %>%
     select(name) %>%
 
-    estat_activate("年齢") %>%
-    filter(name == "総数（年齢）") %>%
-    select() %>%
+    activate(area) %>%
+    filter(code %in% c("00100", "00200")) %>%
+    select(code, name) %>%
 
-    estat_activate("男女|性別", "sex") %>%
-    filter(name != "総数（男女別）") %>%
+    activate(time) %>%
+    rekey("year") %>%
+    filter(code %in% c("2010000000", "2015000000")) %>%
     select(name) %>%
 
-    estat_activate("従業地") %>%
-    filter(name == "北海道") %>%
-    select() %>%
+    collect()
 
-    estat_activate("年次") %>%
-    select() %>%
-
-    estat_download("worker")
-
-  expect_s3_class(worker_city_2015, "tbl_df")
-  expect_setequal(names(worker_city_2015), c("industry", "sex", "worker"))
-  expect_equal(vctrs::vec_size(worker_city_2015), 4)
+  expect_s3_class(estat_census, "tbl_df")
+  expect_true(vec_size(estat_census) == 8)
 })

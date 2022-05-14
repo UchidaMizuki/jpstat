@@ -1,50 +1,36 @@
-# global variables
-japanstat_global <- new.env(parent = emptyenv())
-
-# global variables for e-Stat
-japanstat_global$estat_url <- "http://api.e-stat.go.jp/"
-japanstat_global$estat_path <- "rest/3.0/app/json/"
-japanstat_global$estat_limit_downloads <- 1e5
-japanstat_global$estat_limit_items <- 1e2
-
-# global variables for RESAS
-japanstat_global$resas_url <- "https://opendata.resas-portal.go.jp/"
-japanstat_global$resas_path <- "api/v1/"
-
-cat_subtle <- function(...) {
-  cat(pillar::style_subtle(stringr::str_c(...)))
-}
-
-str_pad_common <- function(x, side = c("right", "left")) {
-  side <- rlang::arg_match(side, c("right", "left"))
-
-  if (vctrs::vec_is_empty(x)) {
-    width <- 0L
+big_mark <- function(x) {
+  mark <- if (identical(getOption("OutDec"), ",")) {
+    "."
   } else {
-    width <- max(stringi::stri_width(x))
+    ","
   }
 
-  stringr::str_pad(x,
-                   width = width,
-                   side = side)
+  formatC(x,
+          big.mark = mark)
 }
 
-compact_query <- function(x) {
-  x <- purrr::compact(x)
-  vctrs::vec_slice(x, vctrs::vec_unique_loc(names(x)))
+commas <- function(...) {
+  paste0(...,
+         collapse = ", ")
 }
 
-unnest_auto_deep <- function(data) {
-  repeat {
-    if (is.list(data[[ncol(data)]])) {
-      data <- data %>%
-        tidyr::unnest_auto(-1L)
-    } else {
-      break
-    }
-  }
+compact_query <- function(...) {
+  x <- rlang::list2(...) %>%
+    purrr::compact()
 
-  data
+  stopifnot(is_named(x))
+
+  x[vctrs::vec_unique_loc(names(x))]
+}
+
+remove_class <- function(x, class) {
+  class(x) <- setdiff(class(x), class)
+  x
+}
+
+add_class <- function(x, class) {
+  class(x) <- c(class, class(x))
+  x
 }
 
 str_to_snakecase <- function(string) {
@@ -56,4 +42,16 @@ str_to_snakecase <- function(string) {
         stringr::str_c(collapse = "_")
     }) %>%
     stringr::str_remove("^_")
+}
+
+as_pref_code <- function(x) {
+  x %>%
+    stringr::str_pad(2L,
+                     pad = "0")
+}
+
+as_city_code <- function(x) {
+  x %>%
+    stringr::str_pad(5L,
+                     pad = "0")
 }
