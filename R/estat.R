@@ -126,15 +126,16 @@ estat_check_status <- function(x) {
   x
 }
 
-#' Get table information for 'e-Stat' data
-#'
-#' @param x A \code{estat} object.
-#'
-#' @return A \code{tbl} of the table information.
-#'
 #' @export
-estat_table_info <- function(x) {
+summary.estat <- function(x) {
   attr(x, "table_info")
+}
+
+#' @export
+summary.tbl_estat <- function(x) {
+  x %>%
+    deactivate() %>%
+    summary()
 }
 
 #' @export
