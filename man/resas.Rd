@@ -26,6 +26,9 @@ resas(
 
 \item{.names_sep_resps}{What to replace the "/" in the responses with?}
 }
+\value{
+A \code{resas} object.
+}
 \description{
 Get parameters of 'RESAS' data
 }

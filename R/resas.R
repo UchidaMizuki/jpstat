@@ -156,8 +156,7 @@ resas <- function(X_API_KEY, path,
                     stringr::str_remove("^/result/"))
   responses_keys <- responses_attrs$name
   if (.rename_resps) {
-    responses_keys <- responses_keys %>%
-      str_to_snakecase()
+    responses_keys <- str_to_snakecase(responses_keys)
   }
   responses_keys <- responses_keys %>%
     stringr::str_replace_all("/", .names_sep_resps %||% "/")
