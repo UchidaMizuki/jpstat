@@ -8,6 +8,9 @@
 \alias{activate}
 \alias{deactivate}
 \alias{rekey}
+\alias{rekey_with}
+\alias{itemise}
+\alias{itemize}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -17,6 +20,6 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr:compute]{collect}}, \code{\link[dplyr]{select}}}
 
-  \item{navigatr}{\code{\link[navigatr]{activate}}, \code{\link[navigatr:activate]{deactivate}}, \code{\link[navigatr]{rekey}}}
+  \item{navigatr}{\code{\link[navigatr]{activate}}, \code{\link[navigatr:activate]{deactivate}}, \code{\link[navigatr]{itemise}}, \code{\link[navigatr:itemise]{itemize}}, \code{\link[navigatr]{rekey}}, \code{\link[navigatr:rekey]{rekey_with}}}
 }}
 

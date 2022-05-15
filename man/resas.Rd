@@ -4,11 +4,31 @@
 \alias{resas}
 \title{Get parameters of 'RESAS' data}
 \usage{
-resas(path)
+resas(
+  X_API_KEY,
+  path,
+  query = list(),
+  .rename_params = TRUE,
+  .rename_resps = TRUE,
+  .names_sep_resps = "_"
+)
+}
+\arguments{
+\item{X_API_KEY}{An 'X-API-KEY' of 'RESAS' API.}
+
+\item{path}{A 'RESAS' API path.}
+
+\item{query}{A list of queries.}
+
+\item{.rename_params}{Rename parameters to snake cases?}
+
+\item{.rename_resps}{Rename responses to snake cases?}
+
+\item{.names_sep_resps}{What to replace the "/" in the responses with?}
 }
 \description{
 Get parameters of 'RESAS' data
 }
 \seealso{
-<https://opendata.resas-portal.go.jp/>
+\url{https://opendata.resas-portal.go.jp/}
 }

@@ -1,4 +1,4 @@
-test_that("estat_census", {
+test_that("estat-census", {
   skip_on_cran()
 
   library(dplyr)

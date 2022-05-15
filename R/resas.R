@@ -1,115 +1,292 @@
-#' Set 'X_API_KEY' of 'RESAS' API
-#'
-#' @param X_API_KEY An X_API_KEY of 'RESAS' API.
-#'
-#' @export
-resas_set_apikey <- function(X_API_KEY) {
-  japanstat_global$resas_apikey <- X_API_KEY
-  invisible()
-}
-
 resas_path <- function(x) {
   x %>%
-    stringr::str_remove(stringr::str_glue("^.*{japanstat_global$resas_path}")) %>%
-    stringr::str_remove("\\.html$")
+    stringr::str_extract("(?<=/)api/.+(?=\\.html$)")
 }
 
-resas_get <- function(path, query) {
-  out <- httr::GET(japanstat_global$resas_url,
-                   config = httr::add_headers(`X-API-KEY` = japanstat_global$resas_apikey),
-                   path = stringr::str_c(japanstat_global$resas_path, path),
-                   query = query)
-  httr::stop_for_status(out)
-  httr::content(out)
-}
-
-#' Get parameters of 'RESAS' data
-#'
-#' @seealso <https://opendata.resas-portal.go.jp/>
-#'
-#' @export
-resas <- function(path) {
-  path <- resas_path(path)
-  path <- stringr::str_glue("{japanstat_global$resas_url}docs/{japanstat_global$resas_path}{path}.html")
-
-  section <- rvest::read_html(path) %>%
+resas_docs <- function(setup) {
+  sections <- stringr::str_glue("{setup$url}docs/{setup$path}.html") %>%
+    rvest::read_html() %>%
     rvest::html_elements("body > div > article > section")
 
-  for (i in seq_along(section)) {
-    h1 <- section[[i]] %>%
+  for (section in sections) {
+    h1 <- section %>%
       rvest::html_elements("h1") %>%
       rvest::html_text()
 
     if (!vctrs::vec_is_empty(h1) && h1 == "parameters") {
-      parameters <- section[[i]] %>%
-        rvest::html_table()
+      parameters <- section %>%
+        rvest::html_table() %>%
+        dplyr::mutate(Description = .data$Description %>%
+                        stringr::str_extract("^[^\\n]+(?=$|\\n)") %>%
+                        stringr::str_remove("\\s+$"),
+                      Required = .data$Required == "true") %>%
+        dplyr::rename_with(stringr::str_to_lower)
     }
     if (!vctrs::vec_is_empty(h1) && h1 == "responses") {
-      responses <- section[[i]] %>%
-        rvest::html_table()
+      responses <- section %>%
+        rvest::html_table() %>%
+        dplyr::mutate(Description = .data$Description %>%
+                        stringr::str_extract("^[^\\n]+(?=$|\\n)") %>%
+                        stringr::str_remove("\\s+$")) %>%
+        dplyr::rename_with(stringr::str_to_lower)
     }
   }
 
-  if (vctrs::vec_is_empty(parameters)) {
-    parameters <- tibble::tibble(name = character(),
-                                 name_to = character(),
-                                 parameter = character(),
-                                 required = logical(),
-                                 description = character())
-  } else {
-    parameters <- parameters %>%
-      dplyr::rename_with(stringr::str_to_lower)
-    parameters$name_to <- str_to_snakecase(parameters$name)
-    parameters$parameter <- NA_character_
-    parameters$required <- !is.na(parameters$required) & parameters$required == "true"
-    parameters$description <- parameters$description %>%
-      stringr::str_remove_all("[:space:]")
-    parameters <- parameters[c("name", "name_to", "parameter", "required", "description")]
-  }
-
-  if (vctrs::vec_is_empty(responses)) {
-    responses <- tibble::tibble(name = character(),
-                                name_to = character(),
-                                description = character())
-  } else {
-    responses <- responses %>%
-      dplyr::rename_with(stringr::str_to_lower)
-    responses$name_to <- NA_character_
-    responses$description <- responses$description %>%
-      stringr::str_remove_all("[:space:]")
-    responses <- responses[c("name", "name_to", "description")]
-  }
-
-  structure(list(parameters = vctrs::new_data_frame(parameters,
-                                                    class = c("resas_parameters", "tbl")),
-                 responses = vctrs::new_data_frame(responses,
-                                                   class = c("resas_responses", "tbl"))),
-            class = "resas")
+  list(parameters = parameters,
+       responses = responses)
 }
 
-#' @importFrom pillar tbl_format_header
-#' @export
-pillar::tbl_format_header
+resas_query_value <- function(x) {
+  out <- x %>%
+    purrr::discard(is.na) %>%
+    stringr::str_c(collapse = ",")
 
-#' @export
-tbl_format_header.resas_parameters <- function(x, setup) {
-  pillar::style_subtle("# Parameters")
+  if (out == "") {
+    NULL
+  } else {
+    out
+  }
 }
 
-# print.resas_parameters <- function(x, ...) {
-#   cat_subtle("# Parameters\n")
-#
-#   id <- stringr::str_c("[", x$id, "]") %>%
-#     str_pad_common("left")
-#   name <- str_pad_common(x$name)
-#   required <- dplyr::if_else(x$required,
-#                              "(required)",
-#                              "") %>%
-#     str_pad_common()
-#
-#   writeLines(pillar::style_subtle(stringr::str_glue("{id} {name} {required}")))
-# }
+resas_query <- function(x, query) {
+  parameters <- x %>%
+    activate("param")
+  query_parameters <- parameters$value %>%
+    purrr::map(resas_query_value) %>%
+    set_names(parameters$attrs$name)
 
-resas_rectangle <- function(data) {
+  compact_query(!!!attr(x, "setup")$query,
+                !!!query_parameters,
+                !!!query)
+}
 
+resas_get <- function(setup) {
+  get_content(setup$url,
+              config = httr::add_headers(`X-API-KEY` = setup$X_API_KEY),
+              path = setup$path,
+              query = setup$query)
+}
+
+resas_unnest <- function(x) {
+  if (identical(x, "400")) {
+    abort("400 Bad Request")
+  }
+
+  result <- x$result
+
+  if (is.null(result)) {
+    abort(x$message)
+  }
+
+  locs <- which(purrr::map_lgl(result, is.list))
+
+  size <- vec_size(locs)
+  out <- vec_init(list(), size)
+  for (i in seq_len(size)) {
+    out[[i]] <- resas_unnest_recursive(c(result[-locs], result[locs[[i]]]))
+  }
+
+  names(out) <- names(result)[locs]
+  out
+}
+
+resas_unnest_recursive <- function(x) {
+  if (is_named(x)) {
+    locs <- which(purrr::map_lgl(x, is.list))
+
+    for (loc in locs) {
+      x[[loc]] <- resas_unnest_recursive(x[[loc]])
+    }
+
+    x %>%
+      tibble::as_tibble() %>%
+      tidyr::unnest_wider(locs,
+                          names_sep = "/")
+  } else {
+    x %>%
+      dplyr::bind_rows() %>%
+      resas_unnest_recursive()
+  }
+}
+
+#' Get parameters of 'RESAS' data
+#'
+#' @param X_API_KEY An 'X-API-KEY' of 'RESAS' API.
+#' @param path A 'RESAS' API path.
+#' @param query A list of queries.
+#' @param .rename_params Rename parameters to snake cases?
+#' @param .rename_resps Rename responses to snake cases?
+#' @param .names_sep_resps What to replace the "/" in the responses with?
+#'
+#' @return A `resas` object.
+#'
+#' @seealso <https://opendata.resas-portal.go.jp/>
+#'
+#' @export
+resas <- function(X_API_KEY, path,
+                  query = list(),
+                  .rename_params = TRUE,
+                  .rename_resps = TRUE,
+                  .names_sep_resps = "_") {
+  path <- resas_path(path)
+
+  setup <- list(url = "https://opendata.resas-portal.go.jp/",
+                X_API_KEY = X_API_KEY,
+                path = path,
+                query = query)
+  docs <- resas_docs(setup)
+
+  # parameters
+  parameters <- docs$parameters
+  parameters$width_description <- pillar::get_max_extent(parameters$description)
+  parameters_keys <- parameters$name
+  if (.rename_params) {
+    parameters_keys <- str_to_snakecase(parameters_keys)
+  }
+  parameters <- navigatr::new_menu(key = parameters_keys,
+                                   value = list(structure(NA_character_,
+                                                          class = "resas_parameters_item")),
+                                   attrs = parameters,
+                                   class = "resas_parameters")
+
+  # responses
+  responses <- docs$responses
+  responses_attrs <- responses %>%
+    dplyr::mutate(name = .data$name %>%
+                    stringr::str_remove("^/result/"))
+  responses_keys <- responses_attrs$name
+  if (.rename_resps) {
+    responses_keys <- responses_keys %>%
+      str_to_snakecase()
+  }
+  responses_keys <- responses_keys %>%
+    stringr::str_replace_all("/", .names_sep_resps %||% "/")
+  responses <- navigatr::new_menu(key = responses_keys,
+                                  value = list(structure(list(),
+                                                         class = "resas_responses_item")),
+                                  attrs = responses_attrs,
+                                  class = "resas_responses")
+
+  navigatr::new_menu(key = c("param", "resp"),
+                     value = list(parameters, responses),
+                     setup = setup,
+                     class = "resas")
+}
+
+#' @export
+collect.resas <- function(x,
+                          query = list(),
+                          simplify = TRUE, ...) {
+  setup <- attr(x, "setup")
+  setup$query <- resas_query(x, query)
+
+  out <- setup %>%
+    resas_get() %>%
+    resas_unnest()
+
+  responses <- x %>%
+    activate("resp")
+  nms_old <- responses$attrs$name
+  nms_new <- responses$key
+  out <- out %>%
+    purrr::modify(function(x) {
+      loc <- nms_old %in% names(x)
+
+      nms_old_in_x <- nms_old[loc]
+      nms_new_in_x <- nms_new[loc]
+
+      x <- x[nms_old_in_x]
+      names(x) <- nms_new_in_x
+      x
+    })
+
+  if (simplify && is_scalar_list(out)) {
+    out <- out[[1L]]
+  }
+  out
+}
+
+#' @export
+collect.resas_parameters <- function(x, ...) {
+  x %>%
+    deactivate() %>%
+    collect.resas(...)
+}
+
+#' @export
+collect.resas_parameters_item <- function(x, ...) {
+  x %>%
+    deactivate() %>%
+    collect.resas(...)
+}
+
+#' @export
+collect.resas_responses <- function(x, ...) {
+  x %>%
+    deactivate() %>%
+    collect.resas(...)
+}
+
+#' @export
+collect.resas_responses <- function(x, ...) {
+  x %>%
+    deactivate() %>%
+    collect.resas(...)
+}
+
+
+
+# printing ----------------------------------------------------------------
+
+#' @export
+vec_ptype_abbr.resas_parameters <- function(x) {
+  "parameters"
+}
+
+#' @importFrom pillar obj_sum
+#' @export
+obj_sum.resas_parameters_item <- function(x) {
+  description <- attr(x, "description")
+  width_description <- attr(x, "width_description")
+
+  if (is.null(description)) {
+    "resas_parameters_item"
+  } else {
+    out <- paste(pillar::align(description, width_description),
+                 cli::symbol$arrow_right)
+    query_value <- resas_query_value(x)
+
+    if (is.null(query_value)) {
+      out <- paste(out, "NULL")
+    } else {
+      out <- paste(out, encodeString(query_value, quote = "\""))
+    }
+    out
+  }
+}
+
+#' @export
+print.resas_parameters_item <- function(x, ...) {
+  out <- x
+  attributes(out) <- NULL
+  print(out)
+
+  invisible(x)
+}
+
+#' @export
+vec_ptype_abbr.resas_responses <- function(x) {
+  "responses"
+}
+
+#' @importFrom pillar obj_sum
+#' @export
+obj_sum.resas_responses_item <- function(x) {
+  attr(x, "description") %||% "resas_responses_item"
+}
+
+#' @export
+print.resas_responses_item <- function(x, ...) {
+  print(NULL)
+  invisible(x)
 }

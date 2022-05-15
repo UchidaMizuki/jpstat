@@ -37,7 +37,7 @@ estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 
 }
 \seealso{
-<https://www.e-stat.go.jp>
+\url{https://www.e-stat.go.jp}
 
-<https://www.e-stat.go.jp/en>
+\url{https://www.e-stat.go.jp/en}
 }

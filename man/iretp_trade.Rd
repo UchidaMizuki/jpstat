@@ -33,7 +33,7 @@ iretp_city(pref_code, lang = c("ja", "en"), .rename = TRUE)
 Information on real estate transaction prices API
 }
 \seealso{
-<https://www.land.mlit.go.jp/webland_english/servlet/MainServlet>
+\url{https://www.land.mlit.go.jp/webland_english/servlet/MainServlet}
 
-<https://www.land.mlit.go.jp/webland/api.html>
+\url{https://www.land.mlit.go.jp/webland/api.html}
 }

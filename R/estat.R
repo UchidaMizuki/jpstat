@@ -19,12 +19,10 @@ estat_stats_data_id <- function(statsDataId) {
 }
 
 estat_get <- function(path, setup) {
-  out <- httr::GET(setup$url,
-                   config = httr::add_headers(`Accept-Encoding` = "gzip"),
-                   path = c(setup$path, path),
-                   query = setup$query)
-  httr::stop_for_status(out)
-  httr::content(out)
+  get_content(setup$url,
+              config = httr::add_headers(`Accept-Encoding` = "gzip"),
+              path = c(setup$path, path),
+              query = setup$query)
 }
 
 #' Get meta-information of 'e-Stat' data
@@ -32,8 +30,8 @@ estat_get <- function(path, setup) {
 #' The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
 #' and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
 #'
-#' @param statsDataId A statistical data ID on 'e-Stat'.
 #' @param appId An 'appId' of 'e-Stat' API.
+#' @param statsDataId A statistical data ID on 'e-Stat'.
 #' @param lang A language, Japanese (\code{"J"}) or English (\code{"E"}).
 #' @param query A list of additional queries.
 #' @param path An e-Stat API path.
@@ -104,8 +102,7 @@ estat <- function(appId,
                   codes = .data$value %>%
                     purrr::modify(~ .x$code),
                   width_key_name = .data$key_name %>%
-                    stringi::stri_width() %>%
-                    max())
+                    pillar::get_max_extent())
 
   navigatr::new_menu(key = meta_info$key,
                      value = meta_info$value,
@@ -121,7 +118,7 @@ estat <- function(appId,
 
 estat_check_status <- function(x) {
   if (x$RESULT$STATUS != 0) {
-    stop(x$RESULT$ERROR_MSG)
+    abort(x$RESULT$ERROR_MSG)
   }
   x
 }
@@ -148,8 +145,8 @@ select.tbl_estat <- function(.data, ...) {
 #' @export
 collect.estat <- function(x,
                           n = "n",
-                          sep = "_",
-                          query = NULL,
+                          names_sep = "_",
+                          query = list(),
                           limit = 1e5, ...) {
   setup <- attr(x, "setup")
   setup$query <- estat_query(x, query)
@@ -181,7 +178,7 @@ collect.estat <- function(x,
       value %>%
         dplyr::rename_with(~ {
           paste(key, .x,
-                sep = sep)
+                sep = names_sep)
         },
         !".estat_rowid") %>%
         dplyr::mutate(!!query_name := codes[.data$.estat_rowid],
@@ -203,7 +200,7 @@ collect.estat <- function(x,
 collect.tbl_estat <- function(x, ...) {
   x %>%
     deactivate() %>%
-    collect(...)
+    collect.estat(...)
 }
 
 estat_query <- function(x, query) {

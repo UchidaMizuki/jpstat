@@ -15,22 +15,10 @@ commas <- function(...) {
 }
 
 compact_query <- function(...) {
-  x <- rlang::list2(...) %>%
+  dots_list(...,
+            .named = TRUE,
+            .homonyms = "first") %>%
     purrr::compact()
-
-  stopifnot(is_named(x))
-
-  x[vctrs::vec_unique_loc(names(x))]
-}
-
-remove_class <- function(x, class) {
-  class(x) <- setdiff(class(x), class)
-  x
-}
-
-add_class <- function(x, class) {
-  class(x) <- c(class, class(x))
-  x
 }
 
 str_to_snakecase <- function(string) {
@@ -43,6 +31,18 @@ str_to_snakecase <- function(string) {
     }) %>%
     stringr::str_remove("^_")
 }
+
+get_content <- function(url = NULL, config = list(), ..., handle = NULL) {
+  out <- httr::GET(url = url,
+                   config = config, ...,
+                   handle = handle)
+  httr::stop_for_status(out)
+  httr::content(out)
+}
+
+
+
+# pref and city codes -----------------------------------------------------
 
 as_pref_code <- function(x) {
   x %>%
