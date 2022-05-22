@@ -161,7 +161,8 @@ collect.estat <- function(x,
     data <- tibble::new_tibble(data)
   } else {
     start <- seq(1, total, limit)
-    pb <- progress::progress_bar$new(total = vctrs::vec_size(start))
+    pb <- progress::progress_bar$new(format = format_downloading,
+                                     total = vctrs::vec_size(start))
     data <- purrr::map_dfr(start,
                            function(start) {
                              out <- estat_collect(setup = setup,
@@ -262,7 +263,6 @@ estat_collect <- function(setup, start, limit, n) {
 
 # printing ----------------------------------------------------------------
 
-#' @importFrom pillar obj_sum
 #' @export
 obj_sum.tbl_estat <- function(x) {
   attrs <- attributes(x)

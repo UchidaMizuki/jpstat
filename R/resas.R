@@ -14,7 +14,7 @@ resas_docs <- function(setup) {
       rvest::html_text()
 
     if (!vctrs::vec_is_empty(h1) && h1 == "parameters") {
-      parameters <- section %>%
+      param <- section %>%
         rvest::html_table() %>%
         dplyr::mutate(Description = .data$Description %>%
                         stringr::str_extract("^[^\\n]+(?=$|\\n)") %>%
@@ -23,7 +23,7 @@ resas_docs <- function(setup) {
         dplyr::rename_with(stringr::str_to_lower)
     }
     if (!vctrs::vec_is_empty(h1) && h1 == "responses") {
-      responses <- section %>%
+      resp <- section %>%
         rvest::html_table() %>%
         dplyr::mutate(Description = .data$Description %>%
                         stringr::str_extract("^[^\\n]+(?=$|\\n)") %>%
@@ -32,8 +32,8 @@ resas_docs <- function(setup) {
     }
   }
 
-  list(parameters = parameters,
-       responses = responses)
+  list(param = param,
+       resp = resp)
 }
 
 resas_query_value <- function(x) {
@@ -49,14 +49,14 @@ resas_query_value <- function(x) {
 }
 
 resas_query <- function(x, query) {
-  parameters <- x %>%
+  param <- x %>%
     activate("param")
-  query_parameters <- parameters$value %>%
+  query_param <- param$value %>%
     purrr::map(resas_query_value) %>%
-    set_names(parameters$attrs$name)
+    set_names(param$attrs$name)
 
   compact_query(!!!attr(x, "setup")$query,
-                !!!query_parameters,
+                !!!query_param,
                 !!!query)
 }
 
@@ -100,7 +100,7 @@ resas_unnest_recursive <- function(x) {
 
     x %>%
       tibble::as_tibble() %>%
-      tidyr::unnest_wider(locs,
+      tidyr::unnest_wider(dplyr::all_of(locs),
                           names_sep = "/")
   } else {
     x %>%
@@ -136,38 +136,37 @@ resas <- function(X_API_KEY, path,
                 query = query)
   docs <- resas_docs(setup)
 
-  # parameters
-  parameters <- docs$parameters
-  parameters$width_description <- pillar::get_max_extent(parameters$description)
-  parameters_keys <- parameters$name
+  # param
+  param <- docs$param
+  param$width_description <- pillar::get_max_extent(param$description)
+  param_keys <- param$name
   if (.rename_params) {
-    parameters_keys <- str_to_snakecase(parameters_keys)
+    param_keys <- str_to_snakecase(param_keys)
   }
-  parameters <- navigatr::new_menu(key = parameters_keys,
-                                   value = list(structure(NA_character_,
-                                                          class = "resas_parameters_item")),
-                                   attrs = parameters,
-                                   class = "resas_parameters")
+  param <- navigatr::new_menu(key = param_keys,
+                              value = list(navigatr::new_empty_item(character(),
+                                                                    class = "resas_param_item")),
+                              attrs = param,
+                              class = "resas_param")
 
-  # responses
-  responses <- docs$responses
-  responses_attrs <- responses %>%
+  # resp
+  resp <- docs$resp
+  resp_attrs <- resp %>%
     dplyr::mutate(name = .data$name %>%
                     stringr::str_remove("^/result/"))
-  responses_keys <- responses_attrs$name
+  resp_keys <- resp_attrs$name
   if (.rename_resps) {
-    responses_keys <- str_to_snakecase(responses_keys)
+    resp_keys <- str_to_snakecase(resp_keys)
   }
-  responses_keys <- responses_keys %>%
+  resp_keys <- resp_keys %>%
     stringr::str_replace_all("/", .names_sep_resps %||% "/")
-  responses <- navigatr::new_menu(key = responses_keys,
-                                  value = list(structure(list(),
-                                                         class = "resas_responses_item")),
-                                  attrs = responses_attrs,
-                                  class = "resas_responses")
+  resp <- navigatr::new_menu(key = resp_keys,
+                             value = list(navigatr::new_empty_item(class = "resas_resp_item")),
+                             attrs = resp_attrs,
+                             class = "resas_resp")
 
   navigatr::new_menu(key = c("param", "resp"),
-                     value = list(parameters, responses),
+                     value = list(param, resp),
                      setup = setup,
                      class = "resas")
 }
@@ -183,10 +182,10 @@ collect.resas <- function(x,
     resas_get() %>%
     resas_unnest()
 
-  responses <- x %>%
+  resp <- x %>%
     activate("resp")
-  nms_old <- responses$attrs$name
-  nms_new <- responses$key
+  nms_old <- resp$attrs$name
+  nms_new <- resp$key
   out <- out %>%
     purrr::modify(function(x) {
       loc <- nms_old %in% names(x)
@@ -206,28 +205,28 @@ collect.resas <- function(x,
 }
 
 #' @export
-collect.resas_parameters <- function(x, ...) {
+collect.resas_param <- function(x, ...) {
   x %>%
     deactivate() %>%
     collect.resas(...)
 }
 
 #' @export
-collect.resas_parameters_item <- function(x, ...) {
+collect.resas_param_item <- function(x, ...) {
   x %>%
     deactivate() %>%
     collect.resas(...)
 }
 
 #' @export
-collect.resas_responses <- function(x, ...) {
+collect.resas_resp <- function(x, ...) {
   x %>%
     deactivate() %>%
     collect.resas(...)
 }
 
 #' @export
-collect.resas_responses <- function(x, ...) {
+collect.resas_resp <- function(x, ...) {
   x %>%
     deactivate() %>%
     collect.resas(...)
@@ -238,18 +237,17 @@ collect.resas_responses <- function(x, ...) {
 # printing ----------------------------------------------------------------
 
 #' @export
-vec_ptype_abbr.resas_parameters <- function(x) {
+vec_ptype_abbr.resas_param <- function(x) {
   "parameters"
 }
 
-#' @importFrom pillar obj_sum
 #' @export
-obj_sum.resas_parameters_item <- function(x) {
+obj_sum.resas_param_item <- function(x) {
   description <- attr(x, "description")
   width_description <- attr(x, "width_description")
 
   if (is.null(description)) {
-    "resas_parameters_item"
+    "resas_param_item"
   } else {
     out <- paste(pillar::align(description, width_description),
                  cli::symbol$arrow_right)
@@ -265,27 +263,11 @@ obj_sum.resas_parameters_item <- function(x) {
 }
 
 #' @export
-print.resas_parameters_item <- function(x, ...) {
-  out <- x
-  attributes(out) <- NULL
-  print(out)
-
-  invisible(x)
-}
-
-#' @export
-vec_ptype_abbr.resas_responses <- function(x) {
+vec_ptype_abbr.resas_resp <- function(x) {
   "responses"
 }
 
-#' @importFrom pillar obj_sum
 #' @export
-obj_sum.resas_responses_item <- function(x) {
-  attr(x, "description") %||% "resas_responses_item"
-}
-
-#' @export
-print.resas_responses_item <- function(x, ...) {
-  print(NULL)
-  invisible(x)
+obj_sum.resas_resp_item <- function(x) {
+  attr(x, "description") %||% "resas_resp_item"
 }

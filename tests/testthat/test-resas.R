@@ -18,7 +18,7 @@ test_that("resas-power_for_industry", {
     select(!c(data_employee,
               # misspelling: labar -> labor
               data_labar))
-  expect_s3_class(power_for_industry, "resas_responses")
+  expect_s3_class(power_for_industry, "resas_resp")
 
   power_for_industry <- collect(power_for_industry)
 

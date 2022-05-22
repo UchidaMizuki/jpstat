@@ -42,7 +42,7 @@ get_content <- function(url = NULL, config = list(), ..., handle = NULL) {
 
 
 
-# pref and city codes -----------------------------------------------------
+# Pref and city codes -----------------------------------------------------
 
 as_pref_code <- function(x) {
   x %>%
@@ -55,3 +55,9 @@ as_city_code <- function(x) {
     stringr::str_pad(5L,
                      pad = "0")
 }
+
+
+
+# Progress bar ------------------------------------------------------------
+
+format_downloading <- "downloading [:bar] :percent"
