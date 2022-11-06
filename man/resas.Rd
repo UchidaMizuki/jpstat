@@ -4,14 +4,7 @@
 \alias{resas}
 \title{Get parameters of 'RESAS' data}
 \usage{
-resas(
-  X_API_KEY,
-  path,
-  query = list(),
-  .rename_params = TRUE,
-  .rename_resps = TRUE,
-  .names_sep_resps = "_"
-)
+resas(X_API_KEY, path, query = list())
 }
 \arguments{
 \item{X_API_KEY}{An 'X-API-KEY' of 'RESAS' API.}

@@ -124,10 +124,7 @@ resas_unnest_recursive <- function(x) {
 #'
 #' @export
 resas <- function(X_API_KEY, path,
-                  query = list(),
-                  .rename_params = TRUE,
-                  .rename_resps = TRUE,
-                  .names_sep_resps = "_") {
+                  query = list()) {
   path <- resas_path(path)
 
   setup <- list(url = "https://opendata.resas-portal.go.jp/",
@@ -139,13 +136,9 @@ resas <- function(X_API_KEY, path,
   # param
   param <- docs$param
   param$width_description <- pillar::get_max_extent(param$description)
-  param_keys <- param$name
-  if (.rename_params) {
-    param_keys <- str_to_snakecase(param_keys)
-  }
+  param_keys <- str_to_snakecase(param$name)
   param <- navigatr::new_menu(key = param_keys,
-                              value = list(navigatr::new_empty_item(character(),
-                                                                    class = "resas_param_item")),
+                              value = list(navigatr::new_empty_item(class = "resas_param_item")),
                               attrs = param,
                               class = "resas_param")
 
@@ -154,12 +147,10 @@ resas <- function(X_API_KEY, path,
   resp_attrs <- resp %>%
     dplyr::mutate(name = .data$name %>%
                     stringr::str_remove("^/result/"))
-  resp_keys <- resp_attrs$name
-  if (.rename_resps) {
-    resp_keys <- str_to_snakecase(resp_keys)
-  }
-  resp_keys <- resp_keys %>%
-    stringr::str_replace_all("/", .names_sep_resps %||% "/")
+  resp_keys <- resp_attrs$name %>%
+    str_to_snakecase() %>%
+    stringr::str_replace_all("/", "_")
+
   resp <- navigatr::new_menu(key = resp_keys,
                              value = list(navigatr::new_empty_item(class = "resas_resp_item")),
                              attrs = resp_attrs,
