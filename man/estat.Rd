@@ -2,7 +2,7 @@
 % Please edit documentation in R/estat.R
 \name{estat}
 \alias{estat}
-\title{Get meta-information of 'e-Stat' data}
+\title{Access 'e-Stat' data}
 \usage{
 estat(
   appId,
@@ -27,12 +27,12 @@ estat(
 A \code{estat} object.
 }
 \description{
-The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
-and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
+The \code{estat()} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
+and returns an \code{estat} object that allows editing of meta-information by \code{dplyr::filter()} and \code{dplyr::select()}.
 }
 \examples{
 \dontrun{
-estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
+estat("Your appId", "https://www.e-stat.go.jp/dbview?sid=0003433219")
 }
 
 }

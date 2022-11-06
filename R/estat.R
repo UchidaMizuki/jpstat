@@ -25,22 +25,22 @@ estat_get <- function(path, setup) {
               query = setup$query)
 }
 
-#' Get meta-information of 'e-Stat' data
+#' Access 'e-Stat' data
 #'
-#' The \code{estat} gets the meta-information of a statistical table by using \code{getMetaInfo} of the 'e-Stat' API,
-#' and returns an \code{estat} object that allows editing of meta-information by \code{filter} and \code{select}.
+#' The `estat()` gets the meta-information of a statistical table by using `getMetaInfo` of the 'e-Stat' API,
+#' and returns an `estat` object that allows editing of meta-information by `dplyr::filter()` and `dplyr::select()`.
 #'
 #' @param appId An 'appId' of 'e-Stat' API.
 #' @param statsDataId A statistical data ID on 'e-Stat'.
-#' @param lang A language, Japanese (\code{"J"}) or English (\code{"E"}).
+#' @param lang A language, Japanese (`"J"`) or English (`"E"`).
 #' @param query A list of additional queries.
 #' @param path An e-Stat API path.
 #'
-#' @return A \code{estat} object.
+#' @return A `estat` object.
 #'
 #' @examples
 #' \dontrun{
-#' estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
+#' estat("Your appId", "https://www.e-stat.go.jp/dbview?sid=0003433219")
 #' }
 #'
 #' @seealso <https://www.e-stat.go.jp>
