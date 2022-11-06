@@ -172,6 +172,7 @@ collect.estat <- function(x,
   cols <- list(x$key, x$value, query_name, attr(x, "codes")) |>
     purrr::pmap(function(key, value, query_name, codes) {
       value |>
+        tibble::as_tibble() |>
         dplyr::rename_with(~ {
           paste(key, .x,
                 sep = names_sep)
