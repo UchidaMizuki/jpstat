@@ -33,7 +33,10 @@ webland_trade <- function(lang = c("ja", "en")) {
   lang <- rlang::arg_match(lang, c("ja", "en"))
   setup <- list(lang = lang)
 
-  width <- pillar::get_max_extent(c("取引時期From", "取引時期To", "都道府県コード", "市区町村コード"))
+  width <- pillar::get_max_extent(c("\u53d6\u5f15\u6642\u671fFrom",
+                                    "\u53d6\u5f15\u6642\u671fTo",
+                                    "\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9",
+                                    "\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9"))
   navigatr::new_nav_input(key = c("from", "to", "pref_code", "city_code"),
                           value = list(new_vctr(character(),
                                                 setup = setup,
@@ -155,8 +158,8 @@ obj_sum.webland_time <- function(x) {
     commas()
   description <- switch (
     type,
-    from = "取引時期From",
-    to = "取引時期To"
+    from = "\u53d6\u5f15\u6642\u671fFrom",
+    to = "\u53d6\u5f15\u6642\u671fTo"
   )
 
   paste0(pillar::align(description, width), ": ", out)
@@ -180,7 +183,7 @@ obj_sum.webland_pref_code <- function(x) {
 
   out <- commas(paste0(vec_data(x), "_", pref_name,
                        recycle0 = TRUE))
-  paste0(pillar::align("都道府県コード", width), ": ", out)
+  paste0(pillar::align("\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9", width), ": ", out)
 }
 
 #' @export
@@ -189,5 +192,5 @@ obj_sum.webland_city_code <- function(x) {
 
   out <- commas(paste0(vec_data(x),
                        recycle0 = TRUE))
-  paste0(pillar::align("市区町村コード", width), ": ", out)
+  paste0(pillar::align("\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9", width), ": ", out)
 }
