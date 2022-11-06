@@ -14,41 +14,39 @@ webland <- function(pref_code = NULL,
                       stringr::str_remove("\\sPrefecture$"))
 
     if (lang == "ja") {
-      navigatr::new_menu(key = pref$pref_name_ja,
-                         value = list(navigatr::new_empty_item(class = "webland_pref_item")),
-                         attrs = pref[c("pref_code", "pref_name_en")],
-                         setup = setup,
-                         class = "webland_pref")
+      navigatr::new_select(key = pref$pref_name_ja,
+                           value = list(navigatr::new_empty_item(class = "webland_pref_item")),
+                           attrs = pref[c("pref_code", "pref_name_en")],
+                           setup = setup,
+                           class = "webland_pref")
     } else if (lang == "en") {
-      navigatr::new_menu(key = pref$pref_name_en,
-                         value = list(navigatr::new_empty_item(class = "webland_pref_item")),
-                         attrs = pref[c("pref_code", "pref_name_ja")],
-                         setup = setup,
-                         class = "webland_pref")
+      navigatr::new_select(key = pref$pref_name_en,
+                           value = list(navigatr::new_empty_item(class = "webland_pref_item")),
+                           attrs = pref[c("pref_code", "pref_name_ja")],
+                           setup = setup,
+                           class = "webland_pref")
     }
   } else {
     # city
     city <- webland_city(pref_code,
                          lang = lang)
     city <- new_data_frame(city,
-                           size_city = vec_size(city),
+                           size_city_total = vec_size(city),
                            class = c("tbl_webland_city", "tbl"))
 
     # param
-    param <- navigatr::new_menu(key = c("from", "to"),
-                                value = list(navigatr::new_empty_item(character(),
-                                                                      class = c("webland_param_item"))),
+    param <- navigatr::new_form(key = c("from", "to"),
+                                value = list(navigatr::new_empty_item(class = c("webland_param_item"))),
                                 attrs = tibble::tibble(description = c("取引時期From", "取引時期To")) %>%
                                   dplyr::mutate(width_description = pillar::get_max_extent(description)),
                                 class = "webland_param")
 
     # resp
     resp <- webland_docs$resp_trade
-    resp <- navigatr::new_menu(key = str_to_snakecase(resp$key),
-                               value = list(navigatr::new_empty_item(character(),
-                                                                     class = "webland_resp_item")),
-                               attrs = resp,
-                               class = "webland_resp")
+    resp <- navigatr::new_select(key = str_to_snakecase(resp$key),
+                                 value = list(navigatr::new_empty_item(class = "webland_resp_item")),
+                                 attrs = resp,
+                                 class = "webland_resp")
 
     navigatr::new_menu(key = c("city", "param", "resp"),
                        value = list(city, param, resp),
@@ -122,7 +120,21 @@ obj_sum.webland_param_item <- function(x) {
 
 #' @export
 obj_sum.tbl_webland_city <- function(x) {
-  "市区町村コード"
+  out <- stringr::str_c("市区町村コード", cli::symbol$arrow_right,
+                        sep = " ")
+
+  size_city <- vec_size(x)
+  size_city_total <- attr(x, "size_city_total")
+
+  if (size_city == size_city_total) {
+
+  } else {
+    if (size_city > 1L) {
+      abort()
+    }
+
+
+  }
 }
 
 #' @export
@@ -220,14 +232,7 @@ webland_city <- function(pref_code,
 }
 
 webland_period <- function(x) {
-  if (stringr::str_detect(x, "^\\d{5}$")) {
-    period <- x %>%
-      stringr::str_match("^(\\d{4})(\\d)$")
-    year <- as.integer(period[, 2])
-    period <- as.integer(period[, 3])
-  } else {
-    stopifnot(lubridate::is.Date(x))
-
+  if (lubridate::is.Date(x)) {
     year <- lubridate::year(x)
     month <- lubridate::month(x)
 
@@ -240,35 +245,20 @@ webland_period <- function(x) {
     } else if (month %in% 11:12) {
       period <- 4L
     }
-  }
+  } else {
+    if (!stringr::str_detect(x, "^\\d{5}$")) {
+      abort("Period must be a 5-digit number.")
+    }
 
-  # if (period == 1L) {
-  #   month_from <- 1
-  #   month_to <- 3
-  # } else if (period == 2L) {
-  #   month_from <- 4
-  #   month_to <- 6
-  # } else if (period == 3L) {
-  #   month_from <- 7
-  #   month_to <- 10
-  # } else if (period == 4L) {
-  #   month_from <- 11
-  #   month_to <- 12
-  # }
+    period <- x %>%
+      stringr::str_match("^(\\d{4})(\\d)$")
+    year <- as.integer(period[, 2])
+    period <- as.integer(period[, 3])
+  }
 
   if (year < 2005 || year == 2005 && period < 3) {
     abort("Period must be after July 2005.")
   }
 
   stringr::str_c(year, period)
-
-  # list(period = stringr::str_c(year, period),
-  #      ym_from = stringr::str_c(year,
-  #                               stringr::str_pad(month_from, 2,
-  #                                                pad = "0"),
-  #                               sep = "-"),
-  #      ym_to = stringr::str_c(year,
-  #                             stringr::str_pad(month_to, 2,
-  #                                              pad = "0"),
-  #                             sep = "-"))
 }
