@@ -43,7 +43,7 @@ devtools::install_github("UchidaMizuki/jpstat")
 
 ## 使用方法
 
-```{r,message=FALSE}
+```{r, message=FALSE, warning=FALSE}
 library(jpstat)
 library(dplyr)
 ```
@@ -67,26 +67,26 @@ census <- estat(appId = keyring::key_get("estat-api"),
 
 ```{r}
 # 2010・2015年の東京都・大阪府における男女別人口を取得
-census <- census %>% 
+census <- census |> 
   
-  activate(tab) %>% 
-  filter(name == "人口") %>% 
-  select() %>% 
+  activate(tab) |> 
+  filter(name == "人口") |> 
+  select() |> 
   
-  activate(cat01) %>% 
-  rekey("sex") %>% 
-  filter(name %in% c("男", "女")) %>% 
-  select(name) %>% 
+  activate(cat01) |> 
+  rekey("sex") |> 
+  filter(name %in% c("男", "女")) |> 
+  select(name) |> 
   
-  activate(area) %>% 
-  rekey("pref") %>% 
-  filter(name %in% c("東京都", "大阪府")) %>% 
-  select(code, name) %>% 
+  activate(area) |> 
+  rekey("pref") |> 
+  filter(name %in% c("東京都", "大阪府")) |> 
+  select(code, name) |> 
   
-  activate(time) %>% 
-  rekey("year") %>% 
-  filter(name %in% c("2010年", "2015年")) %>% 
-  select(name) %>% 
+  activate(time) |> 
+  rekey("year") |> 
+  filter(name %in% c("2010年", "2015年")) |> 
+  select(name) |> 
   
   collect(n = "pop")
 
@@ -120,12 +120,6 @@ census <- estat(appId = keyring::key_get("estat-api"),
 census
 ```
 
-`estat_table_info()`関数で統計表情報を表示します．
-
-```{r}
-knitr::kable(estat_table_info(census))
-```
-
 当該データには，`tab`，`cat01`，`area`, `time`の4種類の列 (以下，キーと呼びます) が存在します．
 それぞれのキーには以下の情報が記載されています．
 
@@ -139,11 +133,11 @@ knitr::kable(estat_table_info(census))
 例えば，以下のように`tab`キーをアクティブにします．
 
 ```{r}
-census %>% 
+census |> 
   activate(tab)
 
 # Or
-census %>% 
+census |> 
   activate(1)
 ```
 
@@ -152,9 +146,9 @@ census %>%
 ここでは，「人口」のみを選択します．
 
 ```{r}
-census <- census %>% 
-  activate(tab) %>% 
-  filter(name == "人口") %>% 
+census <- census |> 
+  activate(tab) |> 
+  filter(name == "人口") |> 
   # アイテム数が1つのみであるため列を全て削除
   select()
 ```
@@ -165,25 +159,25 @@ census <- census %>%
 ここでは，`name`列を選択します．
 
 ```{r}
-census <- census %>% 
-  activate(cat01) %>%
-  rekey("sex") %>% 
-  filter(name %in% c("男", "女")) %>% 
+census <- census |> 
+  activate(cat01) |>
+  rekey("sex") |> 
+  filter(name %in% c("男", "女")) |> 
   select(name)
 ```
 
 上と同様に，`area`（「地域2015」）と`time`（「時間軸（調査年）」）の名称変更・属性絞り込みを行います．
 
 ```{r}
-census <- census %>% 
-  activate(area) %>% 
-  rekey("pref") %>% 
-  filter(name %in% c("東京都", "大阪府")) %>% 
-  select(code, name) %>% 
+census <- census |> 
+  activate(area) |> 
+  rekey("pref") |> 
+  filter(name %in% c("東京都", "大阪府")) |> 
+  select(code, name) |> 
   
-  activate(time) %>% 
-  rekey("year") %>% 
-  filter(name %in% c("2010年", "2015年")) %>% 
+  activate(time) |> 
+  rekey("year") |> 
+  filter(name %in% c("2010年", "2015年")) |> 
   select(name) 
 ```
 
@@ -197,7 +191,7 @@ census
 `collect()`関数の`n`で値の名称を指定します．
 
 ```{r}
-census <- census %>%
+census <- census |>
   collect(n = "pop")
 knitr::kable(census)
 ```

@@ -51,26 +51,26 @@ library(dplyr)
 
 ``` r
 # 2010・2015年の東京都・大阪府における男女別人口を取得
-census <- census %>% 
+census <- census |> 
   
-  activate(tab) %>% 
-  filter(name == "人口") %>% 
-  select() %>% 
+  activate(tab) |> 
+  filter(name == "人口") |> 
+  select() |> 
   
-  activate(cat01) %>% 
-  rekey("sex") %>% 
-  filter(name %in% c("男", "女")) %>% 
-  select(name) %>% 
+  activate(cat01) |> 
+  rekey("sex") |> 
+  filter(name %in% c("男", "女")) |> 
+  select(name) |> 
   
-  activate(area) %>% 
-  rekey("pref") %>% 
-  filter(name %in% c("東京都", "大阪府")) %>% 
-  select(code, name) %>% 
+  activate(area) |> 
+  rekey("pref") |> 
+  filter(name %in% c("東京都", "大阪府")) |> 
+  select(code, name) |> 
   
-  activate(time) %>% 
-  rekey("year") %>% 
-  filter(name %in% c("2010年", "2015年")) %>% 
-  select(name) %>% 
+  activate(time) |> 
+  rekey("year") |> 
+  filter(name %in% c("2010年", "2015年")) |> 
+  select(name) |> 
   
   collect(n = "pop")
 #> The total number of data is 8.
@@ -112,38 +112,12 @@ e-Statでは，統計表ごとに統計表ID (statsDataId)
                     statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003413949")
     census
 
-    #> # [ ] tab:   表章項目           [2] <code, name, level, unit>
-    #> # [ ] cat01: 男，女及び総数2015 [3] <code, name, level>
-    #> # [ ] area:  地域2015           [48] <code, name, level, parentCode>
-    #> # [ ] time:  時間軸（調査年）   [21] <code, name, level>
+    #> # ☐ tab:   表章項目           [2] <code, name, level, unit>
+    #> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
+    #> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
+    #> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
     #> # 
-    #> # Please `activate()` an item.
-
-`estat_table_info()`関数で統計表情報を表示します．
-
-``` r
-knitr::kable(estat_table_info(census))
-```
-
-| name                 | value                                                                                                                                                                                                                                                                                                       |
-|:---------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| @id                  | 0003413949                                                                                                                                                                                                                                                                                                  |
-| STAT_NAME            | 00200521 国勢調査                                                                                                                                                                                                                                                                                           |
-| GOV_ORG              | 00200 総務省                                                                                                                                                                                                                                                                                                |
-| STATISTICS_NAME      | 平成27年国勢調査 最終報告書「日本の人口・世帯」統計表                                                                                                                                                                                                                                                       |
-| TITLE                | 12 男女別人口及び人口性比－全国，都道府県（大正９年～平成27年）                                                                                                                                                                                                                                             |
-| CYCLE                | \-                                                                                                                                                                                                                                                                                                          |
-| SURVEY_DATE          | 201501-201512                                                                                                                                                                                                                                                                                               |
-| OPEN_DATE            | 2020-05-22                                                                                                                                                                                                                                                                                                  |
-| SMALL_AREA           | 0                                                                                                                                                                                                                                                                                                           |
-| COLLECT_AREA         | 該当なし                                                                                                                                                                                                                                                                                                    |
-| MAIN_CATEGORY        | 02 人口・世帯                                                                                                                                                                                                                                                                                               |
-| SUB_CATEGORY         | 01 人口                                                                                                                                                                                                                                                                                                     |
-| OVERALL_TOTAL_NUMBER | 3024                                                                                                                                                                                                                                                                                                        |
-| UPDATED_DATE         | 2021-11-30                                                                                                                                                                                                                                                                                                  |
-| STATISTICS_NAME_SPEC | 平成27年国勢調査 最終報告書「日本の人口・世帯」統計表                                                                                                                                                                                                                                                       |
-| DESCRIPTION          |                                                                                                                                                                                                                                                                                                             |
-| TITLE_SPEC           | 男女別人口及び人口性比－全国，都道府県（大正９年～平成27年） 1) 1945年及び1947年について，沖縄県は調査が実施されなかったため，含まれていない。2) 1960年について，長野県西筑摩郡山口村と岐阜県中津川市の境界紛争地域人口(男39人，女34人)は全国に含まれているが，長野県及び岐阜県のいずれにも含まれていない。 |
+    #> # Please `activate()`.
 
 当該データには，`tab`，`cat01`，`area`, `time`の4種類の列
 (以下，キーと呼びます) が存在します．
@@ -159,30 +133,30 @@ knitr::kable(estat_table_info(census))
 例えば，以下のように`tab`キーをアクティブにします．
 
 ``` r
-census %>% 
+census |> 
   activate(tab)
-#> # [x] tab:   表章項目           [2] <code, name, level, unit>
-#> # [ ] cat01: 男，女及び総数2015 [3] <code, name, level>
-#> # [ ] area:  地域2015           [48] <code, name, level, parentCode>
-#> # [ ] time:  時間軸（調査年）   [21] <code, name, level>
+#> # ☒ tab:   表章項目           [2] <code, name, level, unit>
+#> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
+#> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
+#> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
 #> # 
-#> # A data frame: 2 x 4
+#> # A tibble: 2 × 4
 #>   code  name     level unit           
-#> * <chr> <chr>    <chr> <chr>          
+#>   <chr> <chr>    <chr> <chr>          
 #> 1 020   人口     ""    人             
 #> 2 1120  人口性比 ""    女100人につき男
 
 # Or
-census %>% 
+census |> 
   activate(1)
-#> # [x] tab:   表章項目           [2] <code, name, level, unit>
-#> # [ ] cat01: 男，女及び総数2015 [3] <code, name, level>
-#> # [ ] area:  地域2015           [48] <code, name, level, parentCode>
-#> # [ ] time:  時間軸（調査年）   [21] <code, name, level>
+#> # ☒ tab:   表章項目           [2] <code, name, level, unit>
+#> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
+#> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
+#> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
 #> # 
-#> # A data frame: 2 x 4
+#> # A tibble: 2 × 4
 #>   code  name     level unit           
-#> * <chr> <chr>    <chr> <chr>          
+#>   <chr> <chr>    <chr> <chr>          
 #> 1 020   人口     ""    人             
 #> 2 1120  人口性比 ""    女100人につき男
 ```
@@ -192,9 +166,9 @@ census %>%
 ここでは，「人口」のみを選択します．
 
 ``` r
-census <- census %>% 
-  activate(tab) %>% 
-  filter(name == "人口") %>% 
+census <- census |> 
+  activate(tab) |> 
+  filter(name == "人口") |> 
   # アイテム数が1つのみであるため列を全て削除
   select()
 ```
@@ -205,25 +179,25 @@ census <- census %>%
 ここでは，`name`列を選択します．
 
 ``` r
-census <- census %>% 
-  activate(cat01) %>%
-  rekey("sex") %>% 
-  filter(name %in% c("男", "女")) %>% 
+census <- census |> 
+  activate(cat01) |>
+  rekey("sex") |> 
+  filter(name %in% c("男", "女")) |> 
   select(name)
 ```
 
 上と同様に，`area`（「地域2015」）と`time`（「時間軸（調査年）」）の名称変更・属性絞り込みを行います．
 
 ``` r
-census <- census %>% 
-  activate(area) %>% 
-  rekey("pref") %>% 
-  filter(name %in% c("東京都", "大阪府")) %>% 
-  select(code, name) %>% 
+census <- census |> 
+  activate(area) |> 
+  rekey("pref") |> 
+  filter(name %in% c("東京都", "大阪府")) |> 
+  select(code, name) |> 
   
-  activate(time) %>% 
-  rekey("year") %>% 
-  filter(name %in% c("2010年", "2015年")) %>% 
+  activate(time) |> 
+  rekey("year") |> 
+  filter(name %in% c("2010年", "2015年")) |> 
   select(name) 
 ```
 
@@ -231,14 +205,14 @@ census <- census %>%
 
 ``` r
 census
-#> # [ ] tab:  表章項目           [1] <>
-#> # [ ] sex:  男，女及び総数2015 [2] <name>
-#> # [ ] pref: 地域2015           [2] <code, name>
-#> # [x] year: 時間軸（調査年）   [2] <name>
+#> # ☐ tab:  表章項目           [1] <>
+#> # ☐ sex:  男，女及び総数2015 [2] <name>
+#> # ☐ pref: 地域2015           [2] <code, name>
+#> # ☒ year: 時間軸（調査年）   [2] <name>
 #> # 
-#> # A data frame: 2 x 1
+#> # A tibble: 2 × 1
 #>   name  
-#> * <chr> 
+#>   <chr> 
 #> 1 2010年
 #> 2 2015年
 ```
@@ -247,7 +221,7 @@ census
 `collect()`関数の`n`で値の名称を指定します．
 
 ``` r
-census <- census %>%
+census <- census |>
   collect(n = "pop")
 #> The total number of data is 8.
 knitr::kable(census)
