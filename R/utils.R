@@ -37,6 +37,15 @@ str_to_snakecase <- function(string) {
     stringr::str_remove("^_")
 }
 
+str_to_camelcase <- function(string) {
+  string |>
+    stringr::str_split("_") |>
+    purrr::map_chr(~ {
+      exec(paste0, .x[[1L]], !!!stringr::str_to_sentence(.x[-1L]),
+           collapse = "")
+    })
+}
+
 get_content <- function(url = NULL, config = list(), ..., handle = NULL) {
   out <- httr::GET(url = url,
                    config = config, ...,
