@@ -8,13 +8,15 @@
 
 **README is currently only available in Japanese.**
 
-jpstatは日本政府統計のポータルサイトであるe-StatのAPIを利用するためのツールを提供します．
-クエリの自動生成，データの収集，フォーマットなどの機能を備えています．
+jpstatは日本政府統計のポータルサイトであるe-Statや RESAS
+(地域経済分析システム) などのAPIを利用するためのツールを提供します．
 
-e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行)
-が必要です
-(詳しくは[ホームページ](https://www.e-stat.go.jp/api/)を参照してください)．
-また，データ利用に際しては[利用規約](https://www.e-stat.go.jp/terms-of-use)に従う必要があります．
+現在，以下のAPIに対応しています．
+
+- e-Stat API: <https://www.e-stat.go.jp/api/>
+- RESAS API: <https://opendata.resas-portal.go.jp>
+- 不動産取引価格情報取得API:
+  <https://www.land.mlit.go.jp/webland/api.html>
 
 **「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」**
 
@@ -31,14 +33,17 @@ jpstatの開発版は，[GitHub](https://github.com/)から以下の方法でイ
 devtools::install_github("UchidaMizuki/jpstat")
 ```
 
-## 使用方法
-
 ``` r
 library(jpstat)
 library(dplyr)
 ```
 
-### データ取得・整形の概要
+## e-Stat API
+
+e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行)
+が必要です
+(詳しくは[ホームページ](https://www.e-stat.go.jp/api/)を参照してください)．
+また，データ利用に際しては[利用規約](https://www.e-stat.go.jp/terms-of-use)に従う必要があります．
 
 データ取得・整形の一連の流れは以下のようになります．
 ここでは，[国勢調査データ](https://www.e-stat.go.jp/dbview?sid=0003413949)を対象として，
@@ -46,8 +51,16 @@ library(dplyr)
 詳細な使用方法は次の項目で説明します．
 
     # メタ情報の取得
-    census <- estat(appId = "Your e-Stat appId", 
+    census <- estat(appId = "Your appId", 
                     statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+    census
+
+    #> # ☐ tab:   表章項目         [2] <code, name, level, unit>
+    #> # ☐ cat01: 男女_時系列      [3] <code, name, level>
+    #> # ☐ area:  地域_時系列      [50] <code, name, level, parentCode>
+    #> # ☐ time:  時間軸（調査年） [21] <code, name, level>
+    #> # 
+    #> # Please `activate()`.
 
 ``` r
 # 2010・2015年の東京都・大阪府における男女別人口を取得
@@ -89,151 +102,70 @@ knitr::kable(census)
 | 女       | 27000     | 大阪府    | 2010年    | 4579679 |
 | 女       | 27000     | 大阪府    | 2015年    | 4583420 |
 
-### データ取得・整形の流れ
+## RESAS API
 
-jpstatでは，e-Stat APIのメタ情報取得 (getMetaInfo) と統計データ取得
-(getStatsData) を用いて，統計表をダウンロードが可能です．
+RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキーの発行)
+が必要です
+(詳しくは[ホームページ](https://opendata.resas-portal.go.jp)を参照してください)．
+RESAS
+APIの利用にあたっては，[API詳細仕様](https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html)を事前に確認してください．
 
-e-Statでは，統計表ごとに統計表ID (statsDataId)
-が付与されています．統計表IDは， データセット情報ページ
-([例1](https://www.e-stat.go.jp/stat-search/database?page=1&layout=datalist&toukei=00200521&tstat=000001011777&cycle=0&tclass1=000001011778&statdisp_id=0003410379&tclass2val=0))
-や 統計表・グラフ表示ページ
-([例2](https://www.e-stat.go.jp/dbview?sid=0003413949))
-のURLからも取得することが可能です．
+    power_for_industry <- resas(X_API_KEY = "Your X-API-KEY", 
+                                "https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html")
+    power_for_industry
 
-ここでは，[例2](https://www.e-stat.go.jp/dbview?sid=0003413949)に挙げた国勢調査データを対象として，
-2010・2015年の東京都・大阪府における男女別人口を取得します．
-
-まず，`estat()`関数に，appIdとデータセット情報ページなどのURLまたは統計表ID
-(statsDataId) を入力してメタ情報 (統計データの属性情報) を取得します．
-
-    # 国勢調査 データセット情報ページ URL
-    census <- estat(appId = "Your e-Stat appId", 
-                    statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003413949")
-    census
-
-    #> # ☐ tab:   表章項目           [2] <code, name, level, unit>
-    #> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
-    #> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
-    #> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
+    #> # ✖ year:      年度            :  (Required)
+    #> # ✖ pref_code: 都道府県コード  :  (Required)
+    #> # ✖ city_code: 市区町村コード  :  (Required)
+    #> # ✖ sic_code:  産業大分類コード:  (Required)
     #> # 
-    #> # Please `activate()`.
-
-当該データには，`tab`，`cat01`，`area`, `time`の4種類の列
-(以下，キーと呼びます) が存在します．
-それぞれのキーには以下の情報が記載されています．
-
-1.  デフォルトでの列名 (`tab`など)
-2.  アイテム数 (`[2]`など)
-3.  コード・名称などの属性 (`<code, name, level, unit>`など)
-
-ここからは，それぞれのキーごとに列名・アイテム数・属性を変更する方法を説明します．
-それぞれのキーの情報を変更するためには，`activate()`関数を用いてキーを選択します．
-
-例えば，以下のように`tab`キーをアクティブにします．
+    #> # Please `itemise()`.
 
 ``` r
-census |> 
-  activate(tab)
-#> # ☒ tab:   表章項目           [2] <code, name, level, unit>
-#> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
-#> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
-#> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
+power_for_industry <- power_for_industry |>
+  itemise(year = "2012",
+          pref_code = "1",
+          city_code = "-",
+          sic_code = "A") |>
+  collect()
+
+knitr::kable(power_for_industry)
+```
+
+| pref_name | pref_code | sic_code | sic_name   | data/simc_code | data/simc_name | data/value | data/employee | data/labor |
+|:----------|----------:|:---------|:-----------|:---------------|:---------------|-----------:|--------------:|-----------:|
+| 北海道    |         1 | A        | 農業，林業 | 01             | 農業           |     4.4697 |        3.2743 |     0.9858 |
+| 北海道    |         1 | A        | 農業，林業 | 02             | 林業           |     6.1208 |        3.0613 |     1.4438 |
+
+## 不動産取引価格情報取得API
+
+``` r
+trade <- webland_trade()
+trade
+#> # ✖ from:      取引時期From  : 
+#> # ✖ to:        取引時期To    : 
+#> # ✖ pref_code: 都道府県コード: 
+#> # ✖ city_code: 市区町村コード: 
 #> # 
-#> # A tibble: 2 × 4
-#>   code  name     level unit           
-#>   <chr> <chr>    <chr> <chr>          
-#> 1 020   人口     ""    人             
-#> 2 1120  人口性比 ""    女100人につき男
-
-# Or
-census |> 
-  activate(1)
-#> # ☒ tab:   表章項目           [2] <code, name, level, unit>
-#> # ☐ cat01: 男，女及び総数2015 [3] <code, name, level>
-#> # ☐ area:  地域2015           [48] <code, name, level, parentCode>
-#> # ☐ time:  時間軸（調査年）   [21] <code, name, level>
-#> # 
-#> # A tibble: 2 × 4
-#>   code  name     level unit           
-#>   <chr> <chr>    <chr> <chr>          
-#> 1 020   人口     ""    人             
-#> 2 1120  人口性比 ""    女100人につき男
+#> # Please `itemise()`.
 ```
-
-キーをアクティブにすると当該キーのアイテム情報が表示されます．
-さらに，`filter()`関数や`select()`関数を用いてアイテム情報の絞り込みなどが可能です．
-ここでは，「人口」のみを選択します．
 
 ``` r
-census <- census |> 
-  activate(tab) |> 
-  filter(name == "人口") |> 
-  # アイテム数が1つのみであるため列を全て削除
-  select()
+trade <- trade |> 
+  itemise(from = "20201",
+          to = "20201",
+          pref_code = "01",
+          city_code = "01101") |> 
+  collect()
+
+knitr::kable(head(trade))
 ```
 
-次に，`cat01`の「男，女及び総数2015」を選択します．`rekey()`関数によってキーの名称`cat01`を変更することが可能です（ここでは`sex`）．
-キーの名称を変更することでデータダウンロード時の列名を指定ことができます．
-また，上と同様に属性の絞り込みを行います．
-ここでは，`name`列を選択します．
-
-``` r
-census <- census |> 
-  activate(cat01) |>
-  rekey("sex") |> 
-  filter(name %in% c("男", "女")) |> 
-  select(name)
-```
-
-上と同様に，`area`（「地域2015」）と`time`（「時間軸（調査年）」）の名称変更・属性絞り込みを行います．
-
-``` r
-census <- census |> 
-  activate(area) |> 
-  rekey("pref") |> 
-  filter(name %in% c("東京都", "大阪府")) |> 
-  select(code, name) |> 
-  
-  activate(time) |> 
-  rekey("year") |> 
-  filter(name %in% c("2010年", "2015年")) |> 
-  select(name) 
-```
-
-以上の操作により，以下のように列名・アイテム数・属性が変更できました．
-
-``` r
-census
-#> # ☐ tab:  表章項目           [1] <>
-#> # ☐ sex:  男，女及び総数2015 [2] <name>
-#> # ☐ pref: 地域2015           [2] <code, name>
-#> # ☒ year: 時間軸（調査年）   [2] <name>
-#> # 
-#> # A tibble: 2 × 1
-#>   name  
-#>   <chr> 
-#> 1 2010年
-#> 2 2015年
-```
-
-最後に，`collect()`関数を用いてデータをダウンロードします．
-`collect()`関数の`n`で値の名称を指定します．
-
-``` r
-census <- census |>
-  collect(n = "pop")
-#> The total number of data is 8.
-knitr::kable(census)
-```
-
-| sex_name | pref_code | pref_name | year_name | pop     |
-|:---------|:----------|:----------|:----------|:--------|
-| 男       | 13000     | 東京都    | 2010年    | 6512110 |
-| 男       | 13000     | 東京都    | 2015年    | 6666690 |
-| 男       | 27000     | 大阪府    | 2010年    | 4285566 |
-| 男       | 27000     | 大阪府    | 2015年    | 4256049 |
-| 女       | 13000     | 東京都    | 2010年    | 6647278 |
-| 女       | 13000     | 東京都    | 2015年    | 6848581 |
-| 女       | 27000     | 大阪府    | 2010年    | 4579679 |
-| 女       | 27000     | 大阪府    | 2015年    | 4583420 |
+| type             | city_code | pref_name | city_name    | district_name | trade_price | floor_plan | area | building_year | structure | purpose | city_planning | coverage_ratio | floor_area_ratio | period           | renovation | region | land_shape | frontage | total_floor_area | use    | direction | classification | breadth | price_per_unit | unit_price | remarks |
+|:-----------------|:----------|:----------|:-------------|:--------------|:------------|:-----------|:-----|:--------------|:----------|:--------|:--------------|:---------------|:-----------------|:-----------------|:-----------|:-------|:-----------|:---------|:-----------------|:-------|:----------|:---------------|:--------|:---------------|:-----------|:--------|
+| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 32000000    | ２ＬＤＫ   | 55   | 平成28年      | ＲＣ      | 住宅    | 商業地域      | 80             | 600              | 2020年第１四半期 | 未改装     | NA     | NA         | NA       | NA               | NA     | NA        | NA             | NA      | NA             | NA         | NA      |
+| 宅地(土地と建物) | 01101     | 北海道    | 札幌市中央区 | 大通西        | 380000000   | NA         | 360  | 昭和36年      | 木造      | 住宅    | 商業地域      | 80             | 400              | 2020年第１四半期 | NA         | 商業地 | 長方形     | 15.0     | 160              | その他 | 北        | 市道           | 27.0    | NA             | NA         | NA      |
+| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 10000000    | １ＬＤＫ   | 40   | 昭和52年      | ＳＲＣ    | 住宅    | 商業地域      | 80             | 400              | 2020年第１四半期 | 改装済     | NA     | NA         | NA       | NA               | NA     | NA        | NA             | NA      | NA             | NA         | NA      |
+| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 9000000     | １ＬＤＫ   | 45   | 平成3年       | ＳＲＣ    | 住宅    | 商業地域      | 80             | 400              | 2020年第１四半期 | 改装済     | NA     | NA         | NA       | NA               | NA     | NA        | NA             | NA      | NA             | NA         | NA      |
+| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 3000000     | １Ｒ       | 20   | 昭和52年      | ＳＲＣ    | その他  | 商業地域      | 80             | 400              | 2020年第１四半期 | NA         | NA     | NA         | NA       | NA               | NA     | NA        | NA             | NA      | NA             | NA         | NA      |
+| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 3000000     | １Ｋ       | 15   | 昭和60年      | ＳＲＣ    | 住宅    | 商業地域      | 80             | 400              | 2020年第１四半期 | 未改装     | NA     | NA         | NA       | NA               | NA     | NA        | NA             | NA      | NA             | NA         | NA      |
