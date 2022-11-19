@@ -1,5 +1,10 @@
 ---
-title: "How to access 'e-stat' API"
+title: "how-to-access-e-stat-api"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{how-to-access-e-stat-api}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
