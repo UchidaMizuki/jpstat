@@ -2,7 +2,7 @@
 % Please edit documentation in R/resas.R
 \name{resas}
 \alias{resas}
-\title{Access 'e-Stat' data}
+\title{Access 'RESAS' data}
 \usage{
 resas(X_API_KEY, path)
 }
@@ -15,7 +15,7 @@ resas(X_API_KEY, path)
 A \code{resas} object.
 }
 \description{
-Access 'e-Stat' data
+Access 'RESAS' data
 }
 \seealso{
 \url{https://opendata.resas-portal.go.jp/}

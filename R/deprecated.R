@@ -1,8 +1,8 @@
 #' Get table information for 'e-Stat' data
 #'
-#' @param x A \code{estat} object.
+#' @param x A `estat` object.
 #'
-#' @return A \code{tbl} of the table information.
+#' @return A `tbl_df` of the table information.
 #'
 #' @export
 estat_table_info <- function(x) {

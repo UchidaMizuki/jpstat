@@ -11,7 +11,7 @@ resas_docs <- function(setup) {
     dplyr::first()
 }
 
-#' Access 'e-Stat' data
+#' Access 'RESAS' data
 #'
 #' @param X_API_KEY An 'X-API-KEY' of 'RESAS' API.
 #' @param path A 'RESAS' API path.
@@ -23,27 +23,35 @@ resas_docs <- function(setup) {
 #' @export
 resas <- function(X_API_KEY, path) {
   path <- resas_path(path)
+
   setup <- list(url = "https://opendata.resas-portal.go.jp/",
                 X_API_KEY = X_API_KEY,
                 path = path)
 
   docs <- resas_docs(setup)
   parameters <- docs$parameters
-  width <- pillar::get_max_extent(parameters$description)
-  value <- purrr::map2(parameters$description, parameters$required,
-                       function(description, required) {
-                         new_vctr(character(),
-                                  description = description,
-                                  width = width,
-                                  required = required,
-                                  class = "resas_value")
-                       })
 
-  navigatr::new_nav_input(key = str_to_snakecase(parameters$name),
-                          value = value,
-                          setup = setup,
-                          docs = docs,
-                          class = "resas")
+  if (vec_is_empty(parameters)) {
+    out <- collect_resas(setup)
+  } else {
+    width <- pillar::get_max_extent(parameters$description)
+    value <- purrr::map2(parameters$description, parameters$required,
+                         function(description, required) {
+                           new_vctr(character(),
+                                    description = description,
+                                    width = width,
+                                    required = required,
+                                    class = "resas_value")
+                         })
+
+    out <- navigatr::new_nav_input(key = str_to_snakecase(parameters$name),
+                                   value = value,
+                                   setup = setup,
+                                   docs = docs,
+                                   class = "resas")
+  }
+
+  out
 }
 
 #' @export
@@ -102,16 +110,21 @@ resas_unnest <- function(x) {
     abort(x$message)
   }
 
-  locs <- which(purrr::map_lgl(result, is.list))
+  if (is_named(result)) {
+    locs <- which(purrr::map_lgl(result, is.list))
 
-  size <- vec_size(locs)
-  out <- vec_init(list(), size)
-  for (i in seq_len(size)) {
-    out[[i]] <- resas_unnest_recursive(c(result[-locs], result[locs[[i]]])) |>
-      dplyr::rename_with(str_to_snakecase)
+    size <- vec_size(locs)
+    out <- vec_init(list(), size)
+    for (i in seq_len(size)) {
+      out[[i]] <- resas_unnest_recursive(c(result[-locs], result[locs[[i]]])) |>
+        dplyr::rename_with(str_to_snakecase)
+    }
+
+    names(out) <- names(result)[locs]
+  } else {
+    out <- resas_unnest_recursive(result)
   }
 
-  names(out) <- names(result)[locs]
   out
 }
 
@@ -139,6 +152,10 @@ collect.resas <- function(x, ...) {
   setup <- attr(x, "setup")
   setup$query <- resas_query(x)
 
+  collect_resas(setup)
+}
+
+collect_resas <- function(setup) {
   setup |>
     resas_get() |>
     resas_unnest()

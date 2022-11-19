@@ -10,7 +10,7 @@ estat_table_info(x)
 \item{x}{A \code{estat} object.}
 }
 \value{
-A \code{tbl} of the table information.
+A \code{tbl_df} of the table information.
 }
 \description{
 Get table information for 'e-Stat' data

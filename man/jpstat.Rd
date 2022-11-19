@@ -6,7 +6,7 @@
 \alias{jpstat-package}
 \title{Tools for easy use of 'e-Stat' API}
 \description{
-Provides tools for using the API of 'e-Stat' (\url{https://www.e-stat.go.jp/}), a portal site for Japanese government statistics. Includes functions for automatic query generation, data collection and shaping.
+Provides tools to use APIs such as e-Stat (\url{https://www.e-stat.go.jp/}), the portal site for Japanese government statistics, and RESAS (Regional Economy and Society Analyzing System, \url{https://resas.go.jp}).
 }
 \seealso{
 Useful links:
