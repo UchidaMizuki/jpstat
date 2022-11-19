@@ -2,28 +2,20 @@
 % Please edit documentation in R/resas.R
 \name{resas}
 \alias{resas}
-\title{Get parameters of 'RESAS' data}
+\title{Access 'RESAS' data}
 \usage{
-resas(X_API_KEY, path, query = list())
+resas(X_API_KEY, path)
 }
 \arguments{
 \item{X_API_KEY}{An 'X-API-KEY' of 'RESAS' API.}
 
 \item{path}{A 'RESAS' API path.}
-
-\item{query}{A list of queries.}
-
-\item{.rename_params}{Rename parameters to snake cases?}
-
-\item{.rename_resps}{Rename responses to snake cases?}
-
-\item{.names_sep_resps}{What to replace the "/" in the responses with?}
 }
 \value{
 A \code{resas} object.
 }
 \description{
-Get parameters of 'RESAS' data
+Access 'RESAS' data
 }
 \seealso{
 \url{https://opendata.resas-portal.go.jp/}
