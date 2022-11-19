@@ -1,11 +1,19 @@
 library(tidyverse)
+library(polite)
 library(rvest)
 
 # resas_v1_docs -----------------------------------------------------------
 
 url <- "https://opendata.resas-portal.go.jp"
 
-path <- read_html(str_glue("{url}/docs/api/v1/index.html")) |>
+session <- bow(str_glue("{url}/docs/api/v1/index.html"),
+               user_agent = "jpstat (uchidamizuki@vivaldi.net)",
+               delay = 1)
+
+scrape_utf8 <- partial(scrape,
+                       content = "text/html; charset=UTF-8")
+
+path <- scrape_utf8(session) |>
   html_element("div.sidemenu") |>
   html_elements("a") |>
   html_attr("href") |>
@@ -15,8 +23,9 @@ path <- read_html(str_glue("{url}/docs/api/v1/index.html")) |>
   })
 
 read_resas_v1_docs <- function(setup) {
-  docs <- stringr::str_glue("{setup$url}{setup$path}") |>
-    read_html() |>
+  docs <- session |>
+    nod(setup$path) |>
+    scrape_utf8() |>
     html_element("body > div > article")
 
   title <- docs |>
@@ -71,7 +80,6 @@ resas_v1_docs <- tibble(path = path) |>
   rowwise() |>
   mutate(doc = list({
     inform(path)
-    Sys.sleep(1)
     setup <- list(url = url,
                   path = path)
     read_resas_v1_docs(setup)
