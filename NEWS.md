@@ -1,15 +1,22 @@
-# version 0.2.1
+# jpstat 0.3.0
 
-- Bug fix for column selection.
+* Add `resas()` to use 'RESAS' API (https://opendata.resas-portal.go.jp).
+* Add `webland()` to use information on real estate transaction prices API 
+(https://www.land.mlit.go.jp/webland/api.html).
+* Add `summary.estat()` and deprecate `estat_table_info()`.
 
-# version 0.2.0
+# jpstat 0.2.1
 
-- Change the package name from japanstat to jpstat.
-- Add dependency on navigatr package and support for activate() and rekey() 
+* Bug fix for column selection.
+
+# jpstat 0.2.0
+
+* Change the package name from japanstat to jpstat.
+* Add dependency on navigatr package and support for activate() and rekey() 
   functions.
 
-# version 0.1.1
+# jpstat 0.1.1
 
-- Fix Imports
+* Fix Imports
 
-# version 0.1.0
+# jpstat 0.1.0
