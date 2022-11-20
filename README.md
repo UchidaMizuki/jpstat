@@ -48,7 +48,7 @@ e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの
 データ取得・整形の一連の流れは以下のようになります．
 ここでは，[国勢調査データ](https://www.e-stat.go.jp/dbview?sid=0003413949)を対象として，
 2010・2015年の東京都・大阪府における男女別人口を取得します．
-詳細な使用方法は次の項目で説明します．
+詳細な使用方法は[こちら](https://github.com/uchidamizuki/jpstat/blob/main/README-estat.Rmd)を参照してください．
 
     # メタ情報の取得
     census <- estat(appId = "Your appId", 
@@ -132,10 +132,20 @@ power_for_industry <- power_for_industry |>
 knitr::kable(power_for_industry)
 ```
 
+<table class="kable_wrapper">
+<tbody>
+<tr>
+<td>
+
 | pref_name | pref_code | sic_code | sic_name   | data/simc_code | data/simc_name | data/value | data/employee | data/labor |
 |:----------|----------:|:---------|:-----------|:---------------|:---------------|-----------:|--------------:|-----------:|
 | 北海道    |         1 | A        | 農業，林業 | 01             | 農業           |     4.4697 |        3.2743 |     0.9858 |
 | 北海道    |         1 | A        | 農業，林業 | 02             | 林業           |     6.1208 |        3.0613 |     1.4438 |
+
+</td>
+</tr>
+</tbody>
+</table>
 
 ## 不動産取引価格情報取得API
 
