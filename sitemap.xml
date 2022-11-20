@@ -7,6 +7,9 @@
     <loc>https://uchidamizuki.github.io/jpstat/LICENSE-text.html</loc>
   </url>
   <url>
+    <loc>https://uchidamizuki.github.io/jpstat/README-estat.html</loc>
+  </url>
+  <url>
     <loc>https://uchidamizuki.github.io/jpstat/authors.html</loc>
   </url>
   <url>
@@ -25,12 +28,15 @@
     <loc>https://uchidamizuki.github.io/jpstat/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://uchidamizuki.github.io/jpstat/reference/iretp_trade.html</loc>
-  </url>
-  <url>
     <loc>https://uchidamizuki.github.io/jpstat/reference/jpstat.html</loc>
   </url>
   <url>
     <loc>https://uchidamizuki.github.io/jpstat/reference/reexports.html</loc>
+  </url>
+  <url>
+    <loc>https://uchidamizuki.github.io/jpstat/reference/resas.html</loc>
+  </url>
+  <url>
+    <loc>https://uchidamizuki.github.io/jpstat/reference/webland.html</loc>
   </url>
 </urlset>
