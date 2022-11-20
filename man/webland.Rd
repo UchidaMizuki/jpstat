@@ -28,7 +28,9 @@ provided by Japan's Ministry of Land, Infrastructure, Transport and Tourism.
 \dontrun{
 # Collect trade data
 webland_trade() |>
-  itemise(from = "20151", to = "20152", city_code = "13102") |>
+  itemise(from = "20151",
+          to = "20152",
+          city_code = "13102") |>
   collect()
 
 # Collect target municipalities
