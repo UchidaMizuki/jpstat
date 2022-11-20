@@ -4,6 +4,9 @@
 # jpstat
 
 <!-- badges: start -->
+
+[![CRAN
+status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org/package=jpstat)
 <!-- badges: end -->
 
 **README is currently only available in Japanese.**
