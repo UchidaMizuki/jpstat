@@ -296,37 +296,8 @@
 <span>          city_code <span class="op">=</span> <span class="st">"01101"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">trade</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="5%">
-<col width="3%">
-<col width="3%">
-<col width="4%">
-<col width="4%">
-<col width="3%">
-<col width="3%">
-<col width="1%">
-<col width="4%">
-<col width="3%">
-<col width="2%">
-<col width="4%">
-<col width="4%">
-<col width="5%">
-<col width="5%">
-<col width="3%">
-<col width="2%">
-<col width="3%">
-<col width="2%">
-<col width="5%">
-<col width="2%">
-<col width="3%">
-<col width="4%">
-<col width="2%">
-<col width="4%">
-<col width="3%">
-<col width="2%">
-</colgroup>
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">trade</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">8</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
 <thead><tr class="header">
 <th align="left">type</th>
 <th align="left">city_code</th>
@@ -336,25 +307,6 @@
 <th align="left">trade_price</th>
 <th align="left">floor_plan</th>
 <th align="left">area</th>
-<th align="left">building_year</th>
-<th align="left">structure</th>
-<th align="left">purpose</th>
-<th align="left">city_planning</th>
-<th align="left">coverage_ratio</th>
-<th align="left">floor_area_ratio</th>
-<th align="left">period</th>
-<th align="left">renovation</th>
-<th align="left">region</th>
-<th align="left">land_shape</th>
-<th align="left">frontage</th>
-<th align="left">total_floor_area</th>
-<th align="left">use</th>
-<th align="left">direction</th>
-<th align="left">classification</th>
-<th align="left">breadth</th>
-<th align="left">price_per_unit</th>
-<th align="left">unit_price</th>
-<th align="left">remarks</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
@@ -366,25 +318,6 @@
 <td align="left">32000000</td>
 <td align="left">２ＬＤＫ</td>
 <td align="left">55</td>
-<td align="left">平成28年</td>
-<td align="left">ＲＣ</td>
-<td align="left">住宅</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">600</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">未改装</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">宅地(土地と建物)</td>
@@ -395,25 +328,6 @@
 <td align="left">380000000</td>
 <td align="left">NA</td>
 <td align="left">360</td>
-<td align="left">昭和36年</td>
-<td align="left">木造</td>
-<td align="left">住宅</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">400</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">NA</td>
-<td align="left">商業地</td>
-<td align="left">長方形</td>
-<td align="left">15.0</td>
-<td align="left">160</td>
-<td align="left">その他</td>
-<td align="left">北</td>
-<td align="left">市道</td>
-<td align="left">27.0</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">中古マンション等</td>
@@ -424,25 +338,6 @@
 <td align="left">10000000</td>
 <td align="left">１ＬＤＫ</td>
 <td align="left">40</td>
-<td align="left">昭和52年</td>
-<td align="left">ＳＲＣ</td>
-<td align="left">住宅</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">400</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">改装済</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
 <td align="left">中古マンション等</td>
@@ -453,25 +348,6 @@
 <td align="left">9000000</td>
 <td align="left">１ＬＤＫ</td>
 <td align="left">45</td>
-<td align="left">平成3年</td>
-<td align="left">ＳＲＣ</td>
-<td align="left">住宅</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">400</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">改装済</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
 <td align="left">中古マンション等</td>
@@ -482,54 +358,6 @@
 <td align="left">3000000</td>
 <td align="left">１Ｒ</td>
 <td align="left">20</td>
-<td align="left">昭和52年</td>
-<td align="left">ＳＲＣ</td>
-<td align="left">その他</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">400</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">中古マンション等</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">3000000</td>
-<td align="left">１Ｋ</td>
-<td align="left">15</td>
-<td align="left">昭和60年</td>
-<td align="left">ＳＲＣ</td>
-<td align="left">住宅</td>
-<td align="left">商業地域</td>
-<td align="left">80</td>
-<td align="left">400</td>
-<td align="left">2020年第１四半期</td>
-<td align="left">未改装</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
-<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
