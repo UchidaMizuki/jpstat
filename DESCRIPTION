@@ -7,8 +7,7 @@ Description: Provides tools to use APIs such as 'e-Stat' (<https://www.e-stat.go
     the portal site for Japanese government statistics, and 
     'RESAS' (Regional Economy and Society Analyzing System, <https://resas.go.jp>). 
 License: MIT + file LICENSE
-URL: https://github.com/UchidaMizuki/jpstat,
-    https://uchidamizuki.github.io/jpstat/
+URL: https://github.com/UchidaMizuki/jpstat
 BugReports: https://github.com/UchidaMizuki/jpstat/issues
 Encoding: UTF-8
 LazyData: true
