@@ -146,5 +146,5 @@ trade <- trade |>
           city_code = "01101") |> 
   collect()
 
-knitr::kable(head(trade))
+knitr::kable(trade[1:5, 1:8])
 ```
