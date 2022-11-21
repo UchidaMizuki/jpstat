@@ -152,8 +152,6 @@ knitr::kable(power_for_industry)
 
 ## 不動産取引価格情報取得API
 
-不動産取引価格情報取得APIについては[ホームページ](https://www.land.mlit.go.jp/webland/api.html)を参照してください．
-
 ``` r
 trade <- webland_trade()
 trade

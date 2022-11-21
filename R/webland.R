@@ -11,9 +11,6 @@
 #' `webland_city()` a `webland_city` object. Obtains a list of target
 #' municipalities in the same way as `webland_trade()`.
 #'
-#' @seealso <https://www.land.mlit.go.jp/webland_english/servlet/MainServlet>
-#' @seealso <https://www.land.mlit.go.jp/webland/api.html>
-#'
 #' @examples
 #' \dontrun{
 #' # Collect trade data

@@ -1,9 +1,9 @@
 Package: jpstat
 Type: Package
-Title: Tools for Easy Use of 'e-Stat', 'RESAS' API, etc
+Title: Tools for Easy Use of 'e-Stat', 'RESAS' API, Etc
 Version: 0.3.0
 Authors@R: person("Mizuki", "Uchida", email = "uchidamizuki@vivaldi.net", role = c("aut", "cre"))
-Description: Provides tools to use APIs such as 'e-Stat' (<https://www.e-stat.go.jp/>), 
+Description: Provides tools to use API such as 'e-Stat' (<https://www.e-stat.go.jp/>), 
     the portal site for Japanese government statistics, and 
     'RESAS' (Regional Economy and Society Analyzing System, <https://resas.go.jp>). 
 License: MIT + file LICENSE

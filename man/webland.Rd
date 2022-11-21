@@ -40,8 +40,3 @@ webland_city() |>
 }
 
 }
-\seealso{
-\url{https://www.land.mlit.go.jp/webland_english/servlet/MainServlet}
-
-\url{https://www.land.mlit.go.jp/webland/api.html}
-}
