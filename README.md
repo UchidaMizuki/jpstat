@@ -111,7 +111,8 @@ RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキー
 が必要です
 (詳しくは[ホームページ](https://opendata.resas-portal.go.jp)を参照してください)．
 RESAS
-APIの利用にあたっては，[API詳細仕様](https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html)を事前に確認してください．
+APIの利用にあたっては，[利用規約](https://opendata.resas-portal.go.jp/terms.html)を確認してください
+([API詳細仕様](https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html))．
 
     power_for_industry <- resas(X_API_KEY = "Your X-API-KEY", 
                                 "https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html")
