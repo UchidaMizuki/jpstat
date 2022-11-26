@@ -1,7 +1,8 @@
 library(tidyverse)
-library(jpstat)
 library(fs)
 library(hexSticker)
+
+pkgload::load_all()
 
 font_logo_en <- "Poppins"
 font_logo_ja <- "Noto Sans JP"
