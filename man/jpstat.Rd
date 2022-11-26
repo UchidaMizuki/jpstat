@@ -6,12 +6,15 @@
 \alias{jpstat-package}
 \title{Tools for easy use of 'e-Stat' API}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides tools to use API such as 'e-Stat' (\url{https://www.e-stat.go.jp/}), the portal site for Japanese government statistics, and 'RESAS' (Regional Economy and Society Analyzing System, \url{https://resas.go.jp}).
 }
 \seealso{
 Useful links:
 \itemize{
   \item \url{https://github.com/UchidaMizuki/jpstat}
+  \item \url{https://uchidamizuki.github.io/jpstat/}
   \item Report bugs at \url{https://github.com/UchidaMizuki/jpstat/issues}
 }
 
