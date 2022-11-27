@@ -22,99 +22,68 @@ JGD2011 <- 6668
 appId <- keyring::key_get("estat-api")
 
 # Population
-pop_2015 <- estat(appId = appId,
-                  statsDataId = "0000020201",
-                  lang = "E")
+popdens_2015 <- estat(appId = appId,
+                      statsDataId = "0000010201",
+                      lang = "E")
 
-pop_2015 <- pop_2015 |>
+popdens_2015 <- popdens_2015 |>
   activate(tab) |>
   select() |>
 
   activate(cat01) |>
-  filter(name == "A1101_Total population (Both sexes)") |>
+  filter(name == "#A01202_Population per 1 km2 of inhabitable area") |>
   select() |>
 
   activate(area) |>
-  rekey("city") |>
-  select(code, name) |>
+  rekey("pref") |>
+  filter(name != "All Japan") |>
+  select(code) |>
 
   activate(time) |>
   filter(name == "2015") |>
   select() |>
 
-  collect(n = "pop") |>
-  mutate(pop = parse_number(pop))
+  collect(n = "popdens_per_1km2") |>
+  mutate(pref_code = pref_code |>
+           str_extract("^\\d{2}") |>
+           as.integer(),
+         popdens_per_1km2 = parse_number(popdens_per_1km2))
 
-# habitable_area
-habitable_area_2015 <- estat(appId = appId,
-                             statsDataId = "0000020202",
-                             lang = "E")
+japan <- rnaturalearth::ne_states("japan",
+                                  returnclass = "sf") |>
+  select(iso_3166_2, name) |>
+  mutate(pref_code = iso_3166_2 |>
+           str_extract("(?<=JP-)\\d{2}") |>
+           as.integer()) |>
+  select(!iso_3166_2)
 
-habitable_area_2015 <- habitable_area_2015 |>
-  activate(tab) |>
-  select() |>
-
-  activate(cat01) |>
-  filter(name == "B1103_Inhabitable area") |>
-  select() |>
-
-  activate(area) |>
-  rekey("city") |>
-  select(code, name) |>
-
-  activate(time) |>
-  filter(name == "2015") |>
-
-  collect(n = "habitable_area_ha") |>
-  mutate(habitable_area_ha = parse_number(habitable_area_ha,
-                                          na = "-"))
-
-popdens_2015 <- grid_city2015 |>
-  group_by(city_code) |>
-  mutate(size_city_code = n()) |>
-  inner_join(pop_2015 |>
-               select(city_code, pop),
-             by = "city_code") |>
-  inner_join(habitable_area_2015 |>
-               select(city_code, habitable_area_ha),
-             by = "city_code") |>
-  mutate(across(c(pop, habitable_area_ha),
-                ~ .x / size_city_code)) |>
-  select(!size_city_code) |>
-
+bbox_japan <- grid_city2015 |>
   mutate(grid = grid_80km(grid)) |>
-  group_by(grid) |>
-  summarise(across(c(pop, habitable_area_ha),
-                   partial(sum,
-                           na.rm = TRUE))) |>
-  mutate(popdens_per_ha = pop / habitable_area_ha) |>
-  select(!c(pop, habitable_area_ha)) |>
-  sf::st_as_sf(crs = JGD2011)
+  distinct(grid) |>
+  sf::st_bbox()
 
-plot_popdens_2015 <- popdens_2015 |>
-  ggplot(aes(fill = popdens_per_ha)) +
+plot_popdens_2015 <- japan |>
+  left_join(popdens_2015,
+            by = "pref_code") |>
+  ggplot(aes(fill = popdens_per_1km2)) +
   geom_sf(show.legend = FALSE,
-          color = fill_logo) +
+          color = "transparent") +
   scale_fill_viridis_c(option = "turbo",
-                       trans = "log10")
+                       trans = "log10") +
+  coord_sf(xlim = bbox_japan[c("xmin", "xmax")],
+           ylim = bbox_japan[c("ymin", "ymax")])
 
 sticker(plot_popdens_2015,
         package = "",
         filename = file_logo,
 
-        s_width = 1.6,
-        s_height = 1.6,
+        s_width = 2.0,
+        s_height = 2.0,
         s_x = 1,
-        s_y = 1,
+        s_y = 0.8,
 
         h_fill = fill_logo,
         h_color = "transparent") +
-
-        # spotlight = TRUE,
-        # l_x = 1,
-        # l_y = 1,
-        # l_width = 6,
-        # l_height = 6) +
   geom_url(url = "jpstat",
            x = 0.975,
            y = 0.225,
