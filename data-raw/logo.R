@@ -7,7 +7,6 @@ pkgload::load_all()
 theme_set(theme_void())
 
 font_logo <- "Poppins"
-
 sysfonts::font_add_google(font_logo)
 
 # logo --------------------------------------------------------------------
@@ -57,10 +56,10 @@ japan <- rnaturalearth::ne_states("japan",
            as.integer()) |>
   select(!iso_3166_2)
 
-bbox_japan <- grid_city2015 |>
-  mutate(grid = grid_80km(grid)) |>
-  distinct(grid) |>
-  sf::st_bbox()
+# bbox_japan <- grid_city2015 |>
+#   mutate(grid = grid_80km(grid)) |>
+#   distinct(grid) |>
+#   sf::st_bbox()
 
 plot_popdens_2015 <- japan |>
   left_join(popdens_2015,
@@ -69,9 +68,9 @@ plot_popdens_2015 <- japan |>
   geom_sf(show.legend = FALSE,
           color = "transparent") +
   scale_fill_viridis_c(option = "turbo",
-                       trans = "log10") +
-  coord_sf(xlim = bbox_japan[c("xmin", "xmax")],
-           ylim = bbox_japan[c("ymin", "ymax")])
+                       trans = "log10")
+  # coord_sf(xlim = bbox_japan[c("xmin", "xmax")],
+  #          ylim = bbox_japan[c("ymin", "ymax")])
 
 sticker(plot_popdens_2015,
         package = "",
@@ -80,7 +79,7 @@ sticker(plot_popdens_2015,
         s_width = 2.0,
         s_height = 2.0,
         s_x = 1,
-        s_y = 0.8,
+        s_y = 0.9,
 
         h_fill = fill_logo,
         h_color = "transparent") +
