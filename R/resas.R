@@ -93,58 +93,16 @@ resas_query <- function(x) {
 }
 
 resas_get <- function(setup) {
-  get_content(setup$url,
-              config = httr::add_headers(`X-API-KEY` = setup$X_API_KEY),
-              path = setup$path,
-              query = setup$query)
-}
+  out <- get_content(setup$url,
+                     config = httr::add_headers(`X-API-KEY` = setup$X_API_KEY),
+                     path = setup$path,
+                     query = setup$query)
 
-resas_unnest <- function(x) {
-  if (identical(x, "400")) {
+  if (identical(out, "400")) {
     abort("400 Bad Request")
   }
 
-  result <- x$result
-
-  if (is.null(result)) {
-    abort(x$message)
-  }
-
-  if (is_named(result)) {
-    locs <- which(purrr::map_lgl(result, is.list))
-
-    size <- vec_size(locs)
-    out <- vec_init(list(), size)
-    for (i in seq_len(size)) {
-      out[[i]] <- resas_unnest_recursive(c(result[-locs], result[locs[[i]]])) |>
-        dplyr::rename_with(str_to_snakecase)
-    }
-
-    names(out) <- names(result)[locs]
-  } else {
-    out <- resas_unnest_recursive(result)
-  }
-
-  out
-}
-
-resas_unnest_recursive <- function(x) {
-  if (is_named(x)) {
-    locs <- which(purrr::map_lgl(x, is.list))
-
-    for (loc in locs) {
-      x[[loc]] <- resas_unnest_recursive(x[[loc]])
-    }
-
-    x |>
-      tibble::as_tibble() |>
-      tidyr::unnest_wider(dplyr::all_of(locs),
-                          names_sep = "/")
-  } else {
-    x |>
-      dplyr::bind_rows() |>
-      resas_unnest_recursive()
-  }
+  out$result
 }
 
 #' @export
@@ -158,5 +116,68 @@ collect.resas <- function(x, ...) {
 collect_resas <- function(setup) {
   setup |>
     resas_get() |>
-    resas_unnest()
+    resas_rectangle()
+}
+
+resas_rectangle <- function(x) {
+  if (is_named(x)) {
+    x <- x |>
+      purrr::modify(function(x) {
+        if (vec_is_list(x)) {
+          x <- resas_rectangle(x)
+        }
+        x
+      })
+
+    if (vec_is_list(x[[1L]])) {
+      x <- x |>
+        purrr::imap(function(x, nm) {
+          x |>
+            set_names(stringr::str_c(nm, names2(x),
+                                     sep = "/"))
+        })
+      vec_c(!!!unname(x))
+    } else {
+      sizes <- list_sizes(x)
+      n <- vec_size(x)
+      loc_1 <- vec_as_location(sizes == 1L, n)
+      loc_n <- vec_as_location(sizes > 1L, n)
+
+      if (vec_size(loc_n) <= 1L) {
+        vec_cbind(!!!x) |>
+          resas_unpack()
+      } else {
+        loc_n |>
+          purrr::map(function(loc_n) {
+            vec_cbind(!!!x[c(loc_1, loc_n)]) |>
+              resas_unpack()
+          })
+      }
+    }
+  } else {
+    x <- purrr::modify(x, resas_rectangle)
+    x_1 <- x[[1L]]
+
+    if (vec_is_list(x_1)) {
+      nms <- names(x_1)
+      nms |>
+        set_names() |>
+        purrr::map(function(nm) {
+          x <- x |>
+            purrr::modify(function(x) {
+              x[[nm]]
+            })
+          vec_rbind(!!!x)
+        })
+    } else {
+      vec_rbind(!!!x)
+    }
+  }
+}
+
+resas_unpack <- function(x) {
+  cols <- vec_as_location(purrr::map_lgl(x, is.data.frame), ncol(x))
+  x |>
+    tidyr::unpack(cols,
+                  names_sep = "/")
 }
