@@ -1,6 +1,5 @@
 test_that("resas-power_for_industry", {
   skip_on_cran()
-
   library(dplyr)
 
   X_API_KEY <- keyring::key_get("resas-api")
@@ -16,12 +15,11 @@ test_that("resas-power_for_industry", {
 
   power_for_industry <- collect(power_for_industry)
 
-  expect_s3_class(power_for_industry$data, "tbl_df")
+  expect_s3_class(power_for_industry, "tbl_df")
 })
 
 test_that("resas-population_change_rate", {
   skip_on_cran()
-
   library(dplyr)
 
   X_API_KEY <- keyring::key_get("resas-api")
@@ -37,13 +35,10 @@ test_that("resas-population_change_rate", {
 
 test_that("resas-partner_docomo_destination", {
   skip_on_cran()
-
   library(dplyr)
 
   X_API_KEY <- keyring::key_get("resas-api")
-  partner_docomo_destination <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/partner/docomo/destination.html")
-
-  partner_docomo_destination <- partner_docomo_destination |>
+  partner_docomo_destination <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/partner/docomo/destination.html") |>
     itemise(year = "2016",
             month = "01",
             period_of_day = "1",
@@ -53,9 +48,54 @@ test_that("resas-partner_docomo_destination", {
             pref_code_destination = "13",
             city_code_destination = "13101",
             pref_code_residence = "13",
-            city_code_residence = "-")
+            city_code_residence = "-") |>
+    collect()
 
-  partner_docomo_destination <- collect(partner_docomo_destination)
+  expect_s3_class(partner_docomo_destination, "tbl_df")
+})
 
-  expect_s3_class(partner_docomo_destination$prefs, "tbl_df")
+test_that("resas-population-society-for_age_class", {
+  skip_on_cran()
+  library(dplyr)
+
+  X_API_KEY <- keyring::key_get("resas-api")
+  population_society_for_age_class <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/population/society/forAgeClass.html") |>
+    itemise(pref_code = "01") |>
+    collect()
+
+  expect_s3_class(population_society_for_age_class$`data/positive_age_classes`, "tbl_df")
+  expect_s3_class(population_society_for_age_class$`data/negative_age_classes`, "tbl_df")
+})
+
+test_that("agriculture_crops_farmers_age_structure", {
+  skip_on_cran()
+  library(dplyr)
+
+  X_API_KEY <- keyring::key_get("resas-api")
+  agriculture_crops_farmers_age_structure <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/agriculture/crops/farmersAgeStructure.html") |>
+    itemise(city_code = "11362",
+            farmers_type = "1",
+            gender_type = "3",
+            matter = "3",
+            pref_code = "11") |>
+    collect()
+
+  expect_s3_class(agriculture_crops_farmers_age_structure$`years/legend`, "tbl_df")
+  expect_s3_class(agriculture_crops_farmers_age_structure$`years/data`, "tbl_df")
+})
+
+test_that("agriculture_crops_farmers_average_age", {
+  skip_on_cran()
+  library(dplyr)
+
+  X_API_KEY <- keyring::key_get("resas-api")
+  agriculture_crops_farmers_average_age <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/agriculture/crops/farmersAverageAge.html") |>
+    itemise(city_code = "11362",
+            farmers_type = "1",
+            gender_type = "3",
+            matter = "3",
+            pref_code = "11") |>
+    collect()
+
+  expect_s3_class(agriculture_crops_farmers_average_age, "tbl_df")
 })

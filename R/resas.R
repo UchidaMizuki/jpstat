@@ -106,78 +106,111 @@ resas_get <- function(setup) {
 }
 
 #' @export
-collect.resas <- function(x, ...) {
+collect.resas <- function(x,
+                          to_snakecase = TRUE,
+                          names_sep = "/", ...) {
   setup <- attr(x, "setup")
   setup$query <- resas_query(x)
 
-  collect_resas(setup)
+  collect_resas(setup,
+                args = list(to_snakecase = to_snakecase,
+                            names_sep = names_sep))
 }
 
-collect_resas <- function(setup) {
+collect_resas <- function(setup, args) {
   setup |>
     resas_get() |>
-    resas_rectangle()
+    resas_rectangle(args = args)
 }
 
-resas_rectangle <- function(x) {
-  if (is_named(x)) {
+resas_rectangle <- function(x, args) {
+  if (is.data.frame(x)) {
+    x
+  } else if (is_named(x)) {
     x <- x |>
       purrr::modify(function(x) {
-        if (vec_is_list(x)) {
-          x <- resas_rectangle(x)
-        }
-        x
-      })
+        resas_rectangle(x,
+                        args = args)
+      }) |>
+      resas_flatten(args = args)
 
-    if (vec_is_list(x[[1L]])) {
-      x <- x |>
-        purrr::imap(function(x, nm) {
-          x |>
-            set_names(stringr::str_c(nm, names2(x),
-                                     sep = "/"))
-        })
-      vec_c(!!!unname(x))
+    sizes <- list_sizes(x)
+    n <- vec_size(x)
+    loc_1 <- vec_as_location(sizes == 1L, n)
+    loc_n <- vec_as_location(sizes > 1L, n)
+
+    if (vec_size(loc_n) <= 1L) {
+      resas_cbind(x,
+                  args = args)
     } else {
-      sizes <- list_sizes(x)
-      n <- vec_size(x)
-      loc_1 <- vec_as_location(sizes == 1L, n)
-      loc_n <- vec_as_location(sizes > 1L, n)
-
-      if (vec_size(loc_n) <= 1L) {
-        vec_cbind(!!!x) |>
-          resas_unpack()
-      } else {
-        loc_n |>
-          purrr::map(function(loc_n) {
-            vec_cbind(!!!x[c(loc_1, loc_n)]) |>
-              resas_unpack()
-          })
-      }
+      loc_n |>
+        purrr::map(function(loc_n) {
+          resas_rectangle(x[c(loc_1, loc_n)],
+                          args = args)
+        })
     }
-  } else {
-    x <- purrr::modify(x, resas_rectangle)
+  } else if (vec_is_list(x)) {
+    x <- purrr::modify(x,
+                       function(x) {
+                         resas_rectangle(x,
+                                         args = args)
+                       })
     x_1 <- x[[1L]]
-
     if (vec_is_list(x_1)) {
       nms <- names(x_1)
+      to_snakecase <- resas_to_snakecase(args)
       nms |>
-        set_names() |>
+        set_names(to_snakecase(nms)) |>
         purrr::map(function(nm) {
           x <- x |>
             purrr::modify(function(x) {
               x[[nm]]
             })
-          vec_rbind(!!!x)
+          resas_rectangle(x,
+                          args = args)
         })
     } else {
       vec_rbind(!!!x)
     }
+  } else {
+    x
   }
 }
 
-resas_unpack <- function(x) {
+resas_flatten <- function(x, args) {
+  to_snakecase <- resas_to_snakecase(args)
+  x <- x |>
+    purrr::imap(function(x, nm) {
+      if (vec_is_list(x)) {
+        x |>
+          set_names(stringr::str_c(to_snakecase(nm), names2(x),
+                                   sep = args$names_sep))
+      } else {
+        list(x) |>
+          set_names(nm)
+      }
+    })
+  vec_c(!!!unname(x))
+}
+
+resas_unpack <- function(x, args) {
   cols <- vec_as_location(purrr::map_lgl(x, is.data.frame), ncol(x))
   x |>
     tidyr::unpack(cols,
-                  names_sep = "/")
+                  names_sep = args$names_sep)
+}
+
+resas_cbind <- function(x, args) {
+  to_snakecase <- resas_to_snakecase(args)
+  vec_cbind(!!!x) |>
+    resas_unpack(args = args) |>
+    dplyr::rename_with(to_snakecase)
+}
+
+resas_to_snakecase <- function(args) {
+  if (args$to_snakecase) {
+    str_to_snakecase
+  } else {
+    identity
+  }
 }
