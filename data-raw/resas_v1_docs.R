@@ -2,6 +2,8 @@ library(tidyverse)
 library(polite)
 library(rvest)
 
+pkgload::load_all()
+
 # resas_v1_docs -----------------------------------------------------------
 
 url <- "https://opendata.resas-portal.go.jp"
