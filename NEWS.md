@@ -1,3 +1,7 @@
+# jpstat 0.3.1
+
+* Fix a bug where `resas()` could not rectangle data (#6).
+
 # jpstat 0.3.0
 
 * Add `resas()` to use 'RESAS' API (https://opendata.resas-portal.go.jp).
