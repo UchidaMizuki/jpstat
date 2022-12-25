@@ -99,3 +99,35 @@ test_that("agriculture_crops_farmers_average_age", {
 
   expect_s3_class(agriculture_crops_farmers_average_age, "tbl_df")
 })
+
+test_that("prefectures", {
+  skip_on_cran()
+  library(dplyr)
+
+  X_API_KEY <- keyring::key_get("resas-api")
+  prefectures <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/prefectures.html")
+
+  expect_s3_class(prefectures, "tbl_df")
+})
+
+test_that("medical_welfare_care_analysis_chart", {
+  skip_on_cran()
+  library(dplyr)
+
+  X_API_KEY <- keyring::key_get("resas-api")
+  medical_welfare_care_analysis_chart <- resas(X_API_KEY, "https://opendata.resas-portal.go.jp/docs/api/v1/medicalWelfare/careAnalysis/chart.html",
+                                               query = list(matter_1 = "1")) |>
+    itemise(year = "2015",
+            disp_type = "1",
+            sort_type = "1",
+            # matter_1 = "1",
+            matter_2 = "101",
+            broad_category_cd = "1",
+            middle_category_cd = "100",
+            pref_code = "2",
+            city_code = "-",
+            insurance_code = "-") |>
+    collect()
+
+  expect_s3_class(medical_welfare_care_analysis_chart, "tbl_df")
+})

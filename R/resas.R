@@ -15,23 +15,37 @@ resas_docs <- function(setup) {
 #'
 #' @param X_API_KEY An 'X-API-KEY' of 'RESAS' API.
 #' @param path A 'RESAS' API path.
+#' @param query Additional queries.
+#' @param to_snakecase Whether the parameters and responses should be named as
+#' snake cases or not?
+#' @param names_sep A character that separates the names of the responses.
+#' @param rectangle Whether to rectangle the data or not?
 #'
 #' @return A `resas` object.
 #'
 #' @seealso <https://opendata.resas-portal.go.jp/>
 #'
 #' @export
-resas <- function(X_API_KEY, path) {
+resas <- function(X_API_KEY, path,
+                  query = list(),
+                  to_snakecase = TRUE,
+                  names_sep = "/",
+                  rectangle = TRUE) {
   path <- resas_path(path)
 
   setup <- list(url = "https://opendata.resas-portal.go.jp/",
                 X_API_KEY = X_API_KEY,
-                path = path)
+                path = path,
+                query = query,
+                to_snakecase = to_snakecase,
+                names_sep = names_sep,
+                rectangle = rectangle)
 
   docs <- resas_docs(setup)
   parameters <- docs$parameters
 
   if (vec_is_empty(parameters)) {
+    setup$query <- query
     out <- collect_resas(setup)
   } else {
     width <- pillar::get_max_extent(parameters$description)
@@ -44,8 +58,10 @@ resas <- function(X_API_KEY, path) {
                                     class = "resas_value")
                          })
 
-    out <- navigatr::new_nav_input(key = str_to_snakecase(parameters$name),
+    to_snakecase <- resas_to_snakecase(setup)
+    out <- navigatr::new_nav_input(key = to_snakecase(parameters$name),
                                    value = value,
+                                   attrs = data_frame(key = parameters$name),
                                    setup = setup,
                                    docs = docs,
                                    class = "resas")
@@ -75,7 +91,7 @@ summary.resas <- function(object, ...) {
 }
 
 resas_query <- function(x) {
-  key <- str_to_camelcase(x$key)
+  key <- x$attrs$key
   value <- x$value |>
     purrr::map(~ {
       .x <- .x |>
@@ -106,21 +122,22 @@ resas_get <- function(setup) {
 }
 
 #' @export
-collect.resas <- function(x,
-                          to_snakecase = TRUE,
-                          names_sep = "/", ...) {
+collect.resas <- function(x, ...) {
   setup <- attr(x, "setup")
-  setup$query <- resas_query(x)
-
-  collect_resas(setup,
-                args = list(to_snakecase = to_snakecase,
-                            names_sep = names_sep))
+  setup$query <- dots_list(!!!resas_query(x), !!!setup$query,
+                           .homonyms = "first")
+  collect_resas(setup)
 }
 
-collect_resas <- function(setup, args) {
-  setup |>
-    resas_get() |>
-    resas_rectangle(args = args)
+collect_resas <- function(setup) {
+  out <- setup |>
+    resas_get()
+
+  if (setup$rectangle) {
+    out <- out |>
+      resas_rectangle(args = setup[c("to_snakecase", "names_sep")])
+  }
+  out
 }
 
 resas_rectangle <- function(x, args) {
