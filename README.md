@@ -136,20 +136,10 @@ power_for_industry <- power_for_industry |>
 knitr::kable(power_for_industry)
 ```
 
-<table class="kable_wrapper">
-<tbody>
-<tr>
-<td>
-
 | pref_name | pref_code | sic_code | sic_name   | data/simc_code | data/simc_name | data/value | data/employee | data/labor |
 |:----------|----------:|:---------|:-----------|:---------------|:---------------|-----------:|--------------:|-----------:|
 | 北海道    |         1 | A        | 農業，林業 | 01             | 農業           |     4.4697 |        3.2743 |     0.9858 |
 | 北海道    |         1 | A        | 農業，林業 | 02             | 林業           |     6.1208 |        3.0613 |     1.4438 |
-
-</td>
-</tr>
-</tbody>
-</table>
 
 ## 不動産取引価格情報取得API
 
