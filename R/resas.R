@@ -211,9 +211,9 @@ resas_flatten <- function(x, args) {
 }
 
 resas_unpack <- function(x, args) {
-  cols <- vec_as_location(purrr::map_lgl(x, is.data.frame), ncol(x))
+  cols <- unname(vec_as_location(purrr::map_lgl(x, is.data.frame), ncol(x)))
   x |>
-    tidyr::unpack(cols,
+    tidyr::unpack(!!cols,
                   names_sep = args$names_sep)
 }
 

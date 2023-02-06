@@ -142,7 +142,7 @@ collect.estat <- function(x,
                           n = "n",
                           names_sep = "_",
                           query = list(),
-                          limit = 1e5, ...) {
+                          limit = 100000L, ...) {
   setup <- attr(x, "setup")
   setup$query <- estat_query(x, query)
 
@@ -175,7 +175,8 @@ collect.estat <- function(x,
         tibble::as_tibble() |>
         dplyr::rename_with(~ {
           paste(key, .x,
-                sep = names_sep)
+                sep = names_sep,
+                recycle0 = TRUE)
         },
         !".estat_rowid") |>
         dplyr::mutate(!!query_name := codes[.data$.estat_rowid],
