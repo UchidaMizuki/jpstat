@@ -156,17 +156,15 @@ collect.estat <- function(x,
     data <- tibble::new_tibble(data)
   } else {
     start <- seq(1, total, limit)
-    pb <- progress::progress_bar$new(format = format_downloading,
-                                     total = vctrs::vec_size(start))
-    data <- purrr::map_dfr(start,
-                           function(start) {
-                             out <- estat_collect(setup = setup,
-                                                  start = start,
-                                                  limit = limit,
-                                                  n = n)
-                             pb$tick()
-                             out
-                           })
+    data <- purrr::map(start,
+                       function(start) {
+                         estat_collect(setup = setup,
+                                       start = start,
+                                       limit = limit,
+                                       n = n)
+                       },
+                       .progress = TRUE) |>
+      purrr::list_rbind()
   }
 
   cols <- list(x$key, x$value, query_name, attr(x, "codes")) |>
