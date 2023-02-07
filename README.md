@@ -107,6 +107,9 @@ knitr::kable(census)
 
 ## RESAS API
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキーの発行)
 が必要です
 (詳しくは[ホームページ](https://opendata.resas-portal.go.jp)を参照してください)．
@@ -142,6 +145,9 @@ knitr::kable(power_for_industry)
 | 北海道    |         1 | A        | 農業，林業 | 02             | 林業           |     6.1208 |        3.0613 |     1.4438 |
 
 ## 不動産取引価格情報取得API
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
 ``` r
 trade <- webland_trade()
