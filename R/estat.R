@@ -75,7 +75,7 @@ estat <- function(appId,
     dplyr::mutate(value = .data$value |>
                     purrr::map_chr(~ {
                       .x |>
-                        paste0(collapse = " ")
+                        stringr::str_c(collapse = " ")
                     }))
 
   meta_info <- tibble::tibble(meta_info = meta_info |>
@@ -174,9 +174,8 @@ collect.estat <- function(x,
       value |>
         tibble::as_tibble() |>
         dplyr::rename_with(~ {
-          paste(key, .x,
-                sep = names_sep,
-                recycle0 = TRUE)
+          stringr::str_c(key, .x,
+                         sep = names_sep)
         },
         !".estat_rowid") |>
         dplyr::mutate(!!query_name := codes[.data$.estat_rowid],
@@ -205,7 +204,7 @@ estat_query <- function(x, query) {
   query_name <- x |>
     attr("query_name") |>
     stringr::str_to_sentence()
-  query_name <- paste0("cd", query_name)
+  query_name <- stringr::str_c("cd", query_name)
 
   query_codes <- purrr::map2(x$value, attr(x, "codes"),
                              function(value, codes) {
@@ -214,8 +213,8 @@ estat_query <- function(x, query) {
                                if (size == vec_size(codes)) {
                                  NULL
                                } else {
-                                 paste0(codes[value$.estat_rowid],
-                                        collapse = ",")
+                                 stringr::str_c(codes[value$.estat_rowid],
+                                                collapse = ",")
                                }
                              })
   names(query_codes) <- query_name
@@ -264,7 +263,7 @@ estat_collect <- function(setup, start, limit, n) {
 obj_sum.tbl_estat <- function(x) {
   attrs <- attributes(x)
   nms <- setdiff(names(x), ".estat_rowid")
-  paste0(pillar::align(attrs$key_name, attrs$width_key_name), " ",
-         "[", big_mark(vec_size(x)), "] ",
-         "<", commas(nms), ">")
+  stringr::str_c(pillar::align(attrs$key_name, attrs$width_key_name), " ",
+                 "[", big_mark(vec_size(x)), "] ",
+                 "<", commas(nms), ">")
 }

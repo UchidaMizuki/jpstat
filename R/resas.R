@@ -82,7 +82,7 @@ obj_sum.resas_value <- function(x) {
     required <- ""
   }
 
-  paste0(pillar::align(description, width), ": ", commas(vec_data(x)), required)
+  stringr::str_c(pillar::align(description, width), ": ", commas(vec_data(x)), required)
 }
 
 #' @export

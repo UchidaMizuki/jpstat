@@ -10,13 +10,13 @@ big_mark <- function(x) {
 }
 
 commas <- function(...) {
-  paste0(...,
-         collapse = ", ")
+  stringr::str_c(...,
+                 collapse = ", ")
 }
 
 commas0 <- function(...) {
-  paste0(...,
-         collapse = ",")
+  stringr::str_c(...,
+                 collapse = ",")
 }
 
 compact_query <- function(...) {
@@ -41,7 +41,7 @@ str_to_camelcase <- function(string) {
   string |>
     stringr::str_split("_") |>
     purrr::map_chr(~ {
-      exec(paste0, .x[[1L]], !!!stringr::str_to_sentence(.x[-1L]),
+      exec(stringr::str_c, .x[[1L]], !!!stringr::str_to_sentence(.x[-1L]),
            collapse = "")
     })
 }

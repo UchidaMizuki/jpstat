@@ -161,7 +161,7 @@ obj_sum.webland_time <- function(x) {
     to = "\u53d6\u5f15\u6642\u671fTo"
   )
 
-  paste0(pillar::align(description, width), ": ", out)
+  stringr::str_c(pillar::align(description, width), ": ", out)
 }
 
 #' @export
@@ -180,16 +180,14 @@ obj_sum.webland_pref_code <- function(x) {
   pref_name <- vec_slice(pref_name,
                          vec_match(vec_data(x), pref_code))
 
-  out <- commas(paste0(vec_data(x), "_", pref_name,
-                       recycle0 = TRUE))
-  paste0(pillar::align("\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9", width), ": ", out)
+  out <- commas(stringr::str_c(vec_data(x), "_", pref_name))
+  stringr::str_c(pillar::align("\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9", width), ": ", out)
 }
 
 #' @export
 obj_sum.webland_city_code <- function(x) {
   width <- attr(x, "width")
 
-  out <- commas(paste0(vec_data(x),
-                       recycle0 = TRUE))
-  paste0(pillar::align("\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9", width), ": ", out)
+  out <- commas(stringr::str_c(vec_data(x)))
+  stringr::str_c(pillar::align("\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9", width), ": ", out)
 }
