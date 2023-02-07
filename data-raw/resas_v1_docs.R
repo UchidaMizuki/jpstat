@@ -19,9 +19,9 @@ path <- scrape_utf8(session) |>
   html_element("div.sidemenu") |>
   html_elements("a") |>
   html_attr("href") |>
-  discard(~ {
-    str_ends(.x, "index.html") |
-      str_detect(.x, "codes/[^.]+\\.html")
+  discard(\(x) {
+    str_ends(x, "index.html") |
+      str_detect(x, "codes/[^.]+\\.html")
   })
 
 read_resas_v1_docs <- function(setup) {

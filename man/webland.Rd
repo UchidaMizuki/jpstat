@@ -21,6 +21,9 @@ applying \code{collect()}, The real estate transaction prices are collected.
 municipalities in the same way as \code{webland_trade()}.
 }
 \description{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+}
+\details{
 Collect data from the information on real estate transaction prices API
 provided by Japan's Ministry of Land, Infrastructure, Transport and Tourism.
 }

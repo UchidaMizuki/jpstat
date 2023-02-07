@@ -31,7 +31,7 @@ snake cases or not?}
 A \code{resas} object.
 }
 \description{
-Access 'RESAS' data
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \seealso{
 \url{https://opendata.resas-portal.go.jp/}

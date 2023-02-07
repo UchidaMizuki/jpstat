@@ -13,6 +13,8 @@ resas_docs <- function(setup) {
 
 #' Access 'RESAS' data
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' @param X_API_KEY An 'X-API-KEY' of 'RESAS' API.
 #' @param path A 'RESAS' API path.
 #' @param query Additional queries.
@@ -93,15 +95,15 @@ summary.resas <- function(object, ...) {
 resas_query <- function(x) {
   key <- x$attrs$key
   value <- x$value |>
-    purrr::map(~ {
-      .x <- .x |>
+    purrr::map(\(x) {
+      x <- x |>
         vec_data() |>
         commas0()
 
-      if (.x == "") {
+      if (x == "") {
         return(character())
       } else {
-        return(.x)
+        return(x)
       }
     }) |>
     set_names(key)

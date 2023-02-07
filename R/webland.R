@@ -1,5 +1,7 @@
 #' Information on real estate transaction prices API
 #'
+#' `r lifecycle::badge("experimental")`
+#'
 #' Collect data from the information on real estate transaction prices API
 #' provided by Japan's Ministry of Land, Infrastructure, Transport and Tourism.
 #'

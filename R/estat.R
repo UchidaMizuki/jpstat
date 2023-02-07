@@ -73,27 +73,27 @@ estat <- function(appId,
     purrr::chuck("TABLE_INF") |>
     tibble::enframe() |>
     dplyr::mutate(value = .data$value |>
-                    purrr::map_chr(~ {
-                      .x |>
+                    purrr::map_chr(\(x) {
+                      x |>
                         stringr::str_c(collapse = " ")
                     }))
 
   meta_info <- tibble::tibble(meta_info = meta_info |>
                                 purrr::chuck("CLASS_INF", "CLASS_OBJ")) |>
     tidyr::unnest_wider("meta_info") |>
-    dplyr::rename_with(~ {
-      .x |>
+    dplyr::rename_with(\(x) {
+      x |>
         stringr::str_remove("^@")
     }) |>
     dplyr::rename(key = "id",
                   key_name = "name",
                   value = "CLASS") |>
     dplyr::mutate(value = .data$value |>
-                    purrr::modify(~ {
-                      .x |>
+                    purrr::modify(\(x) {
+                      x |>
                         dplyr::bind_rows() |>
-                        dplyr::rename_with(~ {
-                          .x |>
+                        dplyr::rename_with(\(x) {
+                          x |>
                             stringr::str_remove("^@")
                         }) |>
                         tibble::rowid_to_column(".estat_rowid") |>
@@ -102,7 +102,7 @@ estat <- function(appId,
                                                    class = "tbl_estat")
                     }),
                   codes = .data$value |>
-                    purrr::modify(~ .x$code),
+                    purrr::modify(\(x) x$code),
                   width_key_name = .data$key_name |>
                     pillar::get_max_extent())
 
@@ -173,8 +173,8 @@ collect.estat <- function(x,
     purrr::pmap(function(key, value, query_name, codes) {
       value |>
         tibble::as_tibble() |>
-        dplyr::rename_with(~ {
-          stringr::str_c(key, .x,
+        dplyr::rename_with(\(x) {
+          stringr::str_c(key, x,
                          sep = names_sep)
         },
         !".estat_rowid") |>
@@ -251,8 +251,10 @@ estat_collect <- function(setup, start, limit, n) {
     estat_check_status() |>
     purrr::chuck("STATISTICAL_DATA", "DATA_INF", "VALUE") |>
     dplyr::bind_rows() |>
-    dplyr::rename_with(~ .x |>
-                         stringr::str_remove("^@")) |>
+    dplyr::rename_with(\(x) {
+      x |>
+        stringr::str_remove("^@")
+    } ) |>
     dplyr::rename(!!n := "$") |>
     dplyr::select(!dplyr::any_of("unit"))
 }

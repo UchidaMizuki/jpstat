@@ -40,8 +40,8 @@ str_to_snakecase <- function(string) {
 str_to_camelcase <- function(string) {
   string |>
     stringr::str_split("_") |>
-    purrr::map_chr(~ {
-      exec(stringr::str_c, .x[[1L]], !!!stringr::str_to_sentence(.x[-1L]),
+    purrr::map_chr(\(x) {
+      exec(stringr::str_c, x[[1L]], !!!stringr::str_to_sentence(x[-1L]),
            collapse = "")
     })
 }
