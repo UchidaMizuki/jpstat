@@ -1,3 +1,8 @@
+# jpstat 0.3.2
+
+* Fix a bug caused by the update to dplyr 1.1.0.
+* Use purrr 1.0.0 progress bar and remove dependency on progress.
+
 # jpstat 0.3.1
 
 * Fix a bug where `resas()` could not rectangle data (#6).
