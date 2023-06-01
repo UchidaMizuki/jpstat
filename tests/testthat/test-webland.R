@@ -1,4 +1,5 @@
 test_that("webland", {
+  skip_on_cran()
   library(dplyr)
 
   city <- webland_city()
