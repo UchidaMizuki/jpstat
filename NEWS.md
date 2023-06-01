@@ -1,3 +1,7 @@
+# jpstat 0.3.3
+
+* Correct errors on CRAN Package Check Results
+
 # jpstat 0.3.2
 
 * Fix a bug caused by the update to dplyr 1.1.0.
