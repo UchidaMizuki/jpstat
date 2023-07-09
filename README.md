@@ -183,5 +183,5 @@ knitr::kable(trade[1:5, 1:6])
 ## 参考リンク
 
 - [Rで日本の統計データを効率的に取得しよう（e-Stat
-  APIとjpstatパッケージで）](https://uchidamizuki.quarto.pub/posts/2022/12/call-e-stat-api-in-r.html)
-- [Rで人口ピラミッドのアニメーションを作る](https://uchidamizuki.quarto.pub/posts/2023/01/create-an-animation-of-a-population-pyramid-in-r.html)
+  APIとjpstatパッケージで）](https://uchidamizuki.quarto.pub/blog/posts/2022/12/call-e-stat-api-in-r.html)
+- [Rで人口ピラミッドのアニメーションを作る](https://uchidamizuki.quarto.pub/blog/posts/2023/01/create-an-animation-of-a-population-pyramid-in-r.html)
