@@ -15,7 +15,7 @@ resas_docs <- function(setup) {
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' @param X_API_KEY An 'X-API-KEY' of 'RESAS' API.
+#' @param X_API_KEY (Deprecated) an 'X-API-KEY' of 'RESAS' API.
 #' @param path A 'RESAS' API path.
 #' @param query Additional queries.
 #' @param to_snakecase Whether the parameters and responses should be named as
@@ -28,15 +28,22 @@ resas_docs <- function(setup) {
 #' @seealso <https://opendata.resas-portal.go.jp/>
 #'
 #' @export
-resas <- function(X_API_KEY, path,
+resas <- function(X_API_KEY = deprecated(),
+                  path,
                   query = list(),
                   to_snakecase = TRUE,
                   names_sep = "/",
                   rectangle = TRUE) {
+  if (lifecycle::is_present(X_API_KEY)) {
+    lifecycle::deprecate_warn("0.5.0", "resas(X_API_KEY = )",
+                              details = "Please set the key with `Sys.setenv(RESAS_API_KEY = )`.")
+
+    Sys.setenv(RESAS_API_KEY = X_API_KEY)
+  }
+
   path <- resas_path(path)
 
   setup <- list(url = "https://opendata.resas-portal.go.jp/",
-                X_API_KEY = X_API_KEY,
                 path = path,
                 query = query,
                 to_snakecase = to_snakecase,
@@ -111,8 +118,13 @@ resas_query <- function(x) {
 }
 
 resas_get <- function(setup) {
+  X_API_KEY <- Sys.getenv("RESAS_API_KEY")
+  if (X_API_KEY == "") {
+    rlang::abort("`RESAS_API_KEY` does not exist. Please set the key with `Sys.setenv(RESAS_API_KEY = )`.")
+  }
+
   out <- get_content(setup$url,
-                     config = httr::add_headers(`X-API-KEY` = setup$X_API_KEY),
+                     config = httr::add_headers(`X-API-KEY` = X_API_KEY),
                      path = setup$path,
                      query = setup$query)
 

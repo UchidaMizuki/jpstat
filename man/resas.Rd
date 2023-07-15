@@ -5,7 +5,7 @@
 \title{Access 'RESAS' data}
 \usage{
 resas(
-  X_API_KEY,
+  X_API_KEY = deprecated(),
   path,
   query = list(),
   to_snakecase = TRUE,
@@ -14,7 +14,7 @@ resas(
 )
 }
 \arguments{
-\item{X_API_KEY}{An 'X-API-KEY' of 'RESAS' API.}
+\item{X_API_KEY}{(Deprecated) an 'X-API-KEY' of 'RESAS' API.}
 
 \item{path}{A 'RESAS' API path.}
 
