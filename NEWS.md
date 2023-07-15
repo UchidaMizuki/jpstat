@@ -1,3 +1,9 @@
+# jpstat 0.4.0
+
+* API keys for e-Stat and RESAS are now referenced from environment variables.
+  * `appId` argument to `estat()` is now deprecated.
+  * `X_API_KEY` argument of `resas()` is now deprecated.
+
 # jpstat 0.3.3
 
 * Correct errors on CRAN Package Check Results
