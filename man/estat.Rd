@@ -5,7 +5,7 @@
 \title{Access 'e-Stat' data}
 \usage{
 estat(
-  appId,
+  appId = deprecated(),
   statsDataId,
   lang = c("J", "E"),
   query = list(),
@@ -13,7 +13,7 @@ estat(
 )
 }
 \arguments{
-\item{appId}{An 'appId' of 'e-Stat' API.}
+\item{appId}{(Deprecated) an 'appId' of 'e-Stat' API.}
 
 \item{statsDataId}{A statistical data ID on 'e-Stat'.}
 
