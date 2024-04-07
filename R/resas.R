@@ -124,7 +124,7 @@ resas_get <- function(setup) {
   }
 
   out <- get_content(setup$url,
-                     config = httr::add_headers(`X-API-KEY` = X_API_KEY),
+                     headers = list(`X-API-KEY` = X_API_KEY),
                      path = setup$path,
                      query = setup$query)
 

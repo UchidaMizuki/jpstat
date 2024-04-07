@@ -9,7 +9,7 @@ estat(
   statsDataId,
   lang = c("J", "E"),
   query = list(),
-  path = "rest/3.0/app/json/"
+  path = "rest/3.0/app/json"
 )
 }
 \arguments{

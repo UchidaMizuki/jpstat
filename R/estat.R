@@ -25,7 +25,7 @@ estat_get <- function(path, setup) {
   }
 
   get_content(setup$url,
-              config = httr::add_headers(`Accept-Encoding` = "gzip"),
+              headers = list(`Accept-Encoding` = "gzip"),
               path = c(setup$path, path),
               query = c(list(appId = appId),
                         setup$query))
@@ -57,7 +57,7 @@ estat <- function(appId = deprecated(),
                   statsDataId,
                   lang = c("J", "E"),
                   query = list(),
-                  path = "rest/3.0/app/json/") {
+                  path = "rest/3.0/app/json") {
   if (lifecycle::is_present(appId)) {
     lifecycle::deprecate_warn("0.5.0", "estat(appId = )",
                               details = "Please set the key with `Sys.setenv(ESTAT_API_KEY = )`.")
