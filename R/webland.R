@@ -98,12 +98,10 @@ collect.webland_trade <- function(x, ...) {
   names(query)[key == "pref_code"] <- "area"
   names(query)[key == "city_code"] <- "city"
 
-  trade <- httr::GET(url,
-                     query = query)
-  httr::stop_for_status(trade)
-
-  trade |>
-    httr::content() |>
+  httr2::request(url) |>
+    httr2::req_url_query(!!!query) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json() |>
     purrr::chuck("data") |>
     dplyr::bind_rows() |>
     dplyr::rename_with(str_to_snakecase) |>
@@ -127,12 +125,10 @@ collect.webland_city <- function(x, ...) {
     abort("The size of `pref_code` must be 0 or 1.")
   }
 
-  city <- httr::GET(url,
-                    query = list(area = pref_code))
-  httr::stop_for_status(city)
-
-  city |>
-    httr::content() |>
+  httr2::request(url) |>
+    httr2::req_url_query(area = pref_code) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json() |>
     purrr::chuck("data") |>
     dplyr::bind_rows() |>
     set_names(c("city_code", "city_name"))

@@ -19,10 +19,9 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Imports: 
     dplyr (>= 0.8.0),
-    httr,
     pillar,
     purrr (>= 1.0.0),
     rlang (>= 0.3.0),
@@ -32,6 +31,7 @@ Imports:
     vctrs,
     navigatr (>= 0.2.0),
     lifecycle,
-    stickyr
+    stickyr,
+    httr2
 Depends: 
     R (>= 4.1.0)

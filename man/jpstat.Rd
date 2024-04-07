@@ -2,8 +2,8 @@
 % Please edit documentation in R/jpstat-package.R
 \docType{package}
 \name{jpstat}
-\alias{jpstat}
 \alias{jpstat-package}
+\alias{jpstat}
 \title{Tools for easy use of 'e-Stat' API}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}

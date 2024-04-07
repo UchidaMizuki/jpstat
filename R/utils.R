@@ -46,12 +46,13 @@ str_to_camelcase <- function(string) {
     })
 }
 
-get_content <- function(url = NULL, config = list(), ..., handle = NULL) {
-  out <- httr::GET(url = url,
-                   config = config, ...,
-                   handle = handle)
-  httr::stop_for_status(out)
-  httr::content(out)
+get_content <- function(url, headers = list(), path = list(), query = list()) {
+  httr2::request(url) |>
+    httr2::req_headers(!!!headers) |>
+    httr2::req_url_path_append(path) |>
+    httr2::req_url_query(!!!query) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
 }
 
 
