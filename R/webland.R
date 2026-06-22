@@ -1,28 +1,40 @@
-#' Information on real estate transaction prices API
+#' Real estate transaction price information API (Real Estate Information Library)
 #'
 #' `r lifecycle::badge("experimental")`
 #'
-#' Collect data from the information on real estate transaction prices API
-#' provided by Japan's Ministry of Land, Infrastructure, Transport and Tourism.
+#' Collect data from the Real Estate Information Library
+#' (不動産情報ライブラリ) API provided by Japan's Ministry of
+#' Land, Infrastructure, Transport and Tourism (MLIT). This API replaced the
+#' old "Land General Information System" (土地総合情報システム,
+#' `webland`) API, which has been discontinued.
 #'
-#' @param lang Language.
+#' Using this API requires an API key. Apply for one at
+#' <https://www.reinfolib.mlit.go.jp/api/request/> and set it with
+#' `Sys.setenv(REINFOLIB_API_KEY = )`.
 #'
-#' @return `webland_trade()` a `webland_trade` object. By creating a query with `itemise()` and
-#' applying `collect()`, The real estate transaction prices are collected.
+#' @param lang Language, `"ja"` (Japanese) or `"en"` (English).
 #'
-#' `webland_city()` a `webland_city` object. Obtains a list of target
-#' municipalities in the same way as `webland_trade()`.
+#' @return `webland_trade()` a `webland_trade` object. By creating a query with
+#' `itemise()` and applying `collect()`, the real estate transaction prices are
+#' collected. `year` and `quarter` are required, and at least one of
+#' `pref_code`, `city_code` or `station_code` must be supplied.
+#'
+#' `webland_city()` a `webland_city` object. Obtains a list of municipalities in
+#' a prefecture in the same way as `webland_trade()`.
 #'
 #' @examples
 #' \dontrun{
+#' # Set the API key issued by the Real Estate Information Library
+#' Sys.setenv(REINFOLIB_API_KEY = "Your API key")
+#'
 #' # Collect trade data
 #' webland_trade() |>
-#'   itemise(from = "20151",
-#'           to = "20152",
+#'   itemise(year = "2015",
+#'           quarter = "1",
 #'           city_code = "13102") |>
 #'   collect()
 #'
-#' # Collect target municipalities
+#' # Collect municipalities
 #' webland_city() |>
 #'   itemise(pref_code = "13") |>
 #'   collect()
@@ -31,32 +43,26 @@
 #' @name webland
 #' @export
 webland_trade <- function(lang = c("ja", "en")) {
-  lang <- rlang::arg_match(lang, c("ja", "en"))
+  lang <- rlang::arg_match(lang)
   setup <- list(lang = lang)
 
-  width <- pillar::get_max_extent(c("\u53d6\u5f15\u6642\u671fFrom",
-                                    "\u53d6\u5f15\u6642\u671fTo",
-                                    "\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9",
-                                    "\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9"))
-  navigatr::new_nav_input(key = c("from", "to", "pref_code", "city_code"),
-                          value = list(new_vctr(character(),
-                                                setup = setup,
-                                                type = "from",
-                                                width = width,
-                                                class = "webland_time"),
-                                       new_vctr(character(),
-                                                setup = setup,
-                                                type = "to",
-                                                width = width,
-                                                class = "webland_time"),
-                                       new_vctr(character(),
-                                                setup = setup,
-                                                width = width,
-                                                class = "webland_pref_code"),
-                                       new_vctr(character(),
-                                                setup = setup,
-                                                width = width,
-                                                class = "webland_city_code")),
+  params <- tibble::tribble(
+    ~key,                   ~description,                                          ~required,
+    "year",                 "取引年 (year)",                                       TRUE,
+    "quarter",              "四半期 (quarter)",                                    TRUE,
+    "pref_code",            "都道府県コード (area)",                FALSE,
+    "city_code",            "市区町村コード (city)",               FALSE,
+    "station_code",         "駅コード (station)",                              FALSE,
+    "price_classification", "価格情報区分 (priceClassification)",     FALSE
+  )
+  width <- pillar::get_max_extent(params$description)
+  value <- purrr::map2(params$description, params$required,
+                       function(description, required) {
+                         new_webland_value(description, width, required)
+                       })
+
+  navigatr::new_nav_input(key = params$key,
+                          value = value,
                           setup = setup,
                           class = "webland_trade")
 }
@@ -64,128 +70,113 @@ webland_trade <- function(lang = c("ja", "en")) {
 #' @rdname webland
 #' @export
 webland_city <- function(lang = c("ja", "en")) {
-  lang <- rlang::arg_match(lang, c("ja", "en"))
+  lang <- rlang::arg_match(lang)
   setup <- list(lang = lang)
 
+  description <- "都道府県コード (area)"
+  width <- pillar::get_max_extent(description)
+
   navigatr::new_nav_input(key = "pref_code",
-                          value = list(new_vctr(character(),
-                                                setup = setup,
-                                                class = "webland_pref_code")),
+                          value = list(new_webland_value(description, width, TRUE)),
                           setup = setup,
                           class = "webland_city")
+}
+
+# Mapping from `itemise()` keys to Real Estate Information Library API parameters.
+webland_param_names <- c(year = "year",
+                         quarter = "quarter",
+                         pref_code = "area",
+                         city_code = "city",
+                         station_code = "station",
+                         price_classification = "priceClassification")
+
+webland_query <- function(x) {
+  query <- purrr::map2(x$key, x$value,
+                       function(key, value) {
+                         value <- vec_data(value)
+                         if (vec_is_empty(value)) {
+                           character()
+                         } else {
+                           commas0(value)
+                         }
+                       }) |>
+    set_names(unname(webland_param_names[x$key]))
+  compact_query(!!!query)
+}
+
+webland_get <- function(url, query, lang) {
+  key <- Sys.getenv("REINFOLIB_API_KEY")
+  if (key == "") {
+    rlang::abort(c("`REINFOLIB_API_KEY` does not exist.",
+                   i = "Please set the key with `Sys.setenv(REINFOLIB_API_KEY = )`.",
+                   i = "An API key can be obtained at <https://www.reinfolib.mlit.go.jp/api/request/>."))
+  }
+
+  out <- httr2::request(url) |>
+    httr2::req_headers(`Ocp-Apim-Subscription-Key` = key) |>
+    httr2::req_url_query(!!!query, language = lang) |>
+    httr2::req_perform() |>
+    httr2::resp_body_json()
+
+  if (!identical(out$status, "OK")) {
+    rlang::abort(stringr::str_glue("The Real Estate Information Library API returned status `{out$status %||% 'unknown'}`."))
+  }
+  out$data
 }
 
 #' @export
 collect.webland_trade <- function(x, ...) {
   setup <- attr(x, "setup")
+  query <- webland_query(x)
 
-  url <- switch (
-    setup$lang,
-    ja = "https://www.land.mlit.go.jp/webland/api/TradeListSearch",
-    en = "https://www.land.mlit.go.jp/webland_english/api/TradeListSearch"
-  )
+  if (vec_is_empty(query$year) || vec_is_empty(query$quarter)) {
+    abort("`year` and `quarter` are required.")
+  }
+  if (!any(c("area", "city", "station") %in% names(query))) {
+    abort("At least one of `pref_code`, `city_code` or `station_code` is required.")
+  }
 
-  key <- x$key
-  query <- purrr::map2(x$key, x$value,
-                       function(key, value) {
-                         if (vec_size(value) > 1) {
-                           abort(stringr::str_glue("The size of `{key}` must be 0 or 1."))
-                         }
-
-                         vec_data(value)
-                       }) |>
-    set_names(key)
-  names(query)[key == "pref_code"] <- "area"
-  names(query)[key == "city_code"] <- "city"
-
-  httr2::request(url) |>
-    httr2::req_url_query(!!!query) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json() |>
-    purrr::chuck("data") |>
+  webland_get("https://www.reinfolib.mlit.go.jp/ex-api/external/XIT001",
+              query = query,
+              lang = setup$lang) |>
     dplyr::bind_rows() |>
-    dplyr::rename_with(str_to_snakecase) |>
-    dplyr::rename(city_code = "municipality_code",
-                  pref_name = "prefecture",
-                  city_name = "municipality")
+    dplyr::rename_with(str_to_snakecase)
 }
 
 #' @export
 collect.webland_city <- function(x, ...) {
   setup <- attr(x, "setup")
 
-  url <- switch (
-    setup$lang,
-    ja = "https://www.land.mlit.go.jp/webland/api/CitySearch",
-    en = "https://www.land.mlit.go.jp/webland_english/api/CitySearch"
-  )
-
   pref_code <- vec_data(vec_slice(x$value, x$key == "pref_code")[[1L]])
-  if (vec_size(pref_code) > 1) {
-    abort("The size of `pref_code` must be 0 or 1.")
+  if (vec_size(pref_code) != 1L) {
+    abort("The size of `pref_code` must be 1.")
   }
 
-  httr2::request(url) |>
-    httr2::req_url_query(area = pref_code) |>
-    httr2::req_perform() |>
-    httr2::resp_body_json() |>
-    purrr::chuck("data") |>
+  webland_get("https://www.reinfolib.mlit.go.jp/ex-api/external/XIT002",
+              query = list(area = pref_code),
+              lang = setup$lang) |>
     dplyr::bind_rows() |>
-    set_names(c("city_code", "city_name"))
+    dplyr::rename(city_code = "id",
+                  city_name = "name")
+}
+
+# value -------------------------------------------------------------------
+
+new_webland_value <- function(description, width, required) {
+  new_vctr(character(),
+           description = description,
+           width = width,
+           required = required,
+           class = "webland_value")
 }
 
 #' @export
-obj_sum.webland_time <- function(x) {
-  type <- attr(x, "type")
+obj_sum.webland_value <- function(x) {
+  description <- attr(x, "description")
   width <- attr(x, "width")
+  required <- attr(x, "required")
 
-  x <- vec_data(x)
+  required <- if (required) " (Required)" else ""
 
-  if (!all(stringr::str_detect(x, "^\\d{5}$"))) {
-    abort(stringr::str_glue("`{type}` must be a 5-digit number."))
-  }
-
-  year <- stringr::str_extract(x, "^\\d{4}(?=\\d$)")
-  month <- stringr::str_extract(x, "(?<=^\\d{4})\\d$")
-
-  out <- dplyr::case_when(month == "1" ~ stringr::str_glue("{year}-01--{year}-03"),
-                          month == "2" ~ stringr::str_glue("{year}-04--{year}-06"),
-                          month == "3" ~ stringr::str_glue("{year}-07--{year}-10"),
-                          month == "4" ~ stringr::str_glue("{year}-11--{year}-12")) |>
-    commas()
-  description <- switch (
-    type,
-    from = "\u53d6\u5f15\u6642\u671fFrom",
-    to = "\u53d6\u5f15\u6642\u671fTo"
-  )
-
-  stringr::str_c(pillar::align(description, width), ": ", out)
-}
-
-#' @export
-obj_sum.webland_pref_code <- function(x) {
-  setup <- attr(x, "setup")
-  width <- attr(x, "width")
-
-  col_pref_name <- switch (
-    setup$lang,
-    ja = "pref_name_ja",
-    en = "pref_name_en"
-  )
-
-  pref_code <- as_pref_code(webland_docs$pref$pref_code)
-  pref_name <- webland_docs$pref[[col_pref_name]]
-  pref_name <- vec_slice(pref_name,
-                         vec_match(vec_data(x), pref_code))
-
-  out <- commas(stringr::str_c(vec_data(x), "_", pref_name))
-  stringr::str_c(pillar::align("\u90fd\u9053\u5e9c\u770c\u30b3\u30fc\u30c9", width), ": ", out)
-}
-
-#' @export
-obj_sum.webland_city_code <- function(x) {
-  width <- attr(x, "width")
-
-  out <- commas(stringr::str_c(vec_data(x)))
-  stringr::str_c(pillar::align("\u5e02\u533a\u753a\u6751\u30b3\u30fc\u30c9", width), ": ", out)
+  stringr::str_c(pillar::align(description, width), ": ", commas(vec_data(x)), required)
 }

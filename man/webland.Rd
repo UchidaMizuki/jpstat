@@ -4,39 +4,51 @@
 \alias{webland}
 \alias{webland_trade}
 \alias{webland_city}
-\title{Information on real estate transaction prices API}
+\title{Real estate transaction price information API (Real Estate Information Library)}
 \usage{
 webland_trade(lang = c("ja", "en"))
 
 webland_city(lang = c("ja", "en"))
 }
 \arguments{
-\item{lang}{Language.}
+\item{lang}{Language, \code{"ja"} (Japanese) or \code{"en"} (English).}
 }
 \value{
-\code{webland_trade()} a \code{webland_trade} object. By creating a query with \code{itemise()} and
-applying \code{collect()}, The real estate transaction prices are collected.
+\code{webland_trade()} a \code{webland_trade} object. By creating a query with
+\code{itemise()} and applying \code{collect()}, the real estate transaction prices are
+collected. \code{year} and \code{quarter} are required, and at least one of
+\code{pref_code}, \code{city_code} or \code{station_code} must be supplied.
 
-\code{webland_city()} a \code{webland_city} object. Obtains a list of target
-municipalities in the same way as \code{webland_trade()}.
+\code{webland_city()} a \code{webland_city} object. Obtains a list of municipalities in
+a prefecture in the same way as \code{webland_trade()}.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
 }
 \details{
-Collect data from the information on real estate transaction prices API
-provided by Japan's Ministry of Land, Infrastructure, Transport and Tourism.
+Collect data from the Real Estate Information Library
+(不動産情報ライブラリ) API provided by Japan's Ministry of
+Land, Infrastructure, Transport and Tourism (MLIT). This API replaced the
+old "Land General Information System" (土地総合情報システム,
+\code{webland}) API, which has been discontinued.
+
+Using this API requires an API key. Apply for one at
+\url{https://www.reinfolib.mlit.go.jp/api/request/} and set it with
+\code{Sys.setenv(REINFOLIB_API_KEY = )}.
 }
 \examples{
 \dontrun{
+# Set the API key issued by the Real Estate Information Library
+Sys.setenv(REINFOLIB_API_KEY = "Your API key")
+
 # Collect trade data
 webland_trade() |>
-  itemise(from = "20151",
-          to = "20152",
+  itemise(year = "2015",
+          quarter = "1",
           city_code = "13102") |>
   collect()
 
-# Collect target municipalities
+# Collect municipalities
 webland_city() |>
   itemise(pref_code = "13") |>
   collect()

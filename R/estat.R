@@ -59,7 +59,7 @@ estat <- function(appId = deprecated(),
                   query = list(),
                   path = "rest/3.0/app/json") {
   if (lifecycle::is_present(appId)) {
-    lifecycle::deprecate_warn("0.5.0", "estat(appId = )",
+    lifecycle::deprecate_warn("0.4.0", "estat(appId = )",
                               details = "Please set the key with `Sys.setenv(ESTAT_API_KEY = )`.")
 
     Sys.setenv(ESTAT_API_KEY = appId)
@@ -71,7 +71,7 @@ estat <- function(appId = deprecated(),
                          lang = lang,
                          !!!query)
 
-  setup <- list(url = "http://api.e-stat.go.jp/",
+  setup <- list(url = "https://api.e-stat.go.jp/",
                 path = path,
                 query = query)
 

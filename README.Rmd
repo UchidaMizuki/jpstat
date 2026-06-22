@@ -27,15 +27,25 @@ status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org
 
 **README is currently only available in Japanese.**
 
-jpstatは日本政府統計のポータルサイトであるe-Statや RESAS
-(地域経済分析システム) などのAPIを利用するためのツールを提供します．
+jpstatは日本政府統計のポータルサイトであるe-Statを中心に，
+政府統計APIを利用するためのツールを提供します．
+
+このパッケージは **e-Stat API への対応を中核** とし，
+e-Stat の機能拡充に注力します．
+不動産情報ライブラリ API への対応は **補助的な機能 (experimental)** です．
+外部APIは終了・仕様変更のリスクがあるため，
+今後さらに対応APIを増やす予定はありません．
 
 現在，以下のAPIに対応しています．
 
--   e-Stat API: <https://www.e-stat.go.jp/api/>
--   RESAS API: <https://opendata.resas-portal.go.jp>
--   不動産取引価格情報取得API:
-    <https://www.land.mlit.go.jp/webland/api.html>
+-   e-Stat API（中核）: <https://www.e-stat.go.jp/api/>
+-   不動産情報ライブラリ API（補助・experimental）:
+    <https://www.reinfolib.mlit.go.jp/>
+
+なお，RESAS API（地域経済分析システム）は2025年3月24日に提供を終了したため，
+`resas()` は廃止 (defunct) されました．
+都道府県・市区町村単位のデータについては，国土交通省データプラットフォーム
+(DPF) の GraphQL API (<https://www.mlit-data.jp/>) などの利用を検討してください．
 
 **「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」**
 
@@ -111,57 +121,34 @@ census <- census |>
 knitr::kable(census)
 ```
 
-## RESAS API
+## RESAS API（提供終了）
+
+RESAS API は2025年3月24日に提供を終了しました．これに伴い `resas()`
+は廃止 (defunct) され，呼び出すとエラーになります．代替については上記を参照してください．
+
+## 不動産情報ライブラリ API
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
-RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキーの発行)
-が必要です
-(詳しくは[ホームページ](https://opendata.resas-portal.go.jp)を参照してください)．
-RESAS
-APIの利用にあたっては，[利用規約](https://opendata.resas-portal.go.jp/terms.html)を確認してください
-([API詳細仕様](https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html))．
+不動産取引価格情報は，従来の「土地総合情報システム」APIから
+[不動産情報ライブラリ](https://www.reinfolib.mlit.go.jp/) のAPIへ移行しました．
+利用にはアカウント登録 (APIキーの発行) が必要です
+([API利用申請](https://www.reinfolib.mlit.go.jp/api/request/)，
+[API操作説明](https://www.reinfolib.mlit.go.jp/help/apiManual/))．
 
-```         
-Sys.setenv(RESAS_API_KEY = "Your X-API-KEY")
+`webland_trade()` では `year`（取引年）と `quarter`（四半期）が必須で，
+`pref_code`（都道府県コード），`city_code`（市区町村コード），
+`station_code`（駅コード）のいずれか1つ以上を指定します．
 
-power_for_industry <- resas(path = "https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html")
-power_for_industry
 ```
+Sys.setenv(REINFOLIB_API_KEY = "Your API key")
 
-```{r, echo=FALSE}
-power_for_industry <- resas(path = "https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html")
-power_for_industry
-```
-
-```{r}
-power_for_industry <- power_for_industry |>
-  itemise(year = "2012",
-          pref_code = "1",
-          city_code = "-",
-          sic_code = "A") |>
-  collect()
-
-knitr::kable(power_for_industry)
-```
-
-## 不動産取引価格情報取得API
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
-```{r}
-trade <- webland_trade()
-trade
-```
-
-```{r}
-trade <- trade |> 
-  itemise(from = "20201",
-          to = "20201",
+trade <- webland_trade() |>
+  itemise(year = "2015",
+          quarter = "1",
           pref_code = "01",
-          city_code = "01101") |> 
+          city_code = "01101") |>
   collect()
 
 knitr::kable(trade[1:5, 1:6])

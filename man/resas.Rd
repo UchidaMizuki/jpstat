@@ -2,37 +2,25 @@
 % Please edit documentation in R/resas.R
 \name{resas}
 \alias{resas}
-\title{Access 'RESAS' data}
+\title{Access 'RESAS' data (defunct)}
 \usage{
-resas(
-  X_API_KEY = deprecated(),
-  path,
-  query = list(),
-  to_snakecase = TRUE,
-  names_sep = "/",
-  rectangle = TRUE
-)
+resas(...)
 }
 \arguments{
-\item{X_API_KEY}{(Deprecated) an 'X-API-KEY' of 'RESAS' API.}
-
-\item{path}{A 'RESAS' API path.}
-
-\item{query}{Additional queries.}
-
-\item{to_snakecase}{Whether the parameters and responses should be named as
-snake cases or not?}
-
-\item{names_sep}{A character that separates the names of the responses.}
-
-\item{rectangle}{Whether to rectangle the data or not?}
+\item{...}{Ignored.}
 }
 \value{
-A \code{resas} object.
+This function always errors.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}}
 }
-\seealso{
-\url{https://opendata.resas-portal.go.jp/}
+\details{
+The 'RESAS' API (\url{https://opendata.resas-portal.go.jp/}) was discontinued on
+2025-03-24, and accounts as well as API keys were deleted. Therefore
+\code{resas()} no longer works and has been made defunct.
+
+As an alternative for prefectural and municipal data, consider the
+MLIT Data Platform (DPF) GraphQL API (\url{https://www.mlit-data.jp/}).
 }
+\keyword{internal}

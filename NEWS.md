@@ -1,3 +1,15 @@
+# jpstat 0.5.0
+
+* The 'RESAS' API was discontinued on 2025-03-24. `resas()` is now defunct and
+  errors when called.
+* Migrated `webland_trade()` and `webland_city()` from the discontinued
+  "Land General Information System" API to the Real Estate Information Library
+  (不動産情報ライブラリ) API.
+  * An API key is now required; set it with `Sys.setenv(REINFOLIB_API_KEY = )`.
+  * `webland_trade()` now takes `year` and `quarter` (instead of `from`/`to`),
+    and accepts `station_code` and `price_classification`.
+* `estat()` now uses HTTPS for the 'e-Stat' API endpoint.
+
 # jpstat 0.4.0
 
 * API keys for e-Stat and RESAS are now referenced from environment variables.
