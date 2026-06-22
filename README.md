@@ -15,9 +15,9 @@ status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org
 jpstatは日本政府統計のポータルサイトであるe-Statを中心に，
 政府統計APIを利用するためのツールを提供します．
 
-このパッケージは **e-Stat API への対応を中核** とし，
-e-Stat の機能拡充に注力します．
-不動産情報ライブラリ API への対応は **補助的な機能 (experimental)** です．
+このパッケージは **e-Stat API への対応を中核** とし， e-Stat
+の機能拡充に注力します． 不動産情報ライブラリ API への対応は
+**補助的な機能 (experimental)** です．
 外部APIは終了・仕様変更のリスクがあるため，
 今後さらに対応APIを増やす予定はありません．
 
@@ -27,10 +27,12 @@ e-Stat の機能拡充に注力します．
 - 不動産情報ライブラリ API（補助・experimental）:
   <https://www.reinfolib.mlit.go.jp/>
 
-なお，RESAS API（地域経済分析システム）は2025年3月24日に提供を終了したため，
+なお，RESAS
+API（地域経済分析システム）は2025年3月24日に提供を終了したため，
 `resas()` は廃止 (defunct) されました．
 都道府県・市区町村単位のデータについては，国土交通省データプラットフォーム
-(DPF) の GraphQL API (<https://www.mlit-data.jp/>) などの利用を検討してください．
+(DPF) の GraphQL API (<https://www.mlit-data.jp/>)
+などの利用を検討してください．
 
 **「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」**
 
@@ -121,7 +123,8 @@ knitr::kable(census)
 ## RESAS API（提供終了）
 
 RESAS API は2025年3月24日に提供を終了しました．これに伴い `resas()`
-は廃止 (defunct) され，呼び出すとエラーになります．代替については上記を参照してください．
+は廃止 (defunct)
+され，呼び出すとエラーになります．代替については上記を参照してください．
 
 ## 不動産情報ライブラリ API
 
@@ -129,8 +132,8 @@ RESAS API は2025年3月24日に提供を終了しました．これに伴い `r
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
 不動産取引価格情報は，従来の「土地総合情報システム」APIから
-[不動産情報ライブラリ](https://www.reinfolib.mlit.go.jp/) のAPIへ移行しました．
-利用にはアカウント登録 (APIキーの発行) が必要です
+[不動産情報ライブラリ](https://www.reinfolib.mlit.go.jp/)
+のAPIへ移行しました． 利用にはアカウント登録 (APIキーの発行) が必要です
 ([API利用申請](https://www.reinfolib.mlit.go.jp/api/request/)，
 [API操作説明](https://www.reinfolib.mlit.go.jp/help/apiManual/))．
 
@@ -138,18 +141,16 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 `pref_code`（都道府県コード），`city_code`（市区町村コード），
 `station_code`（駅コード）のいずれか1つ以上を指定します．
 
-``` r
-Sys.setenv(REINFOLIB_API_KEY = "Your API key")
+    Sys.setenv(REINFOLIB_API_KEY = "Your API key")
 
-trade <- webland_trade() |>
-  itemise(year = "2015",
-          quarter = "1",
-          pref_code = "01",
-          city_code = "01101") |>
-  collect()
+    trade <- webland_trade() |>
+      itemise(year = "2015",
+              quarter = "1",
+              pref_code = "01",
+              city_code = "01101") |>
+      collect()
 
-knitr::kable(trade[1:5, 1:6])
-```
+    knitr::kable(trade[1:5, 1:6])
 
 ## 参考リンク
 
