@@ -1,5 +1,6 @@
 test_that("estat-census", {
   skip_on_cran()
+  skip_if(Sys.getenv("ESTAT_API_KEY") == "", "`ESTAT_API_KEY` is not set.")
 
   library(dplyr)
 
