@@ -3,5 +3,12 @@
 .RData
 .Ruserdata
 docs
+/pkgdown/
 inst/doc
 .Renviron
+.vdoc.*.r
+
+/.quarto/
+vignettes/articles/*.html
+vignettes/articles/*_files/
+vignettes/articles/*.knit.md

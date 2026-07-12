@@ -1,0 +1,136 @@
+---
+title: "Accessing the e-Stat API"
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+library(jpstat)
+library(tidyverse)
+```
+
+jpstat uses the e-Stat API's metadata retrieval (`getMetaInfo`) and
+statistical data retrieval (`getStatsData`) functions to let you
+download statistical tables.
+
+Each statistical table on e-Stat is identified by a statsDataId. You
+can find the statsDataId in the URL of the dataset information page
+or the table/graph display page, such as this [example
+page](https://www.e-stat.go.jp/en/dbview?sid=0000010101).
+
+Here, we use the [System of Social and Demographic
+Statistics](https://www.e-stat.go.jp/en/dbview?sid=0000010101) linked
+above to retrieve the male/female population of Tokyo and Osaka for
+2010 and 2015.
+
+First, pass the statsDataId (or a URL containing it) to `estat()` to
+retrieve the metadata (the attribute information for the statistical
+data). Set your API key beforehand with `Sys.setenv(ESTAT_API_KEY = )`.
+
+```
+Sys.setenv(ESTAT_API_KEY = "Your appId")
+
+ssds <- estat(
+  statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101",
+  lang = "E"
+)
+ssds
+```
+
+```{r}
+#| echo: false
+ssds <- estat(
+  statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101",
+  lang = "E"
+)
+ssds
+```
+
+This table has four columns (referred to below as keys): `tab`,
+`cat01`, `area`, and `time`. Each key carries the following
+information:
+
+1.  The default column name (e.g. `tab`)
+2.  The number of items (e.g. `[1]`)
+3.  Attributes such as code and name (e.g. `<code, name, level>`)
+
+From here, we'll change the column name, item count, and attributes
+for each key one at a time. To edit a key's information, select it
+with `activate()`.
+
+For example, activate the `tab` key like so:
+
+```{r}
+ssds |>
+  activate(tab)
+
+# Or
+ssds |>
+  activate(1)
+```
+
+Once a key is active, its item information is displayed, and you can
+narrow it down with `filter()` and `select()`. Here, `tab` has only a
+single item, so we simply drop the column with `select()`.
+
+```{r}
+ssds <- ssds |>
+  activate(tab) |>
+  # Only one item, so drop the column entirely
+  select()
+```
+
+Next, select "Total population (Male)" and "Total population
+(Female)" from `cat01`. `rekey()` renames the key (here, `sex`),
+which also becomes the column name used when the data is downloaded.
+As above, filter the items and keep the `name` and `unit` columns.
+
+```{r}
+ssds <- ssds |>
+  activate(cat01) |>
+  rekey("sex") |>
+  filter(str_detect(name, "Total population \\((Male|Female)\\)")) |>
+  select(name, unit)
+```
+
+Do the same for `area` (Tokyo-to and Osaka-fu) and `time` (2010 and
+2015).
+
+```{r}
+ssds <- ssds |>
+  activate(area) |>
+  rekey("pref") |>
+  filter(name %in% c("Tokyo-to", "Osaka-fu")) |>
+  select(code, name) |>
+
+  activate(time) |>
+  rekey("year") |>
+  filter(name %in% c("2010", "2015")) |>
+  select(name)
+```
+
+With these steps, the column names, item counts, and attributes have
+all been updated:
+
+```{r}
+ssds
+```
+
+Finally, download the data with `collect()`. The `n` argument of
+`collect()` sets the name of the value column.
+
+```{r}
+population <- ssds |>
+  collect(n = "population")
+
+knitr::kable(population)
+```
