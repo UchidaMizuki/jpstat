@@ -11,3 +11,4 @@
 ^\.github$
 ^CRAN-SUBMISSION$
 ^vignettes/articles$
+^\.claude$
