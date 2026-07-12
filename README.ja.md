@@ -8,7 +8,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org/package=jpstat)
-
+[![R-CMD-check](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 *[English](README.md)*

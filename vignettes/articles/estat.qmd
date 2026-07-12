@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
 #| message: false
 #| warning: false
 library(jpstat)
-library(tidyverse)
+library(dplyr)
+library(stringr)
 ```
 
 jpstat uses the e-Stat API's metadata retrieval (`getMetaInfo`) and
