@@ -1,0 +1,185 @@
+# Accessing the e-Stat API
+
+``` r
+
+library(jpstat)
+library(dplyr)
+library(stringr)
+```
+
+jpstat uses the e-Stat API’s metadata retrieval (`getMetaInfo`) and
+statistical data retrieval (`getStatsData`) functions to let you
+download statistical tables.
+
+Each statistical table on e-Stat is identified by a statsDataId. You can
+find the statsDataId in the URL of the dataset information page or the
+table/graph display page, such as this [example
+page](https://www.e-stat.go.jp/en/dbview?sid=0000010101).
+
+Here, we use the [System of Social and Demographic
+Statistics](https://www.e-stat.go.jp/en/dbview?sid=0000010101) linked
+above to retrieve the male/female population of Tokyo and Osaka for 2010
+and 2015.
+
+Using the e-Stat API requires an API key; set it with
+`Sys.setenv(ESTAT_API_KEY = )` before running the code below yourself.
+The output shown on this page was captured from a real run, but is not
+re-executed when this article is built, so it doesn’t require an API key
+at build time.
+
+First, pass the statsDataId (or a URL containing it) to
+[`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md) to
+retrieve the metadata (the attribute information for the statistical
+data).
+
+``` r
+
+Sys.setenv(ESTAT_API_KEY = "Your appId")
+
+ssds <- estat(
+  statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101",
+  lang = "E"
+)
+ssds
+#> # ☐ tab:   Observation Value           [1] <code, name, level>
+#> # ☐ cat01: A Population and Households [594] <code, name, level, unit>
+#> # ☐ area:  AREA                        [48] <code, name, level>
+#> # ☐ time:  SURVEY YEAR                 [51] <code, name, level>
+#> #
+#> # Please `activate()`.
+```
+
+This table has four columns (referred to below as keys): `tab`, `cat01`,
+`area`, and `time`. Each key carries the following information:
+
+1.  The default column name (e.g. `tab`)
+2.  The number of items (e.g. `[1]`)
+3.  Attributes such as code and name (e.g. `<code, name, level>`)
+
+From here, we’ll change the column name, item count, and attributes for
+each key one at a time. To edit a key’s information, select it with
+[`activate()`](https://rdrr.io/pkg/navigatr/man/activate.html).
+
+For example, activate the `tab` key like so:
+
+``` r
+
+ssds |>
+  activate(tab)
+#> # ☒ tab:   Observation Value           [1] <code, name, level>
+#> # ☐ cat01: A Population and Households [594] <code, name, level, unit>
+#> # ☐ area:  AREA                        [48] <code, name, level>
+#> # ☐ time:  SURVEY YEAR                 [51] <code, name, level>
+#> #
+#> # A tibble: 1 × 4
+#> # Stickers: .estat_rowid
+#>   .estat_rowid code  name              level
+#> *        <int> <chr> <chr>             <chr>
+#> 1            1 00001 Observation value 1
+
+# Or
+ssds |>
+  activate(1)
+#> # ☒ tab:   Observation Value           [1] <code, name, level>
+#> # ☐ cat01: A Population and Households [594] <code, name, level, unit>
+#> # ☐ area:  AREA                        [48] <code, name, level>
+#> # ☐ time:  SURVEY YEAR                 [51] <code, name, level>
+#> #
+#> # A tibble: 1 × 4
+#> # Stickers: .estat_rowid
+#>   .estat_rowid code  name              level
+#> *        <int> <chr> <chr>             <chr>
+#> 1            1 00001 Observation value 1
+```
+
+Once a key is active, its item information is displayed, and you can
+narrow it down with
+[`filter()`](https://dplyr.tidyverse.org/reference/filter.html) and
+[`select()`](https://dplyr.tidyverse.org/reference/select.html). Here,
+`tab` has only a single item, so we simply drop the column with
+[`select()`](https://dplyr.tidyverse.org/reference/select.html).
+
+``` r
+
+ssds <- ssds |>
+  activate(tab) |>
+  # Only one item, so drop the column entirely
+  select()
+```
+
+Next, select “Total population (Male)” and “Total population (Female)”
+from `cat01`. [`rekey()`](https://rdrr.io/pkg/navigatr/man/rekey.html)
+renames the key (here, `sex`), which also becomes the column name used
+when the data is downloaded. As above, filter the items and keep the
+`name` and `unit` columns.
+
+``` r
+
+ssds <- ssds |>
+  activate(cat01) |>
+  rekey("sex") |>
+  filter(str_detect(name, "Total population \\((Male|Female)\\)")) |>
+  select(name, unit)
+```
+
+Do the same for `area` (Tokyo-to and Osaka-fu) and `time` (2010 and
+2015).
+
+``` r
+
+ssds <- ssds |>
+  activate(area) |>
+  rekey("pref") |>
+  filter(name %in% c("Tokyo-to", "Osaka-fu")) |>
+  select(code, name) |>
+
+  activate(time) |>
+  rekey("year") |>
+  filter(name %in% c("2010", "2015")) |>
+  select(name)
+```
+
+With these steps, the column names, item counts, and attributes have all
+been updated:
+
+``` r
+
+ssds
+#> # ☐ tab:  Observation Value           [1] <>
+#> # ☐ sex:  A Population and Households [2] <name, unit>
+#> # ☐ pref: AREA                        [2] <code, name>
+#> # ☒ year: SURVEY YEAR                 [2] <name>
+#> #
+#> # A tibble: 2 × 2
+#> # Stickers: .estat_rowid
+#>   name  .estat_rowid
+#> * <chr>        <int>
+#> 1 2010            36
+#> 2 2015            41
+```
+
+Finally, download the data with
+[`collect()`](https://dplyr.tidyverse.org/reference/compute.html). The
+`n` argument of
+[`collect()`](https://dplyr.tidyverse.org/reference/compute.html) sets
+the name of the value column.
+
+``` r
+
+population <- ssds |>
+  collect(n = "population")
+#> The total number of data is 8.
+
+knitr::kable(population)
+```
+
+| sex_name | sex_unit | pref_code | pref_name | year_name | population |
+|:---|:---|:---|:---|:---|:---|
+| A110101_Total population (Male) | person | 13000 | Tokyo-to | 2010 | 6512110 |
+| A110101_Total population (Male) | person | 13000 | Tokyo-to | 2015 | 6666690 |
+| A110101_Total population (Male) | person | 27000 | Osaka-fu | 2010 | 4285566 |
+| A110101_Total population (Male) | person | 27000 | Osaka-fu | 2015 | 4256049 |
+| A110102_Total population (Female) | person | 13000 | Tokyo-to | 2010 | 6647278 |
+| A110102_Total population (Female) | person | 13000 | Tokyo-to | 2015 | 6848581 |
+| A110102_Total population (Female) | person | 27000 | Osaka-fu | 2010 | 4579679 |
+| A110102_Total population (Female) | person | 27000 | Osaka-fu | 2015 | 4583420 |

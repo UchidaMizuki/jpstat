@@ -5,69 +5,51 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="Provides tools to use API such as e-Stat (&lt;https://www.e-stat.go.jp/&gt;), 
-    the portal site for Japanese government statistics, and 
-    RESAS (Regional Economy and Society Analyzing System, &lt;https://resas.go.jp&gt;). ">
-<title>Tools for Easy Use of e-Stat, RESAS API, Etc • jpstat</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
+<title>Tools for Easy Use of the e-Stat API • jpstat</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for Easy Use of e-Stat, RESAS API, Etc">
-<meta property="og:description" content="Provides tools to use API such as e-Stat (&lt;https://www.e-stat.go.jp/&gt;), 
-    the portal site for Japanese government statistics, and 
-    RESAS (Regional Economy and Society Analyzing System, &lt;https://resas.go.jp&gt;). ">
+<link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for Easy Use of the e-Stat API">
+<meta name="description" content="Provides tools to use the e-Stat API (&lt;https://www.e-stat.go.jp/&gt;), the portal site for Japanese government statistics.">
+<meta property="og:description" content="Provides tools to use the e-Stat API (&lt;https://www.e-stat.go.jp/&gt;), the portal site for Japanese government statistics.">
 <meta property="og:image" content="https://uchidamizuki.github.io/jpstat/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="index.html">jpstat</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5.0</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="reference/index.html">Reference</a>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="articles/estat.html">Accessing the e-Stat API</a></li>
+  </ul>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="news/index.html">Changelog</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/UchidaMizuki/jpstat/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/UchidaMizuki/jpstat/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-home">
 <div class="row">
@@ -79,309 +61,151 @@
 </div>
 <!-- badges: start -->
 
-<!-- badges: end -->
-<p><strong>README is currently only available in Japanese.</strong></p>
-<p>jpstatは日本政府統計のポータルサイトであるe-Statや RESAS (地域経済分析システム) などのAPIを利用するためのツールを提供します．</p>
-<p>現在，以下のAPIに対応しています．</p>
-<ul>
-<li>e-Stat API: <a href="https://www.e-stat.go.jp/api/" class="external-link uri">https://www.e-stat.go.jp/api/</a>
-</li>
-<li>RESAS API: <a href="https://opendata.resas-portal.go.jp" class="external-link uri">https://opendata.resas-portal.go.jp</a>
-</li>
-<li>不動産取引価格情報取得API: <a href="https://www.land.mlit.go.jp/webland/api.html" class="external-link uri">https://www.land.mlit.go.jp/webland/api.html</a>
-</li>
-</ul>
-<p><strong>「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」</strong></p>
+<p><em><a href="README.ja.html">日本語</a></em></p>
+<p>jpstat provides tools for using the API of <a href="https://www.e-stat.go.jp/api/" class="external-link">e-Stat</a>, the portal site for Japanese government statistics.</p>
+<p><strong>“This service uses API functions from e-Stat, however its contents are not guaranteed by government.”</strong> （「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」）</p>
 <div class="section level2">
-<h2 id="インストール方法">インストール方法<a class="anchor" aria-label="anchor" href="#%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E6%96%B9%E6%B3%95"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"jpstat"</span><span class="op">)</span></span></code></pre></div>
-<p>jpstatの開発版は，<a href="https://github.com/" class="external-link">GitHub</a>から以下の方法でインストールできます．</p>
+<p>You can install the development version of jpstat from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"UchidaMizuki/jpstat"</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/UchidaMizuki/jpstat" class="external-link">jpstat</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="e-stat-api">e-Stat API<a class="anchor" aria-label="anchor" href="#e-stat-api"></a>
 </h2>
-<p>e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行) が必要です (詳しくは<a href="https://www.e-stat.go.jp/api/" class="external-link">ホームページ</a>を参照してください)． また，データ利用に際しては<a href="https://www.e-stat.go.jp/terms-of-use" class="external-link">利用規約</a>に従う必要があります．</p>
-<p>データ取得・整形の一連の流れは以下のようになります． ここでは，<a href="https://www.e-stat.go.jp/dbview?sid=0003413949" class="external-link">国勢調査データ</a>を対象として， 2010・2015年の東京都・大阪府における男女別人口を取得します． 詳細な使用方法は<a href="https://github.com/uchidamizuki/jpstat/blob/main/README-estat.md" class="external-link">こちら</a>を参照してください．</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># APIキーの設定</span></span>
+<p>Using the e-Stat API requires account registration (to obtain an API key called an appId); see the <a href="https://www.e-stat.go.jp/api/" class="external-link">homepage</a> for details. Use of the data is also subject to the <a href="https://www.e-stat.go.jp/terms-of-use" class="external-link">terms of use</a>.</p>
+<p>The typical workflow for retrieving and reshaping data looks like this. Here, we retrieve the male/female population of Tokyo and Osaka for 2010 and 2015 from the <a href="https://www.e-stat.go.jp/en/dbview?sid=0000010101" class="external-link">System of Social and Demographic Statistics</a>. For a more detailed, step-by-step walkthrough, see the <a href="https://uchidamizuki.github.io/jpstat/articles/estat.html">Accessing the e-Stat API</a> article.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Set the API key</span></span>
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">ESTAT_API_KEY =</span> <span class="st">"Your appId"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># メタ情報の取得</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>census <span class="ot">&lt;-</span> <span class="fu">estat</span>(<span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/dbview?sid=0003410379"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>census</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Retrieve the metadata</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ssds <span class="ot">&lt;-</span> <span class="fu">estat</span>(<span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/en/dbview?sid=0000010101"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>ssds</span>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; # ☐ tab:   表章項目         [2] &lt;code, name, level, unit&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; # ☐ cat01: 男女_時系列      [3] &lt;code, name, level&gt;</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; # ☐ area:  地域_時系列      [50] &lt;code, name, level, parentCode&gt;</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # ☐ time:  時間軸（調査年） [21] &lt;code, name, level&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; # ☐ tab:   Observation Value           [1] &lt;code, name, level&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; # ☐ cat01: A Population and Households [594] &lt;code, name, level, unit&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; # ☐ area:  AREA                        [48] &lt;code, name, level&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # ☐ time:  SURVEY YEAR                 [51] &lt;code, name, level&gt;</span></span>
 <span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; # </span></span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; # Please `activate()`.</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 2010・2015年の東京都・大阪府における男女別人口を取得</span></span>
-<span><span class="va">census</span> <span class="op">&lt;-</span> <span class="va">census</span> <span class="op">|&gt;</span> </span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"人口"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">cat01</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"sex"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"男"</span>, <span class="st">"女"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"pref"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"東京都"</span>, <span class="st">"大阪府"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">code</span>, <span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2010年"</span>, <span class="st">"2015年"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span>n <span class="op">=</span> <span class="st">"pop"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># Retrieve the male/female population of Tokyo and Osaka for 2010 and 2015</span></span>
+<span><span class="va">population</span> <span class="op">&lt;-</span> <span class="va">ssds</span> <span class="op">|&gt;</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">tab</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Observation value"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">cat01</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"sex"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu">str_detect</span><span class="op">(</span><span class="va">name</span>, <span class="st">"Total population \\((Male|Female)\\)"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">name</span>, <span class="va">unit</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">area</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"pref"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Tokyo-to"</span>, <span class="st">"Osaka-fu"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">code</span>, <span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/rekey.html" class="external-link">rekey</a></span><span class="op">(</span><span class="st">"year"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"2010"</span>, <span class="st">"2015"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">select</span><span class="op">(</span><span class="va">name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span></span>
+<span>  <span class="fu">collect</span><span class="op">(</span>n <span class="op">=</span> <span class="st">"population"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; The total number of data is 8.</span></span>
 <span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">census</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
+<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">population</span><span class="op">)</span></span></code></pre></div>
+<table style="width:100%;" class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+<col width="16%">
+</colgroup>
+<thead><tr>
 <th align="left">sex_name</th>
+<th align="left">sex_unit</th>
 <th align="left">pref_code</th>
 <th align="left">pref_name</th>
 <th align="left">year_name</th>
-<th align="left">pop</th>
+<th align="left">population</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">男</td>
+<tr>
+<td align="left">A110101_Total population (Male)</td>
+<td align="left">person</td>
 <td align="left">13000</td>
-<td align="left">東京都</td>
-<td align="left">2010年</td>
+<td align="left">Tokyo-to</td>
+<td align="left">2010</td>
 <td align="left">6512110</td>
 </tr>
-<tr class="even">
-<td align="left">男</td>
+<tr>
+<td align="left">A110101_Total population (Male)</td>
+<td align="left">person</td>
 <td align="left">13000</td>
-<td align="left">東京都</td>
-<td align="left">2015年</td>
+<td align="left">Tokyo-to</td>
+<td align="left">2015</td>
 <td align="left">6666690</td>
 </tr>
-<tr class="odd">
-<td align="left">男</td>
+<tr>
+<td align="left">A110101_Total population (Male)</td>
+<td align="left">person</td>
 <td align="left">27000</td>
-<td align="left">大阪府</td>
-<td align="left">2010年</td>
+<td align="left">Osaka-fu</td>
+<td align="left">2010</td>
 <td align="left">4285566</td>
 </tr>
-<tr class="even">
-<td align="left">男</td>
+<tr>
+<td align="left">A110101_Total population (Male)</td>
+<td align="left">person</td>
 <td align="left">27000</td>
-<td align="left">大阪府</td>
-<td align="left">2015年</td>
+<td align="left">Osaka-fu</td>
+<td align="left">2015</td>
 <td align="left">4256049</td>
 </tr>
-<tr class="odd">
-<td align="left">女</td>
+<tr>
+<td align="left">A110102_Total population (Female)</td>
+<td align="left">person</td>
 <td align="left">13000</td>
-<td align="left">東京都</td>
-<td align="left">2010年</td>
+<td align="left">Tokyo-to</td>
+<td align="left">2010</td>
 <td align="left">6647278</td>
 </tr>
-<tr class="even">
-<td align="left">女</td>
+<tr>
+<td align="left">A110102_Total population (Female)</td>
+<td align="left">person</td>
 <td align="left">13000</td>
-<td align="left">東京都</td>
-<td align="left">2015年</td>
+<td align="left">Tokyo-to</td>
+<td align="left">2015</td>
 <td align="left">6848581</td>
 </tr>
-<tr class="odd">
-<td align="left">女</td>
+<tr>
+<td align="left">A110102_Total population (Female)</td>
+<td align="left">person</td>
 <td align="left">27000</td>
-<td align="left">大阪府</td>
-<td align="left">2010年</td>
+<td align="left">Osaka-fu</td>
+<td align="left">2010</td>
 <td align="left">4579679</td>
 </tr>
-<tr class="even">
-<td align="left">女</td>
+<tr>
+<td align="left">A110102_Total population (Female)</td>
+<td align="left">person</td>
 <td align="left">27000</td>
-<td align="left">大阪府</td>
-<td align="left">2015年</td>
+<td align="left">Osaka-fu</td>
+<td align="left">2015</td>
 <td align="left">4583420</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section level2">
-<h2 id="resas-api">RESAS API<a class="anchor" aria-label="anchor" href="#resas-api"></a>
-</h2>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></p>
-<p>RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキーの発行) が必要です (詳しくは<a href="https://opendata.resas-portal.go.jp" class="external-link">ホームページ</a>を参照してください)． RESAS APIの利用にあたっては，<a href="https://opendata.resas-portal.go.jp/terms.html" class="external-link">利用規約</a>を確認してください (<a href="https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html" class="external-link">API詳細仕様</a>)．</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">RESAS_API_KEY =</span> <span class="st">"Your X-API-KEY"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>power_for_industry <span class="ot">&lt;-</span> <span class="fu">resas</span>(<span class="at">path =</span> <span class="st">"https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html"</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>power_for_industry</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co">#&gt; # ✖ year:      年度            :  (Required)</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#&gt; # ✖ pref_code: 都道府県コード  :  (Required)</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; # ✖ city_code: 市区町村コード  :  (Required)</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; # ✖ sic_code:  産業大分類コード:  (Required)</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; # Please `itemise()`.</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">power_for_industry</span> <span class="op">&lt;-</span> <span class="va">power_for_industry</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/itemise.html" class="external-link">itemise</a></span><span class="op">(</span>year <span class="op">=</span> <span class="st">"2012"</span>,</span>
-<span>          pref_code <span class="op">=</span> <span class="st">"1"</span>,</span>
-<span>          city_code <span class="op">=</span> <span class="st">"-"</span>,</span>
-<span>          sic_code <span class="op">=</span> <span class="st">"A"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">power_for_industry</span><span class="op">)</span></span></code></pre></div>
-<table style="width:100%;" class="table">
-<colgroup>
-<col width="9%">
-<col width="9%">
-<col width="8%">
-<col width="10%">
-<col width="13%">
-<col width="13%">
-<col width="10%">
-<col width="13%">
-<col width="10%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">pref_name</th>
-<th align="right">pref_code</th>
-<th align="left">sic_code</th>
-<th align="left">sic_name</th>
-<th align="left">data/simc_code</th>
-<th align="left">data/simc_name</th>
-<th align="right">data/value</th>
-<th align="right">data/employee</th>
-<th align="right">data/labor</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">北海道</td>
-<td align="right">1</td>
-<td align="left">A</td>
-<td align="left">農業，林業</td>
-<td align="left">01</td>
-<td align="left">農業</td>
-<td align="right">4.4697</td>
-<td align="right">3.2743</td>
-<td align="right">0.9858</td>
-</tr>
-<tr class="even">
-<td align="left">北海道</td>
-<td align="right">1</td>
-<td align="left">A</td>
-<td align="left">農業，林業</td>
-<td align="left">02</td>
-<td align="left">林業</td>
-<td align="right">6.1208</td>
-<td align="right">3.0613</td>
-<td align="right">1.4438</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level2">
-<h2 id="不動産取引価格情報取得api">不動産取引価格情報取得API<a class="anchor" aria-label="anchor" href="#%E4%B8%8D%E5%8B%95%E7%94%A3%E5%8F%96%E5%BC%95%E4%BE%A1%E6%A0%BC%E6%83%85%E5%A0%B1%E5%8F%96%E5%BE%97api"></a>
-</h2>
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trade</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/webland.html">webland_trade</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">trade</span></span>
-<span><span class="co">#&gt; # ✖ from:      取引時期From  : </span></span>
-<span><span class="co">#&gt; # ✖ to:        取引時期To    : </span></span>
-<span><span class="co">#&gt; # ✖ pref_code: 都道府県コード: </span></span>
-<span><span class="co">#&gt; # ✖ city_code: 市区町村コード: </span></span>
-<span><span class="co">#&gt; # </span></span>
-<span><span class="co">#&gt; # Please `itemise()`.</span></span></code></pre></div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">trade</span> <span class="op">&lt;-</span> <span class="va">trade</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/navigatr/man/itemise.html" class="external-link">itemise</a></span><span class="op">(</span>from <span class="op">=</span> <span class="st">"20201"</span>,</span>
-<span>          to <span class="op">=</span> <span class="st">"20201"</span>,</span>
-<span>          pref_code <span class="op">=</span> <span class="st">"01"</span>,</span>
-<span>          city_code <span class="op">=</span> <span class="st">"01101"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html" class="external-link">collect</a></span><span class="op">(</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">trade</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="21%">
-<col width="13%">
-<col width="13%">
-<col width="17%">
-<col width="18%">
-<col width="15%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">type</th>
-<th align="left">city_code</th>
-<th align="left">pref_name</th>
-<th align="left">city_name</th>
-<th align="left">district_name</th>
-<th align="left">trade_price</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">中古マンション等</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">32000000</td>
-</tr>
-<tr class="even">
-<td align="left">宅地(土地と建物)</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">380000000</td>
-</tr>
-<tr class="odd">
-<td align="left">中古マンション等</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">10000000</td>
-</tr>
-<tr class="even">
-<td align="left">中古マンション等</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">9000000</td>
-</tr>
-<tr class="odd">
-<td align="left">中古マンション等</td>
-<td align="left">01101</td>
-<td align="left">北海道</td>
-<td align="left">札幌市中央区</td>
-<td align="left">大通西</td>
-<td align="left">3000000</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section level2">
-<h2 id="参考リンク">参考リンク<a class="anchor" aria-label="anchor" href="#%E5%8F%82%E8%80%83%E3%83%AA%E3%83%B3%E3%82%AF"></a>
-</h2>
-<ul>
-<li><a href="https://uchidamizuki.quarto.pub/blog/posts/2022/12/call-e-stat-api-in-r.html" class="external-link">Rで日本の統計データを効率的に取得しよう（e-Stat APIとjpstatパッケージで）</a></li>
-<li><a href="https://uchidamizuki.quarto.pub/blog/posts/2023/01/create-an-animation-of-a-population-pyramid-in-r.html" class="external-link">Rで人口ピラミッドのアニメーションを作る</a></li>
-</ul>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -413,7 +237,7 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Mizuki Uchida <br><small class="roles"> Author, maintainer </small>  </li>
+<li>Mizuki Uchida <br><small class="roles"> Author, maintainer </small>   </li>
 </ul>
 </div>
 
@@ -421,6 +245,7 @@
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=jpstat" class="external-link"><img src="https://www.r-pkg.org/badges/version/jpstat" alt="CRAN status"></a></li>
+<li><a href="https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
@@ -429,21 +254,19 @@
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Mizuki Uchida.</p>
+  <p>Developed by Mizuki Uchida.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
