@@ -1,6 +1,8 @@
 # jpstat 0.5.0
 
 * `estat()` now uses HTTPS for the 'e-Stat' API endpoint.
+* The deprecated `appId` argument to `estat()` has been removed. Use
+  `Sys.setenv(ESTAT_API_KEY = )` instead.
 * The 'RESAS' API was discontinued on 2025-03-24. `resas()` is now defunct and
   errors when called.
 * `webland_trade()` and `webland_city()` have been removed. The "Land General Information System" API they used was discontinued, and its replacement, the Real Estate Information Library API, does not expose metadata for navigatr's menu interface, so jpstat now focuses solely on the 'e-Stat' API.

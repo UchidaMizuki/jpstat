@@ -5,7 +5,6 @@
 \title{Access 'e-Stat' data}
 \usage{
 estat(
-  appId = deprecated(),
   statsDataId,
   lang = c("J", "E"),
   query = list(),
@@ -13,8 +12,6 @@ estat(
 )
 }
 \arguments{
-\item{appId}{(Deprecated) an 'appId' of 'e-Stat' API.}
-
 \item{statsDataId}{A statistical data ID on 'e-Stat'.}
 
 \item{lang}{A language, Japanese (\code{"J"}) or English (\code{"E"}).}
@@ -32,7 +29,8 @@ and returns an \code{estat} object that allows editing of meta-information by \c
 }
 \examples{
 \dontrun{
-estat("Your appId", "https://www.e-stat.go.jp/dbview?sid=0003433219")
+Sys.setenv(ESTAT_API_KEY = "Your API key")
+estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 }
 
 }

@@ -39,7 +39,6 @@ estat_get <- function(path, setup) {
 #' The `estat()` gets the meta-information of a statistical table by using `getMetaInfo` of the 'e-Stat' API,
 #' and returns an `estat` object that allows editing of meta-information by `dplyr::filter()` and `dplyr::select()`.
 #'
-#' @param appId (Deprecated) an 'appId' of 'e-Stat' API.
 #' @param statsDataId A statistical data ID on 'e-Stat'.
 #' @param lang A language, Japanese (`"J"`) or English (`"E"`).
 #' @param query A list of additional queries.
@@ -49,7 +48,8 @@ estat_get <- function(path, setup) {
 #'
 #' @examples
 #' \dontrun{
-#' estat("Your appId", "https://www.e-stat.go.jp/dbview?sid=0003433219")
+#' Sys.setenv(ESTAT_API_KEY = "Your API key")
+#' estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 #' }
 #'
 #' @seealso <https://www.e-stat.go.jp>
@@ -57,22 +57,11 @@ estat_get <- function(path, setup) {
 #'
 #' @export
 estat <- function(
-  appId = deprecated(),
   statsDataId,
   lang = c("J", "E"),
   query = list(),
   path = "rest/3.0/app/json"
 ) {
-  if (lifecycle::is_present(appId)) {
-    lifecycle::deprecate_warn(
-      "0.4.0",
-      "estat(appId = )",
-      details = "Please set the key with `Sys.setenv(ESTAT_API_KEY = )`."
-    )
-
-    Sys.setenv(ESTAT_API_KEY = appId)
-  }
-
   statsDataId <- estat_stats_data_id(statsDataId)
   lang <- arg_match(lang, c("J", "E"))
   query <- compact_query(statsDataId = statsDataId, lang = lang, !!!query)
