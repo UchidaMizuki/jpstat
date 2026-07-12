@@ -8,12 +8,13 @@ pkgload::load_all()
 
 url <- "https://opendata.resas-portal.go.jp"
 
-session <- bow(str_glue("{url}/docs/api/v1/index.html"),
-               user_agent = "jpstat (uchidamizuki@vivaldi.net)",
-               delay = 1)
+session <- bow(
+  str_glue("{url}/docs/api/v1/index.html"),
+  user_agent = "jpstat (uchidamizuki@vivaldi.net)",
+  delay = 1
+)
 
-scrape_utf8 <- partial(scrape,
-                       content = "text/html; charset=UTF-8")
+scrape_utf8 <- partial(scrape, content = "text/html; charset=UTF-8")
 
 path <- scrape_utf8(session) |>
   html_element("div.sidemenu") |>
@@ -55,44 +56,51 @@ read_resas_v1_docs <- function(setup) {
 
       if (!vec_is_empty(parameters)) {
         parameters <- parameters |>
-          dplyr::mutate(Description = .data$Description |>
-                          stringr::str_extract("^[^\\n]+(?=$|\\n)") |>
-                          stringr::str_remove("\\s+$"),
-                        Required = .data$Required == "true") |>
+          dplyr::mutate(
+            Description = .data$Description |>
+              stringr::str_extract("^[^\\n]+(?=$|\\n)") |>
+              stringr::str_remove("\\s+$"),
+            Required = .data$Required == "true"
+          ) |>
           dplyr::rename_with(stringr::str_to_lower)
       }
     }
     if (!vctrs::vec_is_empty(h1) && h1 == "responses") {
       responses <- section |>
         html_table() |>
-        dplyr::mutate(Description = .data$Description |>
-                        stringr::str_extract("^[^\\n]+(?=$|\\n)") |>
-                        stringr::str_remove("\\s+$")) |>
+        dplyr::mutate(
+          Description = .data$Description |>
+            stringr::str_extract("^[^\\n]+(?=$|\\n)") |>
+            stringr::str_remove("\\s+$")
+        ) |>
         dplyr::rename_with(stringr::str_to_lower)
     }
   }
 
-  list(title = title,
-       description = description,
-       parameters = parameters,
-       responses = responses)
+  list(
+    title = title,
+    description = description,
+    parameters = parameters,
+    responses = responses
+  )
 }
 
 resas_v1_docs <- tibble(path = path) |>
   rowwise() |>
-  mutate(doc = list({
-    inform(path)
-    setup <- list(url = url,
-                  path = path)
-    read_resas_v1_docs(setup)
-  })) |>
+  mutate(
+    doc = list({
+      inform(path)
+      setup <- list(url = url, path = path)
+      read_resas_v1_docs(setup)
+    })
+  ) |>
   ungroup() |>
-  mutate(path = path |>
-           str_remove("/docs/") |>
-           str_remove("\\.html$"))
+  mutate(
+    path = path |>
+      str_remove("/docs/") |>
+      str_remove("\\.html$")
+  )
 
-resas_v1_docs <- list(url = url,
-                      docs = resas_v1_docs)
+resas_v1_docs <- list(url = url, docs = resas_v1_docs)
 
-write_rds(resas_v1_docs,
-          "data-raw/resas_v1_docs.rds")
+write_rds(resas_v1_docs, "data-raw/resas_v1_docs.rds")

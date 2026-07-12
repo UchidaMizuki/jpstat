@@ -16,6 +16,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{navigatr}{\code{\link[navigatr]{activate}}, \code{\link[navigatr:activate]{deactivate}}, \code{\link[navigatr]{itemise}}, \code{\link[navigatr:itemise]{itemize}}, \code{\link[navigatr]{rekey}}, \code{\link[navigatr:rekey]{rekey_with}}}
+  \item{navigatr}{\code{\link[navigatr:activate]{activate()}}, \code{\link[navigatr:deactivate]{deactivate()}}, \code{\link[navigatr:itemise]{itemise()}}, \code{\link[navigatr:itemize]{itemize()}}, \code{\link[navigatr:rekey]{rekey()}}, \code{\link[navigatr:rekey_with]{rekey_with()}}}
 }}
 

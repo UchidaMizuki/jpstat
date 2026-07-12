@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Provides tools to use API such as 'e-Stat' (\url{https://www.e-stat.go.jp/}), the portal site for Japanese government statistics, and 'RESAS' (Regional Economy and Society Analyzing System, \url{https://resas.go.jp}).
+Provides tools to use the 'e-Stat' API (\url{https://www.e-stat.go.jp/}), the portal site for Japanese government statistics.
 }
 \seealso{
 Useful links:
@@ -21,5 +21,10 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Mizuki Uchida \email{uchidamizuki@vivaldi.net}
+
+Authors:
+\itemize{
+  \item Mizuki Uchida \email{uchidamizuki@vivaldi.net}
+}
 
 }

@@ -21,14 +21,17 @@ estat_stats_data_id <- function(statsDataId) {
 estat_get <- function(path, setup) {
   appId <- Sys.getenv("ESTAT_API_KEY")
   if (appId == "") {
-    rlang::abort("`ESTAT_API_KEY` does not exist. Please set the key with `Sys.setenv(ESTAT_API_KEY = )`.")
+    rlang::abort(
+      "`ESTAT_API_KEY` does not exist. Please set the key with `Sys.setenv(ESTAT_API_KEY = )`."
+    )
   }
 
-  get_content(setup$url,
-              headers = list(`Accept-Encoding` = "gzip"),
-              path = c(setup$path, path),
-              query = c(list(appId = appId),
-                        setup$query))
+  get_content(
+    setup$url,
+    headers = list(`Accept-Encoding` = "gzip"),
+    path = c(setup$path, path),
+    query = c(list(appId = appId), setup$query)
+  )
 }
 
 #' Access 'e-Stat' data
@@ -53,30 +56,30 @@ estat_get <- function(path, setup) {
 #' @seealso <https://www.e-stat.go.jp/en>
 #'
 #' @export
-estat <- function(appId = deprecated(),
-                  statsDataId,
-                  lang = c("J", "E"),
-                  query = list(),
-                  path = "rest/3.0/app/json") {
+estat <- function(
+  appId = deprecated(),
+  statsDataId,
+  lang = c("J", "E"),
+  query = list(),
+  path = "rest/3.0/app/json"
+) {
   if (lifecycle::is_present(appId)) {
-    lifecycle::deprecate_warn("0.5.0", "estat(appId = )",
-                              details = "Please set the key with `Sys.setenv(ESTAT_API_KEY = )`.")
+    lifecycle::deprecate_warn(
+      "0.4.0",
+      "estat(appId = )",
+      details = "Please set the key with `Sys.setenv(ESTAT_API_KEY = )`."
+    )
 
     Sys.setenv(ESTAT_API_KEY = appId)
   }
 
   statsDataId <- estat_stats_data_id(statsDataId)
   lang <- arg_match(lang, c("J", "E"))
-  query <- compact_query(statsDataId = statsDataId,
-                         lang = lang,
-                         !!!query)
+  query <- compact_query(statsDataId = statsDataId, lang = lang, !!!query)
 
-  setup <- list(url = "http://api.e-stat.go.jp/",
-                path = path,
-                query = query)
+  setup <- list(url = "https://api.e-stat.go.jp/", path = path, query = query)
 
-  meta_info <- estat_get(path = "getMetaInfo",
-                         setup = setup) |>
+  meta_info <- estat_get(path = "getMetaInfo", setup = setup) |>
     purrr::chuck("GET_META_INFO") |>
     estat_check_status() |>
     purrr::chuck("METADATA_INF")
@@ -84,50 +87,58 @@ estat <- function(appId = deprecated(),
   table_info <- meta_info |>
     purrr::chuck("TABLE_INF") |>
     tibble::enframe() |>
-    dplyr::mutate(value = .data$value |>
-                    purrr::map_chr(\(x) {
-                      x |>
-                        stringr::str_c(collapse = " ")
-                    }))
+    dplyr::mutate(
+      value = .data$value |>
+        purrr::map_chr(\(x) {
+          x |>
+            stringr::str_c(collapse = " ")
+        })
+    )
 
-  meta_info <- tibble::tibble(meta_info = meta_info |>
-                                purrr::chuck("CLASS_INF", "CLASS_OBJ")) |>
+  meta_info <- tibble::tibble(
+    meta_info = meta_info |>
+      purrr::chuck("CLASS_INF", "CLASS_OBJ")
+  ) |>
     tidyr::unnest_wider("meta_info") |>
     dplyr::rename_with(\(x) {
       x |>
         stringr::str_remove("^@")
     }) |>
-    dplyr::rename(key = "id",
-                  key_name = "name",
-                  value = "CLASS") |>
-    dplyr::mutate(value = .data$value |>
-                    purrr::modify(\(x) {
-                      x |>
-                        dplyr::bind_rows() |>
-                        dplyr::rename_with(\(x) {
-                          x |>
-                            stringr::str_remove("^@")
-                        }) |>
-                        tibble::rowid_to_column(".estat_rowid") |>
-                        stickyr::new_sticky_tibble(cols = ".estat_rowid",
-                                                   col_show = !".estat_rowid",
-                                                   class = "tbl_estat")
-                    }),
-                  codes = .data$value |>
-                    purrr::modify(\(x) x$code),
-                  width_key_name = .data$key_name |>
-                    pillar::get_max_extent())
+    dplyr::rename(key = "id", key_name = "name", value = "CLASS") |>
+    dplyr::mutate(
+      value = .data$value |>
+        purrr::modify(\(x) {
+          x |>
+            dplyr::bind_rows() |>
+            dplyr::rename_with(\(x) {
+              x |>
+                stringr::str_remove("^@")
+            }) |>
+            tibble::rowid_to_column(".estat_rowid") |>
+            stickyr::new_sticky_tibble(
+              cols = ".estat_rowid",
+              col_show = !".estat_rowid",
+              class = "tbl_estat"
+            )
+        }),
+      codes = .data$value |>
+        purrr::modify(\(x) x$code),
+      width_key_name = .data$key_name |>
+        pillar::get_max_extent()
+    )
 
-  navigatr::new_nav_menu(key = meta_info$key,
-                         value = meta_info$value,
-                         attrs = meta_info[c("key_name", "width_key_name")],
+  navigatr::new_nav_menu(
+    key = meta_info$key,
+    value = meta_info$value,
+    attrs = meta_info[c("key_name", "width_key_name")],
 
-                         setup = setup,
-                         query_name = meta_info$key,
-                         codes = meta_info$codes,
-                         table_info = table_info,
+    setup = setup,
+    query_name = meta_info$key,
+    codes = meta_info$codes,
+    table_info = table_info,
 
-                         class = "estat")
+    class = "estat"
+  )
 }
 
 estat_check_status <- function(x) {
@@ -150,11 +161,14 @@ summary.tbl_estat <- function(object, ...) {
 }
 
 #' @export
-collect.estat <- function(x,
-                          n = "n",
-                          names_sep = "_",
-                          query = list(),
-                          limit = 100000L, ...) {
+collect.estat <- function(
+  x,
+  n = "n",
+  names_sep = "_",
+  query = list(),
+  limit = 100000L,
+  ...
+) {
   setup <- attr(x, "setup")
   setup$query <- estat_query(x, query)
 
@@ -162,20 +176,18 @@ collect.estat <- function(x,
   query_name <- attr(x, "query_name")
 
   if (total == 0) {
-    data <- vec_recycle(list(character()),
-                        vec_size(query_name) + 1L)
+    data <- vec_recycle(list(character()), vec_size(query_name) + 1L)
     names(data) <- c(query_name, n)
     data <- tibble::new_tibble(data)
   } else {
     start <- seq(1, total, limit)
-    data <- purrr::map(start,
-                       function(start) {
-                         estat_collect(setup = setup,
-                                       start = start,
-                                       limit = limit,
-                                       n = n)
-                       },
-                       .progress = TRUE) |>
+    data <- purrr::map(
+      start,
+      function(start) {
+        estat_collect(setup = setup, start = start, limit = limit, n = n)
+      },
+      .progress = TRUE
+    ) |>
       purrr::list_rbind()
   }
 
@@ -183,19 +195,21 @@ collect.estat <- function(x,
     purrr::pmap(function(key, value, query_name, codes) {
       value |>
         tibble::as_tibble() |>
-        dplyr::rename_with(\(x) {
-          stringr::str_c(key, x,
-                         sep = names_sep)
-        },
-        !".estat_rowid") |>
-        dplyr::mutate(!!query_name := codes[.data$.estat_rowid],
-                      .keep = "unused")
+        dplyr::rename_with(
+          \(x) {
+            stringr::str_c(key, x, sep = names_sep)
+          },
+          !".estat_rowid"
+        ) |>
+        dplyr::mutate(
+          !!query_name := codes[.data$.estat_rowid],
+          .keep = "unused"
+        )
     })
 
   for (i in vec_seq_along(query_name)) {
     data <- data |>
-      dplyr::left_join(cols[[i]],
-                       by = query_name[[i]]) |>
+      dplyr::left_join(cols[[i]], by = query_name[[i]]) |>
       dplyr::select(!dplyr::all_of(query_name[[i]]))
   }
 
@@ -216,31 +230,29 @@ estat_query <- function(x, query) {
     stringr::str_to_sentence()
   query_name <- stringr::str_c("cd", query_name)
 
-  query_codes <- purrr::map2(x$value, attr(x, "codes"),
-                             function(value, codes) {
-                               size <- vec_size(value)
+  query_codes <- purrr::map2(x$value, attr(x, "codes"), function(value, codes) {
+    size <- vec_size(value)
 
-                               if (size == vec_size(codes)) {
-                                 NULL
-                               } else {
-                                 stringr::str_c(codes[value$.estat_rowid],
-                                                collapse = ",")
-                               }
-                             })
+    if (size == vec_size(codes)) {
+      NULL
+    } else {
+      stringr::str_c(codes[value$.estat_rowid], collapse = ",")
+    }
+  })
   names(query_codes) <- query_name
 
-  compact_query(!!!attr(x, "setup")$query,
-                !!!query_codes,
-                metaGetFlg = "N",
-                !!!query)
+  compact_query(
+    !!!attr(x, "setup")$query,
+    !!!query_codes,
+    metaGetFlg = "N",
+    !!!query
+  )
 }
 
 estat_total <- function(setup) {
-  setup$query <- c(setup$query,
-                   list(cntGetFlg = "Y"))
+  setup$query <- c(setup$query, list(cntGetFlg = "Y"))
 
-  total <- estat_get(path = "getStatsData",
-                     setup = setup) |>
+  total <- estat_get(path = "getStatsData", setup = setup) |>
     purrr::chuck("GET_STATS_DATA") |>
     estat_check_status() |>
     purrr::chuck("STATISTICAL_DATA", "RESULT_INF", "TOTAL_NUMBER")
@@ -250,13 +262,12 @@ estat_total <- function(setup) {
 }
 
 estat_collect <- function(setup, start, limit, n) {
-  setup$query <- compact_query(!!!setup$query,
-                               startPosition = format(start,
-                                                      scientific = FALSE),
-                               limit = format(limit,
-                                              scientific = FALSE))
-  estat_get(path = "getStatsData",
-            setup = setup) |>
+  setup$query <- compact_query(
+    !!!setup$query,
+    startPosition = format(start, scientific = FALSE),
+    limit = format(limit, scientific = FALSE)
+  )
+  estat_get(path = "getStatsData", setup = setup) |>
     purrr::chuck("GET_STATS_DATA") |>
     estat_check_status() |>
     purrr::chuck("STATISTICAL_DATA", "DATA_INF", "VALUE") |>
@@ -264,7 +275,7 @@ estat_collect <- function(setup, start, limit, n) {
     dplyr::rename_with(\(x) {
       x |>
         stringr::str_remove("^@")
-    } ) |>
+    }) |>
     dplyr::rename(!!n := "$") |>
     dplyr::select(!dplyr::any_of("unit"))
 }
@@ -275,7 +286,14 @@ estat_collect <- function(setup, start, limit, n) {
 obj_sum.tbl_estat <- function(x) {
   attrs <- attributes(x)
   nms <- setdiff(names(x), ".estat_rowid")
-  stringr::str_c(pillar::align(attrs$key_name, attrs$width_key_name), " ",
-                 "[", big_mark(vec_size(x)), "] ",
-                 "<", commas(nms), ">")
+  stringr::str_c(
+    pillar::align(attrs$key_name, attrs$width_key_name),
+    " ",
+    "[",
+    big_mark(vec_size(x)),
+    "] ",
+    "<",
+    commas(nms),
+    ">"
+  )
 }

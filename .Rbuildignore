@@ -1,6 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README.*\.Rmd$
+^README.*\.qmd$
 ^README.+\.md$
 ^cran-comments\.md$
 ^CRAN-RELEASE$
@@ -11,3 +11,4 @@
 ^\.github$
 ^CRAN-SUBMISSION$
 ^vignettes/articles$
+^\.claude$

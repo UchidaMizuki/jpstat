@@ -1,5 +1,6 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+<!-- README.md is generated from README.qmd. Please edit that file -->
 
 # jpstat <a href="https://uchidamizuki.github.io/jpstat/"><img src="man/figures/logo.png" align="right" height="139"/></a>
 
@@ -7,30 +8,27 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org/package=jpstat)
-
+[![R-CMD-check](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-**README is currently only available in Japanese.**
+*[日本語](README.ja.md)*
 
-jpstatは日本政府統計のポータルサイトであるe-Statや RESAS
-(地域経済分析システム) などのAPIを利用するためのツールを提供します．
+jpstat provides tools for using the API of
+[e-Stat](https://www.e-stat.go.jp/api/), the portal site for Japanese
+government statistics.
 
-現在，以下のAPIに対応しています．
+**“This service uses API functions from e-Stat, however its contents are
+not guaranteed by government.”**
+（「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」）
 
-- e-Stat API: <https://www.e-stat.go.jp/api/>
-- RESAS API: <https://opendata.resas-portal.go.jp>
-- 不動産取引価格情報取得API:
-  <https://www.land.mlit.go.jp/webland/api.html>
-
-**「このサービスは、政府統計総合窓口(e-Stat)のAPI機能を使用していますが、サービスの内容は国によって保証されたものではありません。」**
-
-## インストール方法
+## Installation
 
 ``` r
 install.packages("jpstat")
 ```
 
-jpstatの開発版は，[GitHub](https://github.com/)から以下の方法でインストールできます．
+You can install the development version of jpstat from
+[GitHub](https://github.com/) with:
 
 ``` r
 # install.packages("devtools")
@@ -39,152 +37,73 @@ devtools::install_github("UchidaMizuki/jpstat")
 
 ``` r
 library(jpstat)
-library(dplyr)
+library(tidyverse)
 ```
 
 ## e-Stat API
 
-e-Stat APIの利用にはアカウント登録 (appIdと呼ばれるAPIキーの発行)
-が必要です
-(詳しくは[ホームページ](https://www.e-stat.go.jp/api/)を参照してください)．
-また，データ利用に際しては[利用規約](https://www.e-stat.go.jp/terms-of-use)に従う必要があります．
+Using the e-Stat API requires account registration (to obtain an API key
+called an appId); see the [homepage](https://www.e-stat.go.jp/api/) for
+details. Use of the data is also subject to the [terms of
+use](https://www.e-stat.go.jp/terms-of-use).
 
-データ取得・整形の一連の流れは以下のようになります．
-ここでは，[国勢調査データ](https://www.e-stat.go.jp/dbview?sid=0003413949)を対象として，
-2010・2015年の東京都・大阪府における男女別人口を取得します．
-詳細な使用方法は[こちら](https://github.com/uchidamizuki/jpstat/blob/main/README-estat.md)を参照してください．
+The typical workflow for retrieving and reshaping data looks like this.
+Here, we retrieve the male/female population of Tokyo and Osaka for 2010
+and 2015 from the [System of Social and Demographic
+Statistics](https://www.e-stat.go.jp/en/dbview?sid=0000010101). For a
+more detailed, step-by-step walkthrough, see the [Accessing the e-Stat
+API](https://uchidamizuki.github.io/jpstat/articles/estat.html) article.
 
-    # APIキーの設定
+    # Set the API key
     Sys.setenv(ESTAT_API_KEY = "Your appId")
 
-    # メタ情報の取得
-    census <- estat(statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
-    census
+    # Retrieve the metadata
+    ssds <- estat(statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101")
+    ssds
 
-    #> # ☐ tab:   表章項目         [2] <code, name, level, unit>
-    #> # ☐ cat01: 男女_時系列      [3] <code, name, level>
-    #> # ☐ area:  地域_時系列      [50] <code, name, level, parentCode>
-    #> # ☐ time:  時間軸（調査年） [21] <code, name, level>
+    #> # ☐ tab:   Observation Value           [1] <code, name, level>
+    #> # ☐ cat01: A Population and Households [594] <code, name, level, unit>
+    #> # ☐ area:  AREA                        [48] <code, name, level>
+    #> # ☐ time:  SURVEY YEAR                 [51] <code, name, level>
     #> # 
     #> # Please `activate()`.
 
 ``` r
-# 2010・2015年の東京都・大阪府における男女別人口を取得
-census <- census |> 
-  
-  activate(tab) |> 
-  filter(name == "人口") |> 
-  select() |> 
-  
-  activate(cat01) |> 
-  rekey("sex") |> 
-  filter(name %in% c("男", "女")) |> 
-  select(name) |> 
-  
-  activate(area) |> 
-  rekey("pref") |> 
-  filter(name %in% c("東京都", "大阪府")) |> 
-  select(code, name) |> 
-  
-  activate(time) |> 
-  rekey("year") |> 
-  filter(name %in% c("2010年", "2015年")) |> 
-  select(name) |> 
-  
-  collect(n = "pop")
+# Retrieve the male/female population of Tokyo and Osaka for 2010 and 2015
+population <- ssds |>
+
+  activate(tab) |>
+  filter(name == "Observation value") |>
+  select() |>
+
+  activate(cat01) |>
+  rekey("sex") |>
+  filter(str_detect(name, "Total population \\((Male|Female)\\)")) |>
+  select(name, unit) |>
+
+  activate(area) |>
+  rekey("pref") |>
+  filter(name %in% c("Tokyo-to", "Osaka-fu")) |>
+  select(code, name) |>
+
+  activate(time) |>
+  rekey("year") |>
+  filter(name %in% c("2010", "2015")) |>
+  select(name) |>
+
+  collect(n = "population")
 #> The total number of data is 8.
 
-knitr::kable(census)
+knitr::kable(population)
 ```
 
-| sex_name | pref_code | pref_name | year_name | pop     |
-|:---------|:----------|:----------|:----------|:--------|
-| 男       | 13000     | 東京都    | 2010年    | 6512110 |
-| 男       | 13000     | 東京都    | 2015年    | 6666690 |
-| 男       | 27000     | 大阪府    | 2010年    | 4285566 |
-| 男       | 27000     | 大阪府    | 2015年    | 4256049 |
-| 女       | 13000     | 東京都    | 2010年    | 6647278 |
-| 女       | 13000     | 東京都    | 2015年    | 6848581 |
-| 女       | 27000     | 大阪府    | 2010年    | 4579679 |
-| 女       | 27000     | 大阪府    | 2015年    | 4583420 |
-
-## RESAS API
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
-RESAS APIの利用にはアカウント登録 (X-API-KEYと呼ばれるAPIキーの発行)
-が必要です
-(詳しくは[ホームページ](https://opendata.resas-portal.go.jp)を参照してください)．
-RESAS
-APIの利用にあたっては，[利用規約](https://opendata.resas-portal.go.jp/terms.html)を確認してください
-([API詳細仕様](https://opendata.resas-portal.go.jp/docs/api/v1/detail/index.html))．
-
-    Sys.setenv(RESAS_API_KEY = "Your X-API-KEY")
-
-    power_for_industry <- resas(path = "https://opendata.resas-portal.go.jp/docs/api/v1/industry/power/forIndustry.html")
-    power_for_industry
-
-    #> # ✖ year:      年度            :  (Required)
-    #> # ✖ pref_code: 都道府県コード  :  (Required)
-    #> # ✖ city_code: 市区町村コード  :  (Required)
-    #> # ✖ sic_code:  産業大分類コード:  (Required)
-    #> # 
-    #> # Please `itemise()`.
-
-``` r
-power_for_industry <- power_for_industry |>
-  itemise(year = "2012",
-          pref_code = "1",
-          city_code = "-",
-          sic_code = "A") |>
-  collect()
-
-knitr::kable(power_for_industry)
-```
-
-| pref_name | pref_code | sic_code | sic_name   | data/simc_code | data/simc_name | data/value | data/employee | data/labor |
-|:----------|----------:|:---------|:-----------|:---------------|:---------------|-----------:|--------------:|-----------:|
-| 北海道    |         1 | A        | 農業，林業 | 01             | 農業           |     4.4697 |        3.2743 |     0.9858 |
-| 北海道    |         1 | A        | 農業，林業 | 02             | 林業           |     6.1208 |        3.0613 |     1.4438 |
-
-## 不動産取引価格情報取得API
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
-``` r
-trade <- webland_trade()
-trade
-#> # ✖ from:      取引時期From  : 
-#> # ✖ to:        取引時期To    : 
-#> # ✖ pref_code: 都道府県コード: 
-#> # ✖ city_code: 市区町村コード: 
-#> # 
-#> # Please `itemise()`.
-```
-
-``` r
-trade <- trade |> 
-  itemise(from = "20201",
-          to = "20201",
-          pref_code = "01",
-          city_code = "01101") |> 
-  collect()
-
-knitr::kable(trade[1:5, 1:6])
-```
-
-| type             | city_code | pref_name | city_name    | district_name | trade_price |
-|:-----------------|:----------|:----------|:-------------|:--------------|:------------|
-| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 32000000    |
-| 宅地(土地と建物) | 01101     | 北海道    | 札幌市中央区 | 大通西        | 380000000   |
-| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 10000000    |
-| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 9000000     |
-| 中古マンション等 | 01101     | 北海道    | 札幌市中央区 | 大通西        | 3000000     |
-
-## 参考リンク
-
-- [Rで日本の統計データを効率的に取得しよう（e-Stat
-  APIとjpstatパッケージで）](https://uchidamizuki.quarto.pub/blog/posts/2022/12/call-e-stat-api-in-r.html)
-- [Rで人口ピラミッドのアニメーションを作る](https://uchidamizuki.quarto.pub/blog/posts/2023/01/create-an-animation-of-a-population-pyramid-in-r.html)
+| sex_name | sex_unit | pref_code | pref_name | year_name | population |
+|:---|:---|:---|:---|:---|:---|
+| A110101_Total population (Male) | person | 13000 | Tokyo-to | 2010 | 6512110 |
+| A110101_Total population (Male) | person | 13000 | Tokyo-to | 2015 | 6666690 |
+| A110101_Total population (Male) | person | 27000 | Osaka-fu | 2010 | 4285566 |
+| A110101_Total population (Male) | person | 27000 | Osaka-fu | 2015 | 4256049 |
+| A110102_Total population (Female) | person | 13000 | Tokyo-to | 2010 | 6647278 |
+| A110102_Total population (Female) | person | 13000 | Tokyo-to | 2015 | 6848581 |
+| A110102_Total population (Female) | person | 27000 | Osaka-fu | 2010 | 4579679 |
+| A110102_Total population (Female) | person | 27000 | Osaka-fu | 2015 | 4583420 |

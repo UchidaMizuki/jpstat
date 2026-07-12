@@ -5,24 +5,19 @@ big_mark <- function(x) {
     ","
   }
 
-  formatC(x,
-          big.mark = mark)
+  formatC(x, big.mark = mark)
 }
 
 commas <- function(...) {
-  stringr::str_c(...,
-                 collapse = ", ")
+  stringr::str_c(..., collapse = ", ")
 }
 
 commas0 <- function(...) {
-  stringr::str_c(...,
-                 collapse = ",")
+  stringr::str_c(..., collapse = ",")
 }
 
 compact_query <- function(...) {
-  dots_list(...,
-            .named = TRUE,
-            .homonyms = "first") |>
+  dots_list(..., .named = TRUE, .homonyms = "first") |>
     purrr::compact()
 }
 
@@ -41,8 +36,12 @@ str_to_camelcase <- function(string) {
   string |>
     stringr::str_split("_") |>
     purrr::map_chr(\(x) {
-      exec(stringr::str_c, x[[1L]], !!!stringr::str_to_sentence(x[-1L]),
-           collapse = "")
+      exec(
+        stringr::str_c,
+        x[[1L]],
+        !!!stringr::str_to_sentence(x[-1L]),
+        collapse = ""
+      )
     })
 }
 
@@ -56,21 +55,17 @@ get_content <- function(url, headers = list(), path = list(), query = list()) {
 }
 
 
-
 # Pref and city codes -----------------------------------------------------
 
 as_pref_code <- function(x) {
   x |>
-    stringr::str_pad(2L,
-                     pad = "0")
+    stringr::str_pad(2L, pad = "0")
 }
 
 as_city_code <- function(x) {
   x |>
-    stringr::str_pad(5L,
-                     pad = "0")
+    stringr::str_pad(5L, pad = "0")
 }
-
 
 
 # Progress bar ------------------------------------------------------------

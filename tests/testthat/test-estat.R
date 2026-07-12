@@ -1,9 +1,12 @@
 test_that("estat-census", {
   skip_on_cran()
+  skip_if(Sys.getenv("ESTAT_API_KEY") == "", "`ESTAT_API_KEY` is not set.")
 
   library(dplyr)
 
-  estat_census <- estat(statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379")
+  estat_census <- estat(
+    statsDataId = "https://www.e-stat.go.jp/dbview?sid=0003410379"
+  )
   expect_s3_class(estat_census, "estat")
 
   estat_census <- estat_census |>
