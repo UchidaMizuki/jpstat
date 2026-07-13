@@ -39,6 +39,7 @@
 <h2 class="pkg-version" data-toc-text="0.5.0" id="jpstat-050">jpstat 0.5.0<a class="anchor" aria-label="anchor" href="#jpstat-050"></a></h2>
 <ul><li>
 <code><a href="../reference/estat.html">estat()</a></code> now uses HTTPS for the ‘e-Stat’ API endpoint.</li>
+<li>The deprecated <code>appId</code> argument to <code><a href="../reference/estat.html">estat()</a></code> has been removed. Use <code>Sys.setenv(ESTAT_API_KEY = )</code> instead.</li>
 <li>The ‘RESAS’ API was discontinued on 2025-03-24. <code><a href="../reference/resas.html">resas()</a></code> is now defunct and errors when called.</li>
 <li>
 <code>webland_trade()</code> and <code>webland_city()</code> have been removed. The “Land General Information System” API they used was discontinued, and its replacement, the Real Estate Information Library API, does not expose metadata for navigatr’s menu interface, so jpstat now focuses solely on the ‘e-Stat’ API.</li>

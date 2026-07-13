@@ -4,6 +4,9 @@
 
 - [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
   now uses HTTPS for the ‘e-Stat’ API endpoint.
+- The deprecated `appId` argument to
+  [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
+  has been removed. Use `Sys.setenv(ESTAT_API_KEY = )` instead.
 - The ‘RESAS’ API was discontinued on 2025-03-24.
   [`resas()`](https://uchidamizuki.github.io/jpstat/reference/resas.md)
   is now defunct and errors when called.

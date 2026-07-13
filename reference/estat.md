@@ -11,7 +11,6 @@ and
 
 ``` r
 estat(
-  appId = deprecated(),
   statsDataId,
   lang = c("J", "E"),
   query = list(),
@@ -20,10 +19,6 @@ estat(
 ```
 
 ## Arguments
-
-- appId:
-
-  (Deprecated) an 'appId' of 'e-Stat' API.
 
 - statsDataId:
 
@@ -55,6 +50,7 @@ A `estat` object.
 
 ``` r
 if (FALSE) { # \dontrun{
-estat("Your appId", "https://www.e-stat.go.jp/dbview?sid=0003433219")
+Sys.setenv(ESTAT_API_KEY = "Your API key")
+estat("https://www.e-stat.go.jp/dbview?sid=0003433219")
 } # }
 ```
