@@ -12,3 +12,4 @@
 ^CRAN-SUBMISSION$
 ^vignettes/articles$
 ^\.claude$
+^AGENTS\.md$
