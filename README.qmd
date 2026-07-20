@@ -28,7 +28,7 @@ status](https://www.r-pkg.org/badges/version/jpstat)](https://CRAN.R-project.org
 [![R-CMD-check](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/UchidaMizuki/jpstat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-*[日本語](README.ja.md)*
+*[日本語](https://github.com/UchidaMizuki/jpstat/blob/main/README.ja.md)*
 
 jpstat provides tools for using the API of
 [e-Stat](https://www.e-stat.go.jp/api/), the portal site for Japanese
