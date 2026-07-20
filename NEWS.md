@@ -1,4 +1,4 @@
-# jpstat (development version)
+# jpstat 0.5.0
 
 * `collect()` methods for `estat` objects are now documented, including the previously undocumented `n`, `names_sep`, `query`, and `limit` arguments.
 * `collect()` no longer reports the total number of records with `print()`; it now uses `cli::cli_inform()` so the message can be suppressed with `suppressMessages()`.
