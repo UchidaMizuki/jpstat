@@ -1,6 +1,6 @@
 # jpstat
 
-*[日本語](https://uchidamizuki.github.io/jpstat/README.ja.md)*
+*[日本語](https://github.com/UchidaMizuki/jpstat/blob/main/README.ja.md)*
 
 jpstat provides tools for using the API of
 [e-Stat](https://www.e-stat.go.jp/api/), the portal site for Japanese
@@ -115,8 +115,6 @@ knitr::kable(population)
   : Collect data from an 'e-Stat' table
 - [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
   : Access 'e-Stat' data
-- [`estat_table_info()`](https://uchidamizuki.github.io/jpstat/reference/estat_table_info.md)
-  : Get table information for 'e-Stat' data
 - [`jpstat-package`](https://uchidamizuki.github.io/jpstat/reference/jpstat.md)
   [`jpstat`](https://uchidamizuki.github.io/jpstat/reference/jpstat.md)
   : Tools for easy use of 'e-Stat' API

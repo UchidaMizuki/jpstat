@@ -1,6 +1,6 @@
 # jpstat
 
-*[日本語](https://uchidamizuki.github.io/jpstat/README.ja.md)*
+*[日本語](https://github.com/UchidaMizuki/jpstat/blob/main/README.ja.md)*
 
 jpstat provides tools for using the API of
 [e-Stat](https://www.e-stat.go.jp/api/), the portal site for Japanese

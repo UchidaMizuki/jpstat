@@ -24,9 +24,12 @@
 - Errors raised by
   [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
   and [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
-  are now classed (e.g. `jpstat_error_estat_api`,
+  are now classed (e.g. `jpstat_error_estat_api`,
   `jpstat_error_estat_missing_key`) so they can be caught
   programmatically.
+- [`estat_table_info()`](https://uchidamizuki.github.io/jpstat/reference/estat_table_info.md)
+  is now defunct. Use [`summary()`](https://rdrr.io/r/base/summary.html)
+  instead.
 - The ‘RESAS’ API was discontinued on 2025-03-24.
   [`resas()`](https://uchidamizuki.github.io/jpstat/reference/resas.md)
   is now defunct and errors when called.

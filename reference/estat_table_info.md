@@ -1,6 +1,6 @@
-# Get table information for 'e-Stat' data
+# Get table information for 'e-Stat' data (defunct)
 
-Get table information for 'e-Stat' data
+**\[defunct\]**
 
 ## Usage
 
@@ -16,4 +16,9 @@ estat_table_info(x)
 
 ## Value
 
-A `tbl_df` of the table information.
+This function always errors.
+
+## Details
+
+`estat_table_info()` has been removed. Use
+[`summary()`](https://rdrr.io/r/base/summary.html) instead.
