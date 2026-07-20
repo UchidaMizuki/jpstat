@@ -1,20 +1,13 @@
-# jpstat 0.5.0
+# jpstat (development version)
 
-* `collect()` methods for `estat` objects are now documented, including the
-  previously undocumented `n`, `names_sep`, `query`, and `limit` arguments.
-* `collect()` no longer reports the total number of records with `print()`;
-  it now uses `cli::cli_inform()` so the message can be suppressed with
-  `suppressMessages()`.
+* `collect()` methods for `estat` objects are now documented, including the previously undocumented `n`, `names_sep`, `query`, and `limit` arguments.
+* `collect()` no longer reports the total number of records with `print()`; it now uses `cli::cli_inform()` so the message can be suppressed with `suppressMessages()`.
 * `estat()` now uses HTTPS for the 'e-Stat' API endpoint.
-* The deprecated `appId` argument to `estat()` has been removed. Use
-  `Sys.setenv(ESTAT_API_KEY = )` instead.
-* `estat()` and `collect()` now automatically retry 'e-Stat' API requests on
-  transient network failures.
-* Errors raised by `estat()` and `collect()` are now classed (e.g.
-  `jpstat_error_estat_api`, `jpstat_error_estat_missing_key`) so they can be
-  caught programmatically.
-* The 'RESAS' API was discontinued on 2025-03-24. `resas()` is now defunct and
-  errors when called.
+* The deprecated `appId` argument to `estat()` has been removed. Use `Sys.setenv(ESTAT_API_KEY = )` instead.
+* `estat()` and `collect()` now automatically retry 'e-Stat' API requests on transient network failures.
+* Errors raised by `estat()` and `collect()` are now classed (e.g. `jpstat_error_estat_api`, `jpstat_error_estat_missing_key`) so they can be caught programmatically.
+* `estat_table_info()` is now defunct. Use `summary()` instead.
+* The 'RESAS' API was discontinued on 2025-03-24. `resas()` is now defunct and errors when called.
 * `webland_trade()` and `webland_city()` have been removed. The "Land General Information System" API they used was discontinued, and its replacement, the Real Estate Information Library API, does not expose metadata for navigatr's menu interface, so jpstat now focuses solely on the 'e-Stat' API.
 
 # jpstat 0.4.0

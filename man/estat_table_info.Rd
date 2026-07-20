@@ -2,7 +2,7 @@
 % Please edit documentation in R/deprecated.R
 \name{estat_table_info}
 \alias{estat_table_info}
-\title{Get table information for 'e-Stat' data}
+\title{Get table information for 'e-Stat' data (defunct)}
 \usage{
 estat_table_info(x)
 }
@@ -10,8 +10,12 @@ estat_table_info(x)
 \item{x}{A \code{estat} object.}
 }
 \value{
-A \code{tbl_df} of the table information.
+This function always errors.
 }
 \description{
-Get table information for 'e-Stat' data
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#defunct}{\figure{lifecycle-defunct.svg}{options: alt='[Defunct]'}}}{\strong{[Defunct]}}
 }
+\details{
+\code{estat_table_info()} has been removed. Use \code{\link[=summary]{summary()}} instead.
+}
+\keyword{internal}

@@ -1,17 +1,17 @@
-#' Get table information for 'e-Stat' data
+#' Get table information for 'e-Stat' data (defunct)
+#'
+#' `r lifecycle::badge("defunct")`
+#'
+#' `estat_table_info()` has been removed. Use [summary()] instead.
 #'
 #' @param x A `estat` object.
 #'
-#' @return A `tbl_df` of the table information.
+#' @return This function always errors.
 #'
+#' @keywords internal
 #' @export
 estat_table_info <- function(x) {
-  lifecycle::deprecate_warn("0.3.0", "estat_table_info()", "summary()")
-
-  stopifnot(
-    any(c("estat", "tbl_estat") %in% class(x))
-  )
-  summary(x)
+  lifecycle::deprecate_stop("0.5.0", "estat_table_info()", "summary()")
 }
 
 #' Access 'RESAS' data (defunct)
