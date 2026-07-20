@@ -1,3 +1,5 @@
+# jpstat (development version)
+
 # jpstat 0.5.0
 
 * `collect()` methods for `estat` objects are now documented, including the previously undocumented `n`, `names_sep`, `query`, and `limit` arguments.
