@@ -2,11 +2,31 @@
 
 ## jpstat 0.5.0
 
+- [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+  methods for `estat` objects are now documented, including the
+  previously undocumented `n`, `names_sep`, `query`, and `limit`
+  arguments.
+- [`collect()`](https://dplyr.tidyverse.org/reference/compute.html) no
+  longer reports the total number of records with
+  [`print()`](https://rdrr.io/r/base/print.html); it now uses
+  [`cli::cli_inform()`](https://cli.r-lib.org/reference/cli_abort.html)
+  so the message can be suppressed with
+  [`suppressMessages()`](https://rdrr.io/r/base/message.html).
 - [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
   now uses HTTPS for the ‘e-Stat’ API endpoint.
 - The deprecated `appId` argument to
   [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
   has been removed. Use `Sys.setenv(ESTAT_API_KEY = )` instead.
+- [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
+  and [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+  now automatically retry ‘e-Stat’ API requests on transient network
+  failures.
+- Errors raised by
+  [`estat()`](https://uchidamizuki.github.io/jpstat/reference/estat.md)
+  and [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
+  are now classed (e.g. `jpstat_error_estat_api`,
+  `jpstat_error_estat_missing_key`) so they can be caught
+  programmatically.
 - The ‘RESAS’ API was discontinued on 2025-03-24.
   [`resas()`](https://uchidamizuki.github.io/jpstat/reference/resas.md)
   is now defunct and errors when called.
@@ -60,7 +80,9 @@ CRAN release: 2022-11-21
   to use ‘RESAS’ API (<https://opendata.resas-portal.go.jp>).
 - Add `webland()` to use information on real estate transaction prices
   API (<https://www.land.mlit.go.jp/webland/api.html>).
-- Add `summary.estat()` and deprecate
+- Add
+  [`summary.estat()`](https://uchidamizuki.github.io/jpstat/reference/summary.estat.md)
+  and deprecate
   [`estat_table_info()`](https://uchidamizuki.github.io/jpstat/reference/estat_table_info.md).
 
 ## jpstat 0.2.1
