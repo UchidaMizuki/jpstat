@@ -2,27 +2,20 @@ estat_stats_data_id <- function(statsDataId) {
   if (stringr::str_detect(statsDataId, "^\\d+$")) {
     statsDataId
   } else {
-    # when statsDataId is url
-    statsDataId <- statsDataId |>
-      stringr::str_extract("(?<=\\?)[^\\?]+") |>
-      stringr::str_split("&") |>
-      dplyr::first() |>
-      stringr::str_match("(.+)=(.+)")
-
-    nms <- statsDataId[, 2L]
-    statsDataId <- statsDataId[, 3L]
-    names(statsDataId) <- nms
-
-    statsDataId <- statsDataId[names(statsDataId) %in% c("statdisp_id", "sid")]
-    dplyr::first(statsDataId)
+    # when statsDataId is a URL
+    query <- httr2::url_parse(statsDataId)$query
+    query <- query[names(query) %in% c("statdisp_id", "sid")]
+    dplyr::first(query)
   }
 }
 
 estat_get <- function(path, setup) {
   appId <- Sys.getenv("ESTAT_API_KEY")
   if (appId == "") {
-    rlang::abort(
-      "`ESTAT_API_KEY` does not exist. Please set the key with `Sys.setenv(ESTAT_API_KEY = )`."
+    cli::cli_abort(
+      "{.envvar ESTAT_API_KEY} does not exist. Please set the key with
+      {.code Sys.setenv(ESTAT_API_KEY = )}.",
+      class = "jpstat_error_estat_missing_key"
     )
   }
 
@@ -132,16 +125,27 @@ estat <- function(
 
 estat_check_status <- function(x) {
   if (x$RESULT$STATUS != 0) {
-    abort(x$RESULT$ERROR_MSG)
+    cli::cli_abort(x$RESULT$ERROR_MSG, class = "jpstat_error_estat_api")
   }
   x
 }
 
+#' Summarize the table information of an 'e-Stat' table
+#'
+#' `summary()` returns the table-level metadata (title, survey date,
+#' publisher, and so on) of an `estat` object created by [estat()].
+#'
+#' @param object An `estat` or `tbl_estat` object.
+#' @param ... Ignored.
+#'
+#' @return A `tibble` of table information.
+#'
 #' @export
 summary.estat <- function(object, ...) {
   attr(object, "table_info")
 }
 
+#' @rdname summary.estat
 #' @export
 summary.tbl_estat <- function(object, ...) {
   object |>
@@ -149,6 +153,33 @@ summary.tbl_estat <- function(object, ...) {
     summary()
 }
 
+#' Collect data from an 'e-Stat' table
+#'
+#' `collect()` downloads the statistical values selected from an `estat`
+#' object with `dplyr::filter()`, `dplyr::select()`, and
+#' [navigatr::rekey()], and returns them as a tidy `tibble`. Large tables
+#' are paginated automatically.
+#'
+#' @param x An `estat` or `tbl_estat` object.
+#' @param n Name of the column that holds the observed values.
+#' @param names_sep Separator used to combine a classification's key
+#'   (e.g. `"area"`) with its selected columns (e.g. `"name"`) into new
+#'   column names (e.g. `"area_name"`).
+#' @param query A list of additional queries passed to 'e-Stat's
+#'   `getStatsData` API.
+#' @param limit Maximum number of records requested per page. 'e-Stat'
+#'   caps this at 100000.
+#' @param ... Ignored.
+#'
+#' @return A `tibble`.
+#'
+#' @examples
+#' \dontrun{
+#' Sys.setenv(ESTAT_API_KEY = "Your API key")
+#' estat("https://www.e-stat.go.jp/dbview?sid=0003433219") |>
+#'   dplyr::collect()
+#' }
+#'
 #' @export
 collect.estat <- function(
   x,
@@ -206,6 +237,7 @@ collect.estat <- function(
     dplyr::relocate(!dplyr::all_of(n))
 }
 
+#' @rdname collect.estat
 #' @export
 collect.tbl_estat <- function(x, ...) {
   x |>
@@ -246,7 +278,7 @@ estat_total <- function(setup) {
     estat_check_status() |>
     purrr::chuck("STATISTICAL_DATA", "RESULT_INF", "TOTAL_NUMBER")
 
-  print(stringr::str_glue("The total number of data is {total}."))
+  cli::cli_inform("The total number of data is {total}.")
   total
 }
 

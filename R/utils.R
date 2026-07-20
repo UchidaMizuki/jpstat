@@ -50,6 +50,7 @@ get_content <- function(url, headers = list(), path = list(), query = list()) {
     httr2::req_headers(!!!headers) |>
     httr2::req_url_path_append(path) |>
     httr2::req_url_query(!!!query) |>
+    httr2::req_retry(max_tries = 3, retry_on_failure = TRUE) |>
     httr2::req_perform() |>
     httr2::resp_body_json()
 }
