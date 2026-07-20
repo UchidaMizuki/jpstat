@@ -86,15 +86,18 @@
 <span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">Sys.setenv</span>(<span class="at">ESTAT_API_KEY =</span> <span class="st">"Your appId"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
 <span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># Retrieve the metadata</span></span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ssds <span class="ot">&lt;-</span> <span class="fu">estat</span>(<span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/en/dbview?sid=0000010101"</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>ssds</span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co">#&gt; # ☐ tab:   Observation Value           [1] &lt;code, name, level&gt;</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co">#&gt; # ☐ cat01: A Population and Households [594] &lt;code, name, level, unit&gt;</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="co">#&gt; # ☐ area:  AREA                        [48] &lt;code, name, level&gt;</span></span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # ☐ time:  SURVEY YEAR                 [51] &lt;code, name, level&gt;</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; # </span></span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; # Please `activate()`.</span></span></code></pre></div>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>ssds <span class="ot">&lt;-</span> <span class="fu">estat</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">statsDataId =</span> <span class="st">"https://www.e-stat.go.jp/en/dbview?sid=0000010101"</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>  <span class="at">lang =</span> <span class="st">"E"</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>ssds</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co">#&gt; # ☐ tab:   Observation Value           [1] &lt;code, name, level&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="co">#&gt; # ☐ cat01: A Population and Households [594] &lt;code, name, level, unit&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co">#&gt; # ☐ area:  AREA                        [48] &lt;code, name, level&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="co">#&gt; # ☐ time:  SURVEY YEAR                 [51] &lt;code, name, level&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co">#&gt; # </span></span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; # Please `activate()`.</span></span></code></pre></div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Retrieve the male/female population of Tokyo and Osaka for 2010 and 2015</span></span>
 <span><span class="va">population</span> <span class="op">&lt;-</span> <span class="va">ssds</span> <span class="op">|&gt;</span></span>

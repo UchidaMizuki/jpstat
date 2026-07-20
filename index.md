@@ -51,7 +51,10 @@ API](https://uchidamizuki.github.io/jpstat/articles/estat.html) article.
 Sys.setenv(ESTAT_API_KEY = "Your appId")
 
 # Retrieve the metadata
-ssds <- estat(statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101")
+ssds <- estat(
+  statsDataId = "https://www.e-stat.go.jp/en/dbview?sid=0000010101",
+  lang = "E"
+)
 ssds
 
 #> # ☐ tab:   Observation Value           [1] <code, name, level>
