@@ -1,5 +1,7 @@
 # Changelog
 
+## jpstat (development version)
+
 ## jpstat 0.5.0
 
 - [`collect()`](https://dplyr.tidyverse.org/reference/compute.html)
